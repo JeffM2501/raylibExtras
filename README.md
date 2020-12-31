@@ -18,3 +18,10 @@ https://github.com/JeffM2501/raylibExtras/tree/FPCameraC
 
 ### C++ Version
 https://github.com/JeffM2501/raylibExtras/tree/FPCameraCPP
+
+## TPOrbitCamera
+A third person view camera system that orbits a target point based on mouse input
+### C Version
+https://github.com/JeffM2501/raylibExtras/tree/TPOrbitCamera
+
+
