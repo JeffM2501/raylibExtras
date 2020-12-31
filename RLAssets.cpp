@@ -96,6 +96,8 @@ void rlas_Cleanup()
     }
         
     TempFiles.clear();
+
+    SetFileSystemFunctions(nullptr, nullptr);
 }
 
 void rlas_SetTempPath(const char* path)
@@ -106,16 +108,57 @@ void rlas_SetTempPath(const char* path)
         AssetTempPath = path;
 }
 
-void rlas_SetAssetRootPath(const char* path, bool relativeToApp)
+unsigned char* LoadFileBin(const char* fileName, unsigned int* bytesRead)
+{
+    *bytesRead = rlas_GetFileSize(fileName);
+    unsigned char* outBuffer = nullptr;
+
+    MetaMap::iterator itr = AssetMap.find(ToUpper(fileName));
+    if (bytesRead == 0 || itr == AssetMap.end())
+        return nullptr;
+
+    if (itr->second.ArchiveFile != nullptr)
+    {
+        outBuffer = (unsigned char*)MemAlloc(*bytesRead);
+        itr->second.ArchiveFile->readBin(itr->second.ArchiveInfo, outBuffer);
+        return outBuffer;
+    }
+
+    return LoadFileData(itr->second.PathOnDisk.c_str(), bytesRead);
+}
+
+char* LoadFileText(const char* fileName)
+{
+    int bytesRead = (int)rlas_GetFileSize(fileName);
+    char* outBuffer = nullptr;
+
+    if (bytesRead == 0)
+        return nullptr;
+
+    MetaMap::iterator itr = AssetMap.find(ToUpper(fileName));
+    if (itr == AssetMap.end())
+        return nullptr;
+
+    if (itr->second.ArchiveFile != nullptr)
+    {
+        outBuffer = (char*)MemAlloc(bytesRead);
+        itr->second.ArchiveFile->readBin(itr->second.ArchiveInfo, outBuffer);
+        return outBuffer;
+    }
+
+    return LoadFileText(itr->second.PathOnDisk.c_str());
+}
+
+void rlas_Setup(const char* rootPath, bool relativeToApp)
 {
     AssetRootPaths.clear();
 
     if (relativeToApp)
     {
         std::string appPath = rlas_GetApplicationBasePath();
-        if (path != nullptr)
+        if (rootPath != nullptr)
         {
-            appPath += path;
+            appPath += rootPath;
             appPath += PathDelim;
         }
 
@@ -123,8 +166,10 @@ void rlas_SetAssetRootPath(const char* path, bool relativeToApp)
     }
     else
     {
-        rlas_AddAssetResourcePath(path);
+        rlas_AddAssetResourcePath(rootPath);
     }
+
+    SetFileSystemFunctions(LoadFileBin, LoadFileText);
 }
 
 const char* rlas_GetAssetRootPath()
@@ -313,55 +358,6 @@ bool rlas_FileIsArchive(const char* path)
         return false;
 
     return itr->second.ArchiveFile != nullptr;
-}
-
-Texture rlas_LoadTexture(const char* path)
-{
-    MetaMap::iterator itr = AssetMap.find(ToUpper(path));
-    if (itr == AssetMap.end())
-    {
-        // can't be found, default texture
-        Image img = GenImageChecked(256, 256, 64, 64, RAYWHITE, LIGHTGRAY);
-        Texture texture = LoadTextureFromImage(img);
-        UnloadImage(img);
-        return texture;
-    }
-   
-    if (itr->second.ArchiveFile != nullptr)
-    {
-        unsigned char* buffer = new unsigned char[itr->second.ArchiveInfo.file_size];
-        itr->second.ArchiveFile->readBin(itr->second.ArchiveInfo, buffer);
-        Image img = LoadImageFromMemory(GetExtension(itr->second.RelativeName.c_str()), buffer, (int)itr->second.ArchiveInfo.file_size);
-        delete[](buffer);
-
-        Texture tx = LoadTextureFromImage(img);
-        UnloadImage(img);
-        return tx;
-    }
-
-    return LoadTexture(itr->second.PathOnDisk.c_str());
-}
-
-Image rlas_LoadImage(const char* path)
-{
-    MetaMap::iterator itr = AssetMap.find(ToUpper(path));
-    if (itr == AssetMap.end())
-    {
-        // can't be found, default image
-        Image img = GenImageChecked(256, 256, 64, 64, RAYWHITE, LIGHTGRAY);
-        return img;
-    }
-
-    if (itr->second.ArchiveFile != nullptr)
-    {
-        unsigned char* buffer = new unsigned char[itr->second.ArchiveInfo.file_size];
-        itr->second.ArchiveFile->readBin(itr->second.ArchiveInfo, buffer);
-        Image img = LoadImageFromMemory(GetExtension(itr->second.RelativeName.c_str()), buffer, (int)itr->second.ArchiveInfo.file_size);
-        delete[](buffer);
-        return img;
-    }
-
-    return LoadImage(itr->second.PathOnDisk.c_str());
 }
 
 unsigned int rlas_GetFileSize(const char* path)

@@ -54,7 +54,7 @@ int rlas_AppendPath(const char* path, const char* subpath, char* destination, in
 /// </summary>
 /// <param name="path">The path to use as the asset root</param>
 /// <param name="relativeToApp">When true the specified path will be used relative to the application root and should be in unix (/) format, when false the path specified is in the OSs format</param>
-void rlas_SetAssetRootPath(const char* path, bool relativeToApp);
+void rlas_Setup(const char* rootPath, bool relativeToApp);
 
 /// <summary>
 /// Resets the virtual path system and cleans up any temporary files
@@ -117,20 +117,6 @@ int rlas_GetAssetsInPath(const char* path, bool includeSubDirectories, char** re
 /// <param name="path">The relative virtual path to the asset</param>
 /// <returns>True if the asset is contained in an archive.</returns>
 bool rlas_FileIsArchive(const char* path);
-
-/// <summary>
-/// Loads a texture from any source
-/// </summary>
-/// <param name="path">The relative virtual path to the asset</param>
-/// <returns>The raylib texture</returns>
-Texture rlas_LoadTexture(const char* path);
-
-/// <summary>
-/// Loads an image from any source
-/// </summary>
-/// <param name="path">The relative virtual path to the asset</param>
-/// <returns>The raylib image</returns>
-Image rlas_LoadImage(const char* path);
 
 /// <summary>
 /// Gets the file size of an asset from any source
