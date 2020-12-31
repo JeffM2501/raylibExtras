@@ -57,6 +57,17 @@ int rlas_AppendPath(const char* path, const char* subpath, char* destination, in
 void rlas_SetAssetRootPath(const char* path, bool relativeToApp);
 
 /// <summary>
+/// Resets the virtual path system and cleans up any temporary files
+/// </summary>
+void rlas_Cleanup();
+
+/// <summary>
+/// Sets the temporary directory used when a file name is requested for assets in an archive
+/// </summary>
+/// <param name="path">The absolute path to use in OS format</param>
+void rlas_SetTempPath(const char* path);
+
+/// <summary>
 /// Returns the top level asset root path
 /// </summary>
 /// <returns>The path on dis (OS format) of the inital asset root</returns>
@@ -82,6 +93,8 @@ void rlas_AddAssetResourceArchive(const char* path, bool relativeToApp);
 /// <summary>
 /// Gets the path on disk for an assets relative path
 /// If multiple resource paths exist with the asset, the one added last will be returned.
+/// If the asset is in an archive, and a temp directory is set, the asset will be extracted to the temp folder and that path will be returned
+/// Temp files are deleted during cleanup
 /// </summary>
 /// <param name="path">The relative path of the asset to look up</param>
 /// <returns>The path on disk of the asset</returns>
@@ -97,7 +110,6 @@ const char* rlas_GetAssetPath(const char* path);
 /// <param name="results">A pointer to a character array to store the results, when null not used.</param>
 /// <returns>The number of asset items found</returns>
 int rlas_GetAssetsInPath(const char* path, bool includeSubDirectories, char** results);
-
 
 /// <summary>
 /// Returns true if the asset is part of an archive (zip) file

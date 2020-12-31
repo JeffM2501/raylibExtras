@@ -1,5 +1,5 @@
 # Raylib Extras - RLAssets
-A simple asset management system for raylib
+A simple asset management system for raylib 3.5
 
 ## About
 This is a simple asset management system that works with raylib. It lets a game define a set of root folders to use for assets and then will managed all the OS specific bookeeping of getting paths correct. It has functions to find the currently running application on any OS, regardless of how it's started or what the current working directory is set to. It will also merge multiple roots into one virtual relative file system, so a game can have a base set of assets with the game program but an option set of "mod" files in other paths that override root assets.
@@ -8,7 +8,7 @@ This is a simple asset management system that works with raylib. It lets a game 
 The system supports using zip files as containers for the virtual file system. Any zip file found will be treated as a folder, and will be expanded into the virtual file system. This means you can use the contents of a zip file as if it was extracted to the disk.
 
 ### File Access
-In order to make maxium use of the system, it is best to use the rlas_Load functions to access data. These functions will automaticly read data from files on disk, or from zip file archives with out the application having to know about it.
+In order to make maxium use of the system, it is best to use the rlas_Load functions to access data. These functions will automaticly read data from files on disk, or from zip file archives with out the application having to know about it. Calling rlas_GetAssetPath on a file in an archive will extract it to the tempotary directory defined by rlas_SetTempDir, and return that file path for use in loading functions.
 
 ## Useage
 Add the 3 files (two .cpp and one .h) to your game proejct.
@@ -42,3 +42,5 @@ for (int i = 0; i < assetCount; ++i)
     PrintAsset (buffer[i]);
 }
 free(buffer);
+
+When you are all done, call rlas_Cleanup() to clear out the virtual path and clean up any temportary files extracted from archives.

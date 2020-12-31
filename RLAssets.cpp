@@ -57,10 +57,14 @@ typedef struct
 }rlas_AssetMeta;
 
 typedef std::map<std::string, rlas_AssetMeta> MetaMap;
+typedef std::map<std::string, std::string> TempMap;
 
 MetaMap AssetMap;
+TempMap TempFiles;
 
 std::vector<std::string> AssetRootPaths;
+
+std::string AssetTempPath;
 
 std::string ToUpper(const char* c)
 {
@@ -72,6 +76,34 @@ std::string ToUpper(const char* c)
         c = toupper(c);
 
     return upperPath;
+}
+
+void rlas_Cleanup()
+{
+    AssetRootPaths.clear();
+    AssetMap.clear();
+
+    for (auto& file : TempFiles)
+    {
+        try
+        {
+            remove(file.second.c_str());
+        }
+        catch (...)
+        {
+        	
+        }
+    }
+        
+    TempFiles.clear();
+}
+
+void rlas_SetTempPath(const char* path)
+{
+    if (path == nullptr)
+        AssetTempPath.clear();
+    else
+        AssetTempPath = path;
 }
 
 void rlas_SetAssetRootPath(const char* path, bool relativeToApp)
@@ -199,18 +231,35 @@ void rlas_AddAssetResourceArchive(const char* path, bool relativeToApp)
             pathToUse += path;
         }
     }
-
-    if (IsFileExtension(pathToUse.c_str(), ".zip"))
-    {
-        AddZipArchive(nullptr, pathToUse, "");
-    }
+    AddZipArchive(nullptr, pathToUse, "");
 }
 
 const char* rlas_GetAssetPath(const char* path)
 {
-    MetaMap::iterator itr = AssetMap.find(ToUpper(path));
+    std::string upperPath = ToUpper(path);
+    MetaMap::iterator itr = AssetMap.find(upperPath);
     if (itr == AssetMap.end())
         return nullptr;
+
+    if (itr->second.ArchiveFile != nullptr)
+    {
+        if (TempFiles.find(upperPath) == TempFiles.end())
+        {
+            if (AssetTempPath.empty())  // no place to extract, return null
+                return nullptr;
+
+            std::string tempName = itr->second.RelativeName;
+            std::replace(tempName.begin(), tempName.end(), '/', '_');
+            tempName = AssetTempPath + tempName;
+
+            std::fstream stream(tempName, std::ios::binary | std::ios::out);
+            stream << itr->second.ArchiveFile->open(itr->second.ArchiveInfo).rdbuf();
+
+            TempFiles[upperPath] = tempName;
+        }
+
+        return TempFiles[upperPath].c_str();
+    }
 
     return itr->second.PathOnDisk.c_str();
 }
