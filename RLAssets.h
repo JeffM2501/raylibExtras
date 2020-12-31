@@ -31,6 +31,8 @@
 #ifndef RLASSETS_H
 #define RLASSETS_H
 
+#include "raylib.h"
+
 /// <summary>
 /// Gets the application (exe) directory for the currently running program
 /// </summary>
@@ -69,6 +71,15 @@ const char* rlas_GetAssetRootPath();
 void rlas_AddAssetResourcePath(const char* path);
 
 /// <summary>
+/// Adds zip file as if it was an extracted resource path
+/// All files in the zip will be added to the root of the virtual path
+/// Any files that are duplicated in resource paths will be 'merged' into the virtual file structure and override older paths
+/// </summary>
+/// <param name="path">The path of the archive to add</param>
+/// <param name="relativeToApp">When true the specified path will be used relative to the application root and should be in unix (/) format, when false the path specified is in the OSs format</param>
+void rlas_AddAssetResourceArchive(const char* path, bool relativeToApp);
+
+/// <summary>
 /// Gets the path on disk for an assets relative path
 /// If multiple resource paths exist with the asset, the one added last will be returned.
 /// </summary>
@@ -86,6 +97,16 @@ const char* rlas_GetAssetPath(const char* path);
 /// <param name="results">A pointer to a character array to store the results, when null not used.</param>
 /// <returns>The number of asset items found</returns>
 int rlas_GetAssetsInPath(const char* path, bool includeSubDirectories, char** results);
+
+
+bool rlas_FileIsArchive(const char* path);
+
+Texture rlas_LoadTexture(const char* path);
+Image rlas_LoadImage(const char* path);
+
+unsigned int rlas_GetFileSize(const char* path);
+unsigned int rlas_GetFileText(const char* path, char* text);
+unsigned int rlas_GetFileBytes(const char* path, void* data);
 
 #endif //RLASSETS_H
 
