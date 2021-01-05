@@ -37,6 +37,9 @@
 #include <ostream>
 #include <memory>
 
+#include <string.h>
+#include <stdlib.h>
+
 #if defined(_WIN32)
 constexpr char PathDelim = '\\';
 #include <fcntl.h> // For O_BINARY
