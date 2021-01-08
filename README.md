@@ -12,6 +12,10 @@ A simple asset management system
 
 https://github.com/JeffM2501/raylibExtras/tree/RLAssets
 
+## RLSprites
+C++ Sprite Management system
+https://github.com/JeffM2501/raylibExtras/tree/RLSprites
+
 ## FPCamera
 A first person view camera system
 ### C Version
