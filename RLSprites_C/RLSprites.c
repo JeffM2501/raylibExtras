@@ -414,18 +414,35 @@ void FreeSprite(Sprite* sprite)
     sprite->AnimationCount = 0;
 }
 
-SpriteInstance CreateSpriteInstance(Sprite* sprite, Color tint)
+SpriteInstance* CreateSpriteInstance(Sprite* sprite, Color tint)
 {
-    SpriteInstance instance = { 0 };
-    instance.Speed = 1;
-    instance.Scale = 1;
-    instance.Rotation = 0;
-    instance.OriginX = OriginMinium;
-    instance.OriginY = OriginMinium;
+    SpriteInstance* instance = malloc(sizeof(SpriteInstance));
+    if (instance == NULL)
+        return NULL;
+
+    instance->Speed = 1;
+    instance->Scale = 1;
+    instance->Rotation = 0;
+    instance->OriginX = OriginMinium;
+    instance->OriginY = OriginMinium;
+
+    instance->LayerCount = 0;
+    instance->Layers = NULL;
+
+    instance->Postion = (Vector2){ 0,0 };
+    instance->Direction = DIRECTION_DEFAULT;
+    instance->LastRectangle = (Rectangle){ 0,0,0,0 };
+
+    instance->CurrentAnimation = NULL;
+
+    instance->CurrentFrame = 0;
+    instance->CurrentDirection = 0;
+    instance->CurrentRealFrame = 0;
+    instance->LastFrameTime =  -99999999;
 
     if (sprite != NULL)
     {
-        AddSpriteInstancLayer(&instance, sprite, tint);
+        AddSpriteInstancLayer(instance, sprite, tint);
     }
 
     return instance;
@@ -563,4 +580,6 @@ void FreeSpriteInstance(SpriteInstance* instance)
     instance->LayerCount = 0;
 
     instance->CurrentAnimation = NULL;
+
+    free(instance);
 }

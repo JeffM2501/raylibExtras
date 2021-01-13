@@ -144,7 +144,7 @@ typedef struct SpriteInstance
 	double LastFrameTime;
 }SpriteInstance;
 
-SpriteInstance CreateSpriteInstance(Sprite* sprite, Color tint);
+SpriteInstance* CreateSpriteInstance(Sprite* sprite, Color tint);
 int AddSpriteInstancLayer(SpriteInstance* instance, Sprite* sprite, Color tint);
 
 void SetSpriteInstanceAimation(SpriteInstance* instance, const char* name);

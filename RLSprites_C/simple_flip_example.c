@@ -46,12 +46,12 @@ int main(void)
     SetSpriteAnimationLoop(&sprite, "idle", true);
     SetSpriteAnimationSpeed(&sprite, "idle", 1);
 
-    SpriteInstance instance = CreateSpriteInstance(&sprite, WHITE);
-    SetSpriteInstanceAimation(&instance, "idle");
-    instance.Direction = DIRECTION_LEFT;
-    instance.OriginX = OriginCenter;
-    instance.OriginY = OriginCenter;
-    instance.Postion = (Vector2){ 100,100 };
+    SpriteInstance* instance = CreateSpriteInstance(&sprite, WHITE);
+    SetSpriteInstanceAimation(instance, "idle");
+    instance->Direction = DIRECTION_LEFT;
+    instance->OriginX = OriginCenter;
+    instance->OriginY = OriginCenter;
+    instance->Postion = (Vector2){ 100,100 };
 
     //--------------------------------------------------------------------------------------
 
@@ -64,31 +64,31 @@ int main(void)
         bool moving = true;
         if (IsKeyDown(KEY_LEFT))
         {
-            instance.Direction = DIRECTION_LEFT;
+            instance->Direction = DIRECTION_LEFT;
             moving = true;
         }
         else if (IsKeyDown(KEY_RIGHT))
         {
-            instance.Direction = DIRECTION_RIGHT;
+            instance->Direction = DIRECTION_RIGHT;
             moving = true;
         }
         else
             moving = false;
 
         if (IsKeyDown(KEY_LEFT_SHIFT) && moving)
-            instance.Speed = 2;
+            instance->Speed = 2;
         else
-            instance.Speed = 1;
+            instance->Speed = 1;
 
         if (IsKeyDown(KEY_LEFT))
         {
-            instance.Postion.x -= speed * instance.Speed;
+            instance->Postion.x -= speed * instance->Speed;
         }
         if (IsKeyDown(KEY_RIGHT))
         {
-            instance.Postion.x += speed * instance.Speed;
+            instance->Postion.x += speed * instance->Speed;
         }
-        SetSpriteInstanceAimation(&instance, moving ? "walk" : "idle");
+        SetSpriteInstanceAimation(instance, moving ? "walk" : "idle");
 
         // Draw
         //----------------------------------------------------------------------------------
@@ -96,13 +96,14 @@ int main(void)
 
         ClearBackground(RAYWHITE);
 
-        UpdateRenderSpriteInstance(&instance);
+        UpdateRenderSpriteInstance(instance);
 
         EndDrawing();
         //----------------------------------------------------------------------------------
     }
 
-    FreeSpriteInstance(&instance);
+    FreeSpriteInstance(instance);
+    instance = NULL;
     FreeSprite(&sprite);
 
     // De-Initialization
