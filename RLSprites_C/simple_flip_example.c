@@ -97,7 +97,7 @@ int main(void)
         ClearBackground(RAYWHITE);
 
         UpdateRenderSpriteInstance(instance);
-
+        DrawText("(c) Scarfy sprite by Eiden Marsal", screenWidth - 200, screenHeight - 20, 10, GRAY);
         EndDrawing();
         //----------------------------------------------------------------------------------
     }

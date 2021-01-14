@@ -116,6 +116,8 @@ int main(int argc, char* argv[])
         ClearBackground(WHITE);
 
         sprite.UpdateRender();
+
+        DrawText("(c) Scarfy sprite by Eiden Marsal", screenWidth - 200, screenHeight - 20, 10, GRAY);
         EndDrawing();
         //----------------------------------------------------------------------------------
     }
