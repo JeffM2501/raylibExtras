@@ -27,10 +27,12 @@
 *   SOFTWARE.
 *
 **********************************************************************************************/
+#define _CRT_SECURE_NO_WARNINGS
 
 #include "RLSprites.h"
 #include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <malloc.h>
 
 void CopyName(const char* text, char* dest)
@@ -372,19 +374,198 @@ void SetSpriteAnimationSpeed(Sprite* sprite, const char* name, float fps)
     }
 }
 
-void AddSpriteAnimationFrameCallback(Sprite* sprite, const char* name, SpriteFrameCallback callback, int frame)
+void AddSpriteAnimationFrameCallback(Sprite* sprite, const char* animationName, const char* frameName, int frame, SpriteFrameCallback callback)
 {
     if (sprite != NULL)
     {
-        SpriteAnimation* anim = FindSpriteAnimation(sprite, name);
+        SpriteAnimation* anim = FindSpriteAnimation(sprite, animationName);
         if (anim != NULL)
         {
             anim->FrameCallbackCount++;
             anim->FrameCallbaks = realloc(anim->FrameCallbaks, sizeof(SpriteFrameCallbackFrame) * anim->FrameCallbackCount);
             anim->FrameCallbaks[anim->FrameCallbackCount - 1].Callback = callback;
+            memset(anim->FrameCallbaks[anim->FrameCallbackCount - 1].Name, 0, MAX_NAME);
+            CopyName(frameName, anim->FrameCallbaks[anim->FrameCallbackCount - 1].Name);
             anim->FrameCallbaks[anim->FrameCallbackCount - 1].Frame = frame;
         }
     }
+}
+
+
+void SetSpriteAnimationFrameCallback(Sprite* sprite, const char* animationName, const char* frameName, SpriteFrameCallback callback)
+{
+    if (sprite != NULL)
+    {
+        SpriteAnimation* anim = FindSpriteAnimation(sprite, animationName);
+        if (anim != NULL)
+        {
+            for (size_t i = 0; i < anim->FrameCallbackCount; i++)
+            {
+                if (strcmp(frameName, anim->FrameCallbaks[i].Name) == 0)
+                {
+                    anim->FrameCallbaks[i].Callback = callback;
+                    return;
+                }
+            }
+        }
+    }
+}
+
+
+void SaveSpriteInfo(Sprite* sprite, const char* filePath)
+{
+    if (sprite == NULL)
+        return;
+
+    FILE* fp = fopen(filePath, "w");
+    if (fp == NULL)
+        return;
+
+    fprintf(fp, "RLSprite V:1\nImages %zu\n", sprite->ImageCount);
+    for (size_t i = 0; i < sprite->ImageCount; i++)
+    {
+        fprintf(fp,"Image %s\n", sprite->Images[i].ImageSource);
+        fprintf(fp, "Frameset %d %zu\n", sprite->Images[i].StartFrame,sprite->Images[i].FrameCount);
+        for (int f = 0; f < sprite->Images[i].FrameCount; f++)
+            fprintf(fp, "%f %f %f %f\n", sprite->Images[i].Frames[f].x, sprite->Images[i].Frames[f].y, sprite->Images[i].Frames[f].width, sprite->Images[i].Frames[f].height);
+    }
+
+    fprintf(fp, "Animations %zu\n", sprite->AnimationCount);
+    for (size_t i = 0; i < sprite->AnimationCount; i++)
+    {
+        fprintf(fp, "Animation %s\n", sprite->Animations[i].Name);
+        fprintf(fp, "Options %f %s\n", sprite->Animations[i].FramesPerSecond, sprite->Animations[i].Loop ? "loop" : "once");
+        fprintf(fp, "Framesets %zu\n", sprite->Animations[i].DirectionFrameCount);
+
+        for (size_t d = 0; d < sprite->Animations[i].DirectionFrameCount; d++)
+        {
+            fprintf(fp, "Frames %zu %d\n", sprite->Animations[i].DirectionFrames[d].FrameCount, sprite->Animations[i].DirectionFrames[d].Direction);
+            for (size_t f = 0; f < sprite->Animations[i].DirectionFrames[d].FrameCount; f++)
+                fprintf(fp, " %d", sprite->Animations[i].DirectionFrames[d].Frames[f]);
+            fprintf(fp, "\n");
+        }
+
+        fprintf(fp, "NamedFrames %zu\n", sprite->Animations[i].FrameCallbackCount);
+        for (size_t c = 0; c < sprite->Animations[i].FrameCallbackCount;c++)
+        {
+            fprintf(fp, "%d %s\n", sprite->Animations[i].FrameCallbaks[c].Frame, sprite->Animations[i].FrameCallbaks[c].Name);
+        }
+    }
+
+    fclose(fp);
+}
+
+bool LoadSpriteInfo(Sprite* sprite, const char* filePath)
+{
+    if (sprite == NULL)
+        return false;
+
+    FILE* fp = fopen(filePath, "r");
+    if (fp == NULL)
+        return false;
+
+    bool bad = false;
+    int version = 0;
+
+    if (fscanf(fp, "RLSprite V:%d\n", &version) == 1 && version == 1)
+    {
+        if (fscanf(fp, "Images %zu\n", &(sprite->ImageCount)) == 1)
+        {
+            sprite->Images = malloc(sizeof(SpriteImage) * sprite->ImageCount);
+            for (size_t i = 0; i < sprite->ImageCount; i++)
+            {
+                SpriteImage* image = &(sprite->Images[i]);
+                memset(image->ImageSource, 0, MAX_NAME);
+              
+                if (fscanf(fp, "Image %s\n", image->ImageSource) == 1 && fscanf(fp, "Frameset %d %zu\n", &image->StartFrame, &image->FrameCount) == 2)
+                {
+                    image->Sheet = LoadTexture(image->ImageSource);
+
+                    image->Frames = malloc(sizeof(Rectangle) * image->FrameCount);
+
+                    for (int f = 0; f < image->FrameCount; f++)
+                        fscanf(fp, "%f %f %f %f\n", &sprite->Images[i].Frames[f].x, &sprite->Images[i].Frames[f].y, &sprite->Images[i].Frames[f].width, &sprite->Images[i].Frames[f].height);
+                }
+                else
+                {
+                    bad = true;
+                    break;
+                }
+            }
+
+            if (fscanf(fp, "Animations %zu\n", &sprite->AnimationCount) == 1)
+            {
+                sprite->Animations = malloc(sizeof(SpriteAnimation) * sprite->AnimationCount);
+                for (size_t i = 0; i < sprite->AnimationCount; i++)
+                {
+                    SpriteAnimation* animation = &(sprite->Animations[i]);
+                    memset(animation->Name, 0, MAX_NAME);
+                    animation->FrameCallbackCount = 0;
+                    animation->FrameCallbaks = NULL;
+
+                    char temp[128] = { 0 };
+                    if (fscanf(fp, "Animation %s\n", animation->Name) == 1 && fscanf(fp, "Options %f %s\n", &animation->FramesPerSecond, temp) == 2 && fscanf(fp, "Framesets %zu\n", &animation->DirectionFrameCount) == 1)
+                    {
+                        animation->Loop = temp[0] == 'l';
+                        animation->DirectionFrames = malloc(sizeof(DirectionFrameset) * animation->DirectionFrameCount);
+
+                        for (size_t d = 0; d < animation->DirectionFrameCount; d++)
+                        {
+                            DirectionFrameset* frameset = &(animation->DirectionFrames[d]);
+
+                            if (fscanf(fp, "Frames %zu %d\n", &frameset->FrameCount, &frameset->Direction) == 2)
+                            {
+                                frameset->Frames = malloc(sizeof(int) * frameset->FrameCount);
+                                for (size_t f = 0; f < frameset->FrameCount; f++)
+                                {
+                                    if (fscanf(fp, " %d", &frameset->Frames[f]) != 1)
+                                    {
+                                        bad = true;
+                                        break;
+                                    }
+                                }
+                                fscanf(fp, "\n");
+                            }
+                            else
+                                bad = true;
+                        }
+
+                        if (fscanf(fp, "NamedFrames %zu\n", &animation->FrameCallbackCount) == 1)
+                        {
+                            if (animation->FrameCallbackCount > 0)
+                            {
+                                animation->FrameCallbaks = malloc(sizeof(SpriteFrameCallbackFrame) * animation->FrameCallbackCount);
+                                for (size_t c = 0; c < animation->FrameCallbackCount; c++)
+                                {
+                                    animation->FrameCallbaks[c].Callback = NULL;
+                                    memset(animation->FrameCallbaks[c].Name, 0, MAX_NAME);
+                                    if (fscanf(fp, "%d %s\n", &animation->FrameCallbaks[c].Frame, animation->FrameCallbaks[c].Name) != 2)
+                                    {
+                                        bad = true;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        else
+                            bad = true;
+                    }
+                    else
+                        bad = true;
+                }
+            }
+            else
+                bad = true;
+        }
+        else
+            bad = true;
+    }
+    else
+        bad = true;
+
+    fclose(fp);
+
+    return !bad;
 }
 
 void FreeSprite(Sprite* sprite)
@@ -420,6 +601,7 @@ SpriteInstance* CreateSpriteInstance(Sprite* sprite, Color tint)
     if (instance == NULL)
         return NULL;
 
+    instance->NameFrameTrigger = NULL;
     instance->Speed = 1;
     instance->Scale = 1;
     instance->Rotation = 0;
@@ -476,6 +658,8 @@ void UpdateSpriteInstance(SpriteInstance* instance)
     if (instance == NULL || instance->CurrentAnimation == NULL)
         return;
 
+    instance->NameFrameTrigger = NULL;
+
     double now = GetTime();
     double frameTime = 1.0 / ((double)instance->CurrentAnimation->FramesPerSecond * instance->Speed);
 
@@ -510,8 +694,12 @@ void UpdateSpriteInstance(SpriteInstance* instance)
         SpriteFrameCallbackFrame* callback = FindFrameCallback(instance->CurrentAnimation, instance->CurrentFrame);
 
         if (callback != NULL)
-            callback->Callback(instance, instance->CurrentFrame);
-
+        {
+            instance->NameFrameTrigger = callback->Name;
+            if (callback->Callback != NULL)
+                callback->Callback(instance, instance->CurrentFrame);
+        }
+            
         instance->LastFrameTime = now;
         if (instance->CurrentFrame >= dirFrames->FrameCount)
         {
@@ -526,7 +714,11 @@ void UpdateSpriteInstance(SpriteInstance* instance)
 
                 callback = FindFrameCallback(instance->CurrentAnimation, -1);
                 if (callback != NULL)
-                    callback->Callback(instance, -1);
+                {
+                    instance->NameFrameTrigger = callback->Name;
+                    if (callback->Callback != NULL)
+                        callback->Callback(instance, -1);
+                }
             }
         }
     }
@@ -568,6 +760,11 @@ void UpdateRenderSpriteInstance(SpriteInstance* instance)
 {
     UpdateSpriteInstance(instance);
     RenderSpriteInstance(instance);
+}
+
+bool SpriteInstanceFrameTriggered(SpriteInstance* instance, const char* name)
+{
+    return instance != NULL && instance->NameFrameTrigger != NULL && strcmp(instance->NameFrameTrigger, name) == 0;
 }
 
 void FreeSpriteInstance(SpriteInstance* instance)

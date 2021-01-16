@@ -56,6 +56,7 @@ typedef void(*SpriteFrameCallback)(void*, int);
 typedef struct SpriteFrameCallbackFrame
 {
 	int Frame;
+	char Name[MAX_NAME];
 	SpriteFrameCallback Callback;
 }SpriteFrameCallbackFrame;
 
@@ -103,7 +104,11 @@ SpriteAnimation* AddSpriteAnimationFrames(Sprite* sprite, const char* name, int 
 void SetSpriteAnimationLoop(Sprite* sprite, const char* name, bool loop);
 void SetSpriteAnimationSpeed(Sprite* sprite, const char* name, float fps);
 
-void AddSpriteAnimationFrameCallback(Sprite* sprite, const char* name, SpriteFrameCallback callback, int frame);
+void AddSpriteAnimationFrameCallback(Sprite* sprite, const char* animationName, const char* frameName, int frame, SpriteFrameCallback callback);
+void SetSpriteAnimationFrameCallback(Sprite* sprite, const char* animationName, const char* frameName, SpriteFrameCallback callback);
+
+void SaveSpriteInfo(Sprite* sprite, const char* filePath);
+bool LoadSpriteInfo(Sprite* sprite, const char* filePath);
 
 void FreeSprite(Sprite* sprite);
 
@@ -138,6 +143,8 @@ typedef struct SpriteInstance
 
 	SpriteAnimation* CurrentAnimation;
 
+	const char* NameFrameTrigger;
+
 	int CurrentFrame;
 	int CurrentDirection;
 	int CurrentRealFrame;
@@ -152,6 +159,8 @@ void SetSpriteInstanceAimation(SpriteInstance* instance, const char* name);
 void UpdateSpriteInstance(SpriteInstance* instance);
 void RenderSpriteInstance(SpriteInstance* instance);
 void UpdateRenderSpriteInstance(SpriteInstance* instance);
+
+bool SpriteInstanceFrameTriggered(SpriteInstance* instance, const char* name);
 
 void FreeSpriteInstance(SpriteInstance* instance);
 
