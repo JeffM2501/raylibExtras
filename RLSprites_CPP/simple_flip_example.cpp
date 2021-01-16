@@ -41,20 +41,23 @@ int main(int argc, char* argv[])
     int screenHeight = 450;
 
     InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
-    
-    Sprite baseSprite;
-    baseSprite.AddImage("resources/scarfy.png", 6, 1);
-    baseSprite.AddFlipFrames(0, 5, true, false);
+    InitAudioDevice();
+    Sound step = LoadSound("resources/sounds/stepdirt_1.wav");
 
-    baseSprite.AddAnimation("walk", DIRECTION_RIGHT, 0, 5);
-    baseSprite.AddAnimation("walk", DIRECTION_LEFT, 6, 11);
-    baseSprite.SetAnimationLoop("walk", true);
-    baseSprite.SetAnimationSpeed("walk", 12);
+    Sprite baseSprite = Sprite::Load("resources/scarfy.sprite");
 
-    baseSprite.AddAnimation("idle", DIRECTION_RIGHT, 2, 2);
-    baseSprite.AddAnimation("idle", DIRECTION_LEFT, 8, 8);
-    baseSprite.SetAnimationLoop("idle", true);
-    baseSprite.SetAnimationSpeed("idle", 1);
+//     baseSprite.AddImage("resources/scarfy.png", 6, 1);
+//     baseSprite.AddFlipFrames(0, 5, true, false);
+// 
+//     baseSprite.AddAnimation("walk", DIRECTION_RIGHT, 0, 5);
+//     baseSprite.AddAnimation("walk", DIRECTION_LEFT, 6, 11);
+//     baseSprite.SetAnimationLoop("walk", true);
+//     baseSprite.SetAnimationSpeed("walk", 12);
+// 
+//     baseSprite.AddAnimation("idle", DIRECTION_RIGHT, 2, 2);
+//     baseSprite.AddAnimation("idle", DIRECTION_LEFT, 8, 8);
+//     baseSprite.SetAnimationLoop("idle", true);
+//     baseSprite.SetAnimationSpeed("idle", 1);
 
     SpriteInstance sprite(baseSprite);
     sprite.SetAimation("idle");
@@ -109,19 +112,25 @@ int main(int argc, char* argv[])
 
         sprite.SetAimation(moving ? "walk" : "idle");
 
+        sprite.Update();
+        if (sprite.TriggerFrameName == "step")
+            PlaySoundMulti(step);
+
         // Draw
         //----------------------------------------------------------------------------------
         BeginDrawing();
 
         ClearBackground(WHITE);
 
-        sprite.UpdateRender();
+        sprite.Render();
 
         DrawText("(c) Scarfy sprite by Eiden Marsal", screenWidth - 200, screenHeight - 20, 10, GRAY);
         EndDrawing();
         //----------------------------------------------------------------------------------
     }
 
+    UnloadSound(step);
+    CloseAudioDevice();
     // De-Initialization
     //--------------------------------------------------------------------------------------   
     CloseWindow();        // Close window and OpenGL context

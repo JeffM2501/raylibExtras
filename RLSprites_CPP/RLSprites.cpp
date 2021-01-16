@@ -27,8 +27,10 @@
 *   SOFTWARE.
 *
 **********************************************************************************************/
+#define _CRT_SECURE_NO_WARNINGS
 
 #include "RLSprites.h"
+#include <stdio.h>
 
 namespace RLSprites
 {
@@ -64,20 +66,12 @@ namespace RLSprites
 
 	SpriteAnimation SpriteAnimation::Clone()
 	{
-        std::string Name;
-        float FramesPerSecond = 15;
-        bool Loop = false;
-        std::map<int, std::vector<int>> DirectionFrames;
-
-        std::map<int, SpriteFrameCallback> FrameCallbaks;
-
-
 		SpriteAnimation anim;
 		anim.Name = Name;
 		anim.FramesPerSecond = FramesPerSecond;
 		anim.Loop = Loop;
 		anim.DirectionFrames = DirectionFrames;
-		anim.FrameCallbaks = FrameCallbaks;
+		anim.FrameCallbacks = FrameCallbacks;
 
 		return anim;
 	}
@@ -92,11 +86,13 @@ namespace RLSprites
 				max = (int)itr->second.size();
 		}
 
-		std::map<int, SpriteFrameCallback> newCallbacks;
-		for (auto& cb : FrameCallbaks)
+		std::map<int, SpriteFrameInfo> newCallbacks;
+		for (auto& cb : FrameCallbacks)
 		{
 			newCallbacks[(max - 1) - cb.first] = cb.second;
 		}
+
+		FrameCallbacks = newCallbacks;
 	}
 
 	int Sprite::AddImage(Texture tx, int xFrameCount, int yFrameCount, const char* name)
@@ -246,13 +242,173 @@ namespace RLSprites
         anim->FramesPerSecond = fps;
     }
 
-	void Sprite::AddAnimationFrameCallback(const std::string& name, SpriteFrameCallback callback, int frame)
+	void Sprite::AddAnimationFrameCallback(const std::string& animationName, SpriteFrameCallback callback, const std::string& frameName, int frame)
 	{
-        SpriteAnimation* anim = FindAnimation(name);
+        SpriteAnimation* anim = FindAnimation(animationName);
         if (anim == nullptr)
             return;
 
-		anim->FrameCallbaks[frame] = callback;
+		SpriteFrameInfo info;
+		info.Name = frameName;
+		info.Callback = callback;
+
+		anim->FrameCallbacks[frame] = info;
+	}
+
+	void Sprite::SetAnimationFrameCallback(const std::string& animationName, SpriteFrameCallback callback, const std::string& frameName)
+	{
+        SpriteAnimation* anim = FindAnimation(animationName);
+        if (anim == nullptr)
+            return;
+
+		for (auto& cb : anim->FrameCallbacks)
+		{
+			if (cb.second.Name == frameName)
+			{
+				cb.second.Callback = callback;
+				return;
+			}
+		}
+	}
+
+	bool Sprite::Save(const char* filePath)
+    {
+        FILE* fp = fopen(filePath, "w");
+        if (fp == NULL)
+            return false;
+
+        fprintf(fp, "RLSprite V:1\nImages %zu\n", Images.size());
+        for (auto& image : Images)
+        {
+            fprintf(fp, "Image %s\n", image.ImageSource.c_str());
+            fprintf(fp, "Frameset %d %zu\n", image.StartFrame, image.Frames.size());
+            for (auto& frame : image.Frames)
+                fprintf(fp, "%f %f %f %f\n", frame.x, frame.y, frame.width, frame.height);
+        }
+
+        fprintf(fp, "Animations %zu\n", Animations.size());
+        for (auto animation : Animations)
+        {
+            fprintf(fp, "Animation %s\n", animation.first.c_str());
+            fprintf(fp, "Options %f %s\n", animation.second.FramesPerSecond, animation.second.Loop ? "loop" : "once");
+            fprintf(fp, "Framesets %zu\n", animation.second.DirectionFrames.size());
+
+            for (auto frame : animation.second.DirectionFrames)
+            {
+                fprintf(fp, "Frames %zu %d\n", frame.second.size(), frame.first);
+                for (int i : frame.second)
+                    fprintf(fp, " %d", i);
+                fprintf(fp, "\n");
+            }
+
+            fprintf(fp, "NamedFrames %zu\n", animation.second.FrameCallbacks.size());
+            for (auto a : animation.second.FrameCallbacks)
+            {
+                fprintf(fp, "%d %s\n", a.first, a.second.Name.c_str());
+            }
+        }
+
+        fclose(fp);
+
+		return true;
+	}
+
+	Sprite Sprite::Load(const char* filePath)
+	{
+		Sprite sprite;
+
+        FILE* fp = fopen(filePath, "r");
+        if (fp == nullptr)
+            return sprite;
+
+        int version = 0;
+
+		char tempStr[512];
+		size_t tempSize = 0, tempSize2 = 0, tempSize3;
+
+        if (fscanf(fp, "RLSprite V:%d\n", &version) == 1 && version == 1)
+        {
+			size_t imageCount = 0;
+            if (fscanf(fp, "Images %zu\n", &(imageCount)) == 1)
+            {
+                for (size_t i = 0; i < imageCount; i++)
+                {
+					SpriteImage image;
+
+                    if (fscanf(fp, "Image %s\n", tempStr) == 1 && fscanf(fp, "Frameset %d %zu\n", &image.StartFrame, &tempSize) == 2)
+                    {
+						image.ImageSource = tempStr;
+                        image.Sheet = LoadTexture(image.ImageSource.c_str());
+
+						for (int f = 0; f < tempSize; f++)
+						{
+							Rectangle rect = { 0,0,0,0 };
+							fscanf(fp, "%f %f %f %f\n", &rect.x, &rect.y, &rect.width, &rect.height);
+							image.Frames.push_back(rect);
+						}
+						sprite.Images.emplace_back(image);
+                    }
+                }
+
+                if (fscanf(fp, "Animations %zu\n", &tempSize) == 1)
+                {
+                    for (size_t i = 0; i < tempSize; i++)
+                    {
+						SpriteAnimation animation;
+
+                        char temp[128] = { 0 };
+                        if (fscanf(fp, "Animation %s\n", tempStr) == 1 && fscanf(fp, "Options %f %s\n", &animation.FramesPerSecond, temp) == 2 && fscanf(fp, "Framesets %zu\n", &tempSize2) == 1)
+                        {
+							animation.Name = tempStr;
+							animation.Loop = temp[0] == 'l';
+
+                            for (size_t d = 0; d < tempSize2; d++)
+                            {
+								int direction = 0;
+                                if (fscanf(fp, "Frames %zu %d\n", &tempSize3, &direction) == 2)
+                                {
+									animation.DirectionFrames[direction] = std::vector<int>();
+
+                                    for (size_t f = 0; f < tempSize3; f++)
+                                    {
+										int frame = 0;
+										if (fscanf(fp, " %d", &frame) == 1)
+										{
+											animation.DirectionFrames[direction].push_back(frame);
+										}
+                                    }
+                                    fscanf(fp, "\n");
+                                }
+                            }
+
+                            if (fscanf(fp, "NamedFrames %zu\n", &tempSize2) == 1)
+                            {
+                                if (tempSize2 > 0)
+                                {
+                 
+                                    for (size_t c = 0; c < tempSize2; c++)
+                                    {
+										SpriteFrameInfo frameCallbackInfo;
+										int frame = 0;
+										if (fscanf(fp, "%d %s\n", &frame, tempStr) == 2)
+										{
+											frameCallbackInfo.Name = tempStr;
+											animation.FrameCallbacks[frame] = frameCallbackInfo;
+										}
+                                    }
+                                }
+                            }
+
+							sprite.Animations[animation.Name] = animation;
+                        }
+                    }
+                }
+            }
+        }
+
+        fclose(fp);
+
+		return sprite;
 	}
 
 	void SpriteInstance::SetAimation(const std::string& name)
@@ -267,6 +423,8 @@ namespace RLSprites
 
 	void SpriteInstance::Update()
 	{
+		TriggerFrameName.clear();
+
 		if (CurrentAnimation == nullptr)
 			return;
 
@@ -296,9 +454,13 @@ namespace RLSprites
 		{
 			++CurrentFrame;
 
-			auto itr = CurrentAnimation->FrameCallbaks.find(CurrentFrame);
-			if (itr != CurrentAnimation->FrameCallbaks.end())
-				itr->second(this, CurrentFrame);
+			auto itr = CurrentAnimation->FrameCallbacks.find(CurrentFrame);
+			if (itr != CurrentAnimation->FrameCallbacks.end())
+			{
+				TriggerFrameName = itr->second.Name;
+				if (itr->second.Callback != nullptr)
+					itr->second.Callback(this, CurrentFrame);
+			}
 
 			LastFrameTime = now;
 			if (CurrentFrame >= CurrentAnimation->DirectionFrames[CurrentDirection].size())
@@ -312,9 +474,13 @@ namespace RLSprites
 					--CurrentFrame;
 					LastFrameTime = 99999999999;
 
-					auto itr = CurrentAnimation->FrameCallbaks.find(-1);
-					if (itr != CurrentAnimation->FrameCallbaks.end())
-						itr->second(this, -1);
+					auto itr = CurrentAnimation->FrameCallbacks.find(-1);
+					if (itr != CurrentAnimation->FrameCallbacks.end())
+					{
+						TriggerFrameName = itr->second.Name;
+						if (itr->second.Callback != nullptr)
+							itr->second.Callback(this, -1);
+					}
 				}
 			}
 		}
@@ -342,10 +508,10 @@ namespace RLSprites
 			if (frame.second != nullptr)
 				LastRectangle = *frame.second;
 
-			Rectangle dest = { Postion.x,Postion.y,fabs(LastRectangle.width) * Scale, fabs(LastRectangle.height) * Scale };
+			Rectangle dest = { Postion.x,Postion.y,(float)fabs(LastRectangle.width) * Scale, (float)fabs(LastRectangle.height) * Scale };
 			Vector2  center = { GetOriginValue(OriginX,dest.width), GetOriginValue(OriginY, dest.height) };
 
-			DrawTexturePro(*frame.first, *frame.second, dest, center, Rotation, sprite.Tint);
+			DrawTexturePro(*frame.first, LastRectangle, dest, center, Rotation, sprite.Tint);
 		}
 	}
 

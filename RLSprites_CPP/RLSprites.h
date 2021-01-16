@@ -60,6 +60,13 @@ namespace RLSprites
 
 	typedef std::function<void(SpriteInstance*, int)> SpriteFrameCallback;
 
+	class SpriteFrameInfo
+	{
+	public:
+		std::string Name;
+		SpriteFrameCallback Callback;
+	};
+
 	class SpriteAnimation
 	{
 	public:
@@ -68,7 +75,7 @@ namespace RLSprites
 		bool Loop = false;
 		std::map<int,std::vector<int>> DirectionFrames;
 
-		std::map<int, SpriteFrameCallback> FrameCallbaks;
+		std::map<int, SpriteFrameInfo> FrameCallbacks;
 
 		SpriteAnimation Clone();
 		void Reverse();
@@ -94,7 +101,12 @@ namespace RLSprites
 		void SetAnimationLoop(const std::string& name, bool loop);
 		void SetAnimationSpeed(const std::string& name, float fps);
 
-		void AddAnimationFrameCallback(const std::string& name, SpriteFrameCallback callback, int frame = -1);
+		void AddAnimationFrameCallback(const std::string& animationName, SpriteFrameCallback callback, const std::string& frameName, int frame = -1);
+		void SetAnimationFrameCallback(const std::string& animationName, SpriteFrameCallback callback, const std::string& frameName);
+
+		bool Save(const char* filePath);
+
+		static Sprite Load(const char* filePath);
 	};
 
 	enum class OriginLocations
@@ -132,6 +144,8 @@ namespace RLSprites
 		int CurrentDirection = DIRECTION_DEFAULT;
 		int CurrentRealFrame = -1;
 		double LastFrameTime = 0;
+
+		std::string TriggerFrameName;
 
 		SpriteInstance(Sprite& sprite, Color tint = WHITE) { Layers.push_back(Layer{ &sprite,tint }); }
 		
