@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="RLTiles">
+      <UniqueIdentifier>{d258d43b-7618-45c3-961b-db2501439967}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RLTiles\PUGIXML">
+      <UniqueIdentifier>{54e387f4-236e-47c0-a50f-5f1fee219095}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\RLTiles\RLTiles.h">
+      <Filter>RLTiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLTiles\RLTileMap.h">
+      <Filter>RLTiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLTiles\PUGIXML\pugiconfig.hpp">
+      <Filter>RLTiles\PUGIXML</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLTiles\PUGIXML\pugixml.hpp">
+      <Filter>RLTiles\PUGIXML</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLTiles\RLTileMapRenderer.h">
+      <Filter>RLTiles</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="RLTilesTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLTiles\PUGIXML\pugixml.cpp">
+      <Filter>RLTiles\PUGIXML</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLTiles\RLTileMapIO.cpp">
+      <Filter>RLTiles</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLTiles\RLTileMapRenderer.cpp">
+      <Filter>RLTiles</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLTiles\RLTileMap.cpp">
+      <Filter>RLTiles</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
