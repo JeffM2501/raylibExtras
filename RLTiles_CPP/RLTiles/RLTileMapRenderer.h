@@ -38,12 +38,14 @@ typedef struct  RLRenderTile
 {
     Rectangle SourceRect = { 0 };
     Vector2 DestinationPos = { 0 };
+    bool Rotate = false;
     Texture* SourceTexture = nullptr;
 }RLRenderTile;
 
 class RLTileRenderLayer
 {
 public:
+    Vector2 TileSize = { 0,0 };
     std::vector<RLRenderTile> RenderTiles;
 };
 

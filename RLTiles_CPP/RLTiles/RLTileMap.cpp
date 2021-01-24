@@ -43,16 +43,16 @@ Vector2 RLTileLayer::GetDisplayLocation(int x, int y, RLTiledMapTypes mapType)
     return Vector2{ x * halfWidth - y * halfWidth - halfWidth, y * halfHeight + (x * halfHeight) };
 }
 
-int RLTileMap::GetTile(int x, int y, int layerID)
+RLTile RLTileMap::GetTile(int x, int y, int layerID)
 {
     std::map<int, RLTileLayer>::iterator itr = Layers.find(layerID);
     if (itr == Layers.end())
-        return -1;
+        return RLTile();
 
     RLTileLayer &layer = itr->second;
 
     if (x < 0 || x >= layer.Width || y < 0 || y >= layer.Height)
-        return -1;
+        return RLTile();
 
     int index = y * layer.Width + x;
     return layer.Tiles[index];

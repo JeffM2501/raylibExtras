@@ -31,6 +31,10 @@
 #include "RLTileMap.h"
 #include "PUGIXML/pugixml.hpp"
 
+const unsigned FLIPPED_HORIZONTALLY_FLAG = 0x80000000;
+const unsigned FLIPPED_VERTICALLY_FLAG = 0x40000000;
+const unsigned FLIPPED_DIAGONALLY_FLAG = 0x20000000;
+
 std::string GetRelativeResource(const std::string& rootFile, const std::string& relFile)
 {
     std::string fullPath = rootFile;
@@ -41,8 +45,11 @@ std::string GetRelativeResource(const std::string& rootFile, const std::string& 
     return fullPath + "/" + relFile;
 }
 
-static void ReadImageData(int& width, int& height, std::string& source, pugi::xml_node image)
+static bool ReadImageData(int& width, int& height, std::string& source, pugi::xml_node image)
 {
+    if (image.root() == nullptr)
+        return false;
+
     width = image.attribute("width").as_int();
     height = image.attribute("height").as_int();
 
@@ -57,6 +64,7 @@ static void ReadImageData(int& width, int& height, std::string& source, pugi::xm
                 source = source.substr(firstSlash + 1);
         }
     }
+    return true;
 }
 
 bool ReadTileSetNode(pugi::xml_node root, int idOffset, RLTileMap& map)
@@ -79,8 +87,8 @@ bool ReadTileSetNode(pugi::xml_node root, int idOffset, RLTileMap& map)
 
             int width, height;
             std::string source;
-            ReadImageData(width, height, source, child.child("image"));
-
+            if (!ReadImageData(width, height, source, child.child("image")))
+                continue;
 
             RLTileSheet sheet;
             sheet.ID = static_cast<int>(map.Sheets.size()) + 1;
@@ -169,6 +177,10 @@ bool ReadTiledXML(pugi::xml_document& doc, RLTileMap& map, const std::string& fi
             else if (!ReadTileSetFile(GetRelativeResource(filePath, tilesetFile), idOffset, map))
                 return false;
         }
+        else if (childName == "objectgroup")
+        {
+
+        }
         else if (childName == "layer")
         {
             int layerID = child.attribute("id").as_int();
@@ -217,12 +229,19 @@ bool ReadTiledXML(pugi::xml_document& doc, RLTileMap& map, const std::string& fi
                         if (nextDelim == std::string::npos || nextDelim == colText.size() - 1)
                             nextDelim = colText.size();
 
-
                         std::string valStr = colText.substr(charPos, nextDelim - charPos);
-                        int val = std::atoi(valStr.c_str());
+                        uint32_t val = static_cast<uint32_t>(std::atoll(valStr.c_str()));
                         charPos = nextDelim + 1;
 
-                        layer.Tiles.emplace_back(val);
+                        RLTile tile;
+                        tile.FlipX = (val & FLIPPED_HORIZONTALLY_FLAG);
+                        tile.FilpY = (val & FLIPPED_VERTICALLY_FLAG);
+                        tile.FlipDiag = (val & FLIPPED_DIAGONALLY_FLAG);
+
+                        val &= ~(FLIPPED_HORIZONTALLY_FLAG | FLIPPED_VERTICALLY_FLAG | FLIPPED_DIAGONALLY_FLAG);
+                        tile.TileID = static_cast<uint16_t>(val);
+   
+                        layer.Tiles.emplace_back(tile);
                         posX++;
 
                     } while (charPos <= colText.size());

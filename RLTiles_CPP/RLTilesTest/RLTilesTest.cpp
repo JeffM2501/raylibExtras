@@ -10,7 +10,7 @@ int main()
 
     RLTileMap tileMap;
 
-    RLReadTileMap("Resources/Maps/SampleMap/samplemap.tmx",tileMap);
+    RLReadTileMap("Resources/Maps/orthogonal-outside.tmx",tileMap);
    
     for (std::map<int, RLTileSheet>::iterator itr = tileMap.Sheets.begin(); itr != tileMap.Sheets.end(); itr++)
     {

@@ -61,24 +61,34 @@ void RLTileRenderer::Setup()
 
         RLTileRenderLayer& renderLayer = RenderLayers[layer.first];
 
+        renderLayer.TileSize.x = layer.second.TileWidth;
+        renderLayer.TileSize.y = layer.second.TileHeight;
+
         for (int y = 0; y < layer.second.Height; ++y)
         {
             for (int x = 0; x < layer.second.Width; ++x)
             {
-                int id = TileMap.GetTile(x, y, layer.first);
+                RLTile tile = TileMap.GetTile(x, y, layer.first);
 
-                auto itr = std::find_if(TextureCache.begin(), TextureCache.end(), [id](const auto tx)
+                auto itr = std::find_if(TextureCache.begin(), TextureCache.end(), [tile](const auto tx)
                     {
-                        return (id >= tx.first.first && id <= tx.first.second);
+                        return (tile.TileID >= tx.first.first && tile.TileID <= tx.first.second);
                     });
 
                 RLRenderTile tileInfo;
                 if (itr != TextureCache.end())
                 {
                     tileInfo.SourceTexture = &(itr->second.first);
-                    tileInfo.SourceRect = itr->second.second->GetFrame(id);
+                    tileInfo.SourceRect = itr->second.second->GetFrame(tile.TileID);
                     if (tileInfo.SourceRect.width == 0 || tileInfo.SourceRect.height == 0)
                         tileInfo.SourceRect = Rectangle{ 0,0, (float)tileInfo.SourceTexture->width, (float)tileInfo.SourceTexture->height };
+
+                    if (tile.FlipDiag)
+                        tileInfo.Rotate = true;
+                    if (tile.FlipX)
+                        tileInfo.SourceRect.width *= -1;
+                    if (tile.FilpY)
+                        tileInfo.SourceRect.height *= -1;
 
                     tileInfo.DestinationPos = GetDisplayLocation(x, y, layer.second.TileWidth, layer.second.TileHeight, TileMap.MapType);
                 }
@@ -119,7 +129,12 @@ void RLTileRenderer::Draw(Camera2D& camera)
         for (auto& tile : layer.second.RenderTiles)
         {
             if (tile.SourceTexture != nullptr && TileInView(tile))
-                DrawTextureRec(*tile.SourceTexture, tile.SourceRect, tile.DestinationPos, WHITE);
+            {
+                Vector2 origin = { layer.second.TileSize.x * 0.5f, layer.second.TileSize.y * 0.5f };
+                Rectangle dest = { tile.DestinationPos.x + origin.x,tile.DestinationPos.y + origin.y, layer.second.TileSize.x, layer.second.TileSize.y };
+               
+                DrawTexturePro(*tile.SourceTexture, tile.SourceRect, dest, origin, tile.Rotate ? 90 : 0, WHITE);       // Draw a part of a texture defined by a rectangle with 'pro' parameters
+            }
         }   
     }
 }

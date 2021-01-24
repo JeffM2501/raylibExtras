@@ -65,6 +65,15 @@ enum class RLTiledMapTypes
     Isometric,
 };
 
+typedef struct RLTile
+{
+    bool FlipX = false;
+    bool FilpY = false;
+    bool FlipDiag = false;
+
+    int16_t TileID = -1;
+};
+
 class RLTileLayer
 {
 public:
@@ -74,7 +83,7 @@ public:
     int TileWidth = 0;
     int TileHeight = 0;
 
-    std::vector<int> Tiles;
+    std::vector<RLTile> Tiles;
 
     Vector2 GetDisplayLocation(int x, int y, RLTiledMapTypes mode);
 };
@@ -87,7 +96,7 @@ public:
 
     RLTiledMapTypes MapType = RLTiledMapTypes::Orthographic;
 
-    int GetTile(int x, int y, int layerID);
+    RLTile GetTile(int x, int y, int layerID);
 };
 
 bool RLReadTileMap(const std::string& filename, RLTileMap &map);
