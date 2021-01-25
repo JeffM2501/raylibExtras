@@ -57,16 +57,20 @@ void RLTileRenderer::Setup()
     RenderLayers.clear();
     for (auto layer : TileMap.Layers)
     {
+        if (layer.second->LayerType != RLLayer::LayerTypes::Tile)
+            continue;
+
+        RLTileLayer::Ptr tileLayer = std::dynamic_pointer_cast<RLTileLayer>(layer.second);
+
         RenderLayers.emplace(layer.first, RLTileRenderLayer());
 
         RLTileRenderLayer& renderLayer = RenderLayers[layer.first];
 
-        renderLayer.TileSize.x = layer.second.TileWidth;
-        renderLayer.TileSize.y = layer.second.TileHeight;
+        renderLayer.TileSize = tileLayer->TileSize;
 
-        for (int y = 0; y < layer.second.Height; ++y)
+        for (int y = 0; y < tileLayer->Bounds.height; ++y)
         {
-            for (int x = 0; x < layer.second.Width; ++x)
+            for (int x = 0; x < tileLayer->Bounds.width; ++x)
             {
                 RLTile tile = TileMap.GetTile(x, y, layer.first);
 
@@ -90,7 +94,7 @@ void RLTileRenderer::Setup()
                     if (tile.FilpY)
                         tileInfo.SourceRect.height *= -1;
 
-                    tileInfo.DestinationPos = GetDisplayLocation(x, y, layer.second.TileWidth, layer.second.TileHeight, TileMap.MapType);
+                    tileInfo.DestinationPos = GetDisplayLocation(x, y, tileLayer->TileSize.x, tileLayer->TileSize.y, TileMap.MapType);
                 }
                 renderLayer.RenderTiles.emplace_back(tileInfo);
             }
@@ -136,5 +140,31 @@ void RLTileRenderer::Draw(Camera2D& camera)
                 DrawTexturePro(*tile.SourceTexture, tile.SourceRect, dest, origin, tile.Rotate ? 90 : 0, WHITE);       // Draw a part of a texture defined by a rectangle with 'pro' parameters
             }
         }   
+    }
+}
+
+
+void RLTileRenderer::DrawLayer(int layerID, Camera2D& camera)
+{
+    if (RenderLayers.find(layerID) == RenderLayers.end())
+        return;
+
+    CurrentViewRect.x = camera.target.x - (camera.offset.x / camera.zoom);
+    CurrentViewRect.y = camera.target.y - (camera.offset.y / camera.zoom);
+
+    CurrentViewRect.width = GetScreenWidth() / camera.zoom;
+    CurrentViewRect.height = GetScreenHeight() / camera.zoom;
+
+    auto layer = RenderLayers[layerID];
+
+    for (auto& tile : layer.RenderTiles)
+    {
+        if (tile.SourceTexture != nullptr && TileInView(tile))
+        {
+            Vector2 origin = { layer.TileSize.x * 0.5f, layer.TileSize.y * 0.5f };
+            Rectangle dest = { tile.DestinationPos.x + origin.x,tile.DestinationPos.y + origin.y, layer.TileSize.x, layer.TileSize.y };
+
+            DrawTexturePro(*tile.SourceTexture, tile.SourceRect, dest, origin, tile.Rotate ? 90 : 0, WHITE);       // Draw a part of a texture defined by a rectangle with 'pro' parameters
+        }
     }
 }

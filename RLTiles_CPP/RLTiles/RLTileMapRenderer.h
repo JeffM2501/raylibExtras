@@ -62,6 +62,7 @@ public:
 
     virtual void Setup();
     virtual void Draw(Camera2D& camera);
+    virtual void DrawLayer(int layerID, Camera2D& camera);
 
 protected:
     bool TileInView(RLRenderTile& tile);

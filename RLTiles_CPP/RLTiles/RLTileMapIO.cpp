@@ -67,7 +67,7 @@ static bool ReadImageData(int& width, int& height, std::string& source, pugi::xm
     return true;
 }
 
-bool ReadTileSetNode(pugi::xml_node root, int idOffset, RLTileMap& map)
+bool ReadTileSetNode(pugi::xml_node &root, int idOffset, RLTileMap& map)
 {
     float tileWidth = root.attribute("tilewidth").as_float();
     float tileHeight = root.attribute("tileheight").as_float();
@@ -139,6 +139,109 @@ bool ReadTileSetFile(const std::string& tilesetFileName, int idOffset, RLTileMap
     return ReadTileSetNode(root, idOffset, map);
 }
 
+std::vector<std::string> split(const char* str, char c = ' ')
+{
+    std::vector<std::string> result;
+
+    do
+    {
+        const char* begin = str;
+
+        while (*str != c && *str)
+            str++;
+
+        result.push_back(std::string(begin, str));
+    } while (0 != *str++);
+
+    return result;
+}
+
+bool ReadObjectsLayer(pugi::xml_node &root, RLTileMap& map)
+{
+    RLObjectLayer::Ptr layer = std::make_shared<RLObjectLayer>();
+    layer->ID = root.attribute("id").as_int();
+    layer->LayerType = RLLayer::LayerTypes::Object;
+
+    map.Layers[layer->ID] = layer;
+
+    layer->Name = root.attribute("name").as_string();
+    layer->Visible = root.attribute("visible").empty() || root.attribute("visible").as_int() != 0;
+    layer->Offset.x = root.attribute("offsetx").as_float();
+    layer->Offset.x = root.attribute("offsety").as_float();
+
+    for (pugi::xml_node child : root.children())
+    {
+        std::string n = child.name();
+        if (n == "object")
+        {
+            int id = child.attribute("id").as_int();
+
+            std::shared_ptr<RLTileObject> object = nullptr;
+
+            if (!child.child("polygon").empty() || !child.child("polyline").empty())
+            {
+                auto poly = std::make_shared<RLTilePolygonObject>();
+
+                auto points = split(child.child("polygon").attribute("points").as_string(), ' ');
+                for (auto point : points)
+                {
+                    auto coords = split(point.c_str(), ',');
+                    if (coords.size() == 2)
+                    {
+                        Vector2 p = { (float)atof(coords[0].c_str()), (float)atof(coords[1].c_str()) };
+                        poly->Points.emplace_back(p);
+                    }
+                }
+                object = poly;
+
+            }
+            else if (!child.child("text").empty())
+            {
+                auto text = std::make_shared<RLTileTextObject>();
+
+                text->Text = child.child("text").value();
+                if (!child.child("text").attribute("pixelsize").empty())
+                    text->FontSize = child.child("text").attribute("pixelsize").as_int();
+
+                // TODO, add the rest of the text attributes
+
+                object = text;
+            }
+            else
+            {
+                object = std::make_shared<RLTileObject>();
+            }
+
+            if (!child.child("polygon").empty())
+                object->SubType = RLTileObject::SubTypes::Polygon;
+            else if (!child.child("polyline").empty())
+                object->SubType = RLTileObject::SubTypes::Polyline;
+            else if (!child.child("ellipse").empty())
+                object->SubType = RLTileObject::SubTypes::Ellipse;
+            else if (!child.child("text").empty())
+                object->SubType = RLTileObject::SubTypes::Text;
+            else
+                object->SubType = RLTileObject::SubTypes::None;
+
+            object->Name = child.attribute("name").as_string();
+            object->Type = child.attribute("type").as_string();
+            object->Template = child.attribute("template").as_string();
+
+            object->Bounds.x = child.attribute("x").as_float();
+            object->Bounds.y = child.attribute("y").as_float();
+            object->Bounds.width = child.attribute("width").as_float();
+            object->Bounds.height = child.attribute("height").as_float();
+            object->Rotation = child.attribute("rotation").as_float();
+            object->Visible = child.attribute("visible").empty() || child.attribute("visible").as_int() != 0;
+
+            object->GridTile = child.attribute("gid").as_int();
+
+            layer->Objects.emplace_back(object);
+        }
+    }
+    return true;
+}
+
 bool ReadTiledXML(pugi::xml_document& doc, RLTileMap& map, const std::string& filePath = std::string())
 {
     auto root = doc.child("map");
@@ -153,11 +256,11 @@ bool ReadTiledXML(pugi::xml_document& doc, RLTileMap& map, const std::string& fi
     if (orient == "orthogonal")
         map.MapType = RLTiledMapTypes::Orthographic;
 
-    int width = root.attribute("width").as_int();
-    int height = root.attribute("height").as_int();
+    float width = root.attribute("width").as_float();
+    float height = root.attribute("height").as_float();
 
-    int tilewidth = root.attribute("tilewidth").as_int();
-    int tileheight = root.attribute("tileheight").as_int();
+    float tilewidth = root.attribute("tilewidth").as_float();
+    float tileheight = root.attribute("tileheight").as_float();
 
     for (auto child : root.children())
     {
@@ -179,7 +282,7 @@ bool ReadTiledXML(pugi::xml_document& doc, RLTileMap& map, const std::string& fi
         }
         else if (childName == "objectgroup")
         {
-
+            ReadObjectsLayer(child, map);
         }
         else if (childName == "layer")
         {
@@ -187,13 +290,18 @@ bool ReadTiledXML(pugi::xml_document& doc, RLTileMap& map, const std::string& fi
 
             std::string name = child.attribute("name").as_string();
 
-            map.Layers[layerID] = RLTileLayer();
+            RLTileLayer::Ptr layer = std::make_shared<RLTileLayer>();
+            map.Layers[layerID] = layer;
 
-            RLTileLayer& layer = map.Layers[layerID];
-            layer.Width = width;
-            layer.Height = height;
-            layer.TileWidth = tilewidth;
-            layer.TileHeight = tileheight;
+            layer->Bounds.width = width;
+            layer->Bounds.height = height;
+            layer->TileSize.x = tilewidth;
+            layer->TileSize.y = tileheight;
+            layer->Name = name;
+
+            layer->Visible = child.attribute("visible").empty() || child.attribute("visible").as_int() != 0;
+            layer->Offset.x = child.attribute("offsetx").as_float();
+            layer->Offset.x = child.attribute("offsety").as_float();
 
             auto data = child.child("data");
             std::string encoding = data.attribute("encoding").as_string();
@@ -241,7 +349,7 @@ bool ReadTiledXML(pugi::xml_document& doc, RLTileMap& map, const std::string& fi
                         val &= ~(FLIPPED_HORIZONTALLY_FLAG | FLIPPED_VERTICALLY_FLAG | FLIPPED_DIAGONALLY_FLAG);
                         tile.TileID = static_cast<uint16_t>(val);
    
-                        layer.Tiles.emplace_back(tile);
+                        layer->Tiles.emplace_back(tile);
                         posX++;
 
                     } while (charPos <= colText.size());

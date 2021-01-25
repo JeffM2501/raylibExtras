@@ -38,6 +38,7 @@
 #include <vector>
 #include <map>
 #include <string>
+#include <memory>
 
 class RLTileSheet
 {
@@ -72,27 +73,115 @@ typedef struct RLTile
     bool FlipDiag = false;
 
     int16_t TileID = -1;
+}RLTile;
+
+class RLLayer
+{
+public:
+    enum class LayerTypes
+    {
+        Tile,
+        Object,
+        Image,
+    };
+
+    LayerTypes LayerType = LayerTypes::Tile;
+
+    int ID = 0;
+    std::string Name;
+    Rectangle Bounds = { 0,0,0,0 };
+    Vector2 Offset = { 0,0 };
+    bool Visible = true;
+
+    Color Tint = WHITE;
+
+    virtual~RLLayer() {}
 };
 
-class RLTileLayer
+class RLTileLayer : public RLLayer
+{
+public:
+    Vector2 TileSize = { 0,0 };
+    std::vector<RLTile> Tiles;
+
+    typedef std::shared_ptr<RLTileLayer> Ptr;
+};
+
+class RLTileObject 
 {
 public:
     int ID = 0;
-    int Width = 0;
-    int Height = 0;
-    int TileWidth = 0;
-    int TileHeight = 0;
+    std::string Name;
+    Rectangle Bounds = { 0,0,0,0 };
 
-    std::vector<RLTile> Tiles;
+    bool Visible = true;
+    std::string Type;
 
-    Vector2 GetDisplayLocation(int x, int y, RLTiledMapTypes mode);
+    float Rotation = 0;
+    int GridTile = -1;
+
+    std::string Template;
+
+    enum class SubTypes
+    {
+        None,
+        Ellipse,
+        Point,
+        Polygon,
+        Polyline,
+        Text,
+    };
+
+    SubTypes SubType = SubTypes::None;
+
+    class Property
+    {
+    public:
+        std::string Name;
+        std::string Type;
+        std::string Value;
+    };
+
+    std::vector<Property> Properties;
+};
+
+class RLTilePolygonObject : public RLTileObject
+{
+public:
+    std::vector<Vector2> Points;
+};
+
+class RLTileTextObject : public RLTileObject
+{
+public:
+    std::string Text;
+    Color TextColor = BLACK;
+    bool Wrap = false;
+
+    int FontSize = 16;
+    std::string FontFamily;
+    bool Bold = false;
+    bool Italic = false;
+    bool Underline = false;
+    bool Strikeout = false;
+    bool Kerning = true;
+    std::string HorizontalAlignment = "left";
+    std::string VerticalAlignment = "top";
+};
+
+class RLObjectLayer : public RLLayer
+{
+public:
+    std::vector<std::shared_ptr<RLTileObject>> Objects;
+
+    typedef std::shared_ptr<RLObjectLayer> Ptr;
 };
 
 class RLTileMap
 {
 public:
     std::map<int, RLTileSheet> Sheets;
-    std::map<int, RLTileLayer> Layers;
+    std::map<int, std::shared_ptr<RLLayer>> Layers;
 
     RLTiledMapTypes MapType = RLTiledMapTypes::Orthographic;
 

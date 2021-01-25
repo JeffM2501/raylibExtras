@@ -4,6 +4,22 @@
 #include "raylib.h"
 #include "RLTiles.h"
 
+void DrawObjectLayers(RLTileMap& map)
+{
+    for (auto layer : map.Layers)
+    {
+        if (layer.second->LayerType == RLLayer::LayerTypes::Object)
+        {
+            RLObjectLayer::Ptr oLayer = std::dynamic_pointer_cast<RLObjectLayer>(layer.second);
+
+            for (auto object : oLayer->Objects)
+            {
+                DrawRectangleLinesEx(object->Bounds, 1, RED);
+            }
+        }
+    }
+}
+
 int main()
 {
     InitWindow(800, 450, "RLTiles test");
@@ -41,7 +57,6 @@ int main()
         if (IsKeyDown(KEY_A))
             cam.target.x -= speed;
 
-
         if (IsKeyPressed(KEY_E))
             cam.zoom *= 1.15f;
         if (IsKeyPressed(KEY_C))
@@ -55,6 +70,7 @@ int main()
 
         BeginMode2D(cam);
         renderer.Draw(cam);
+        DrawObjectLayers(tileMap);
         EndMode2D();
 
         DrawFPS(0, 0);

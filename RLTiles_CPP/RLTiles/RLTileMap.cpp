@@ -30,30 +30,17 @@
 
 #include "RLTileMap.h"
 
-
-Vector2 RLTileLayer::GetDisplayLocation(int x, int y, RLTiledMapTypes mapType)
-{
-    if (mapType == RLTiledMapTypes::Orthographic)
-        return Vector2{ static_cast<float>(x * TileWidth), static_cast<float>(y * TileHeight) };
-
-    float halfWidth = TileWidth * 0.5f;
-    float halfHeight = TileHeight * 0.5f;
-    float quarterHeight = TileHeight * 0.25f;
-
-    return Vector2{ x * halfWidth - y * halfWidth - halfWidth, y * halfHeight + (x * halfHeight) };
-}
-
 RLTile RLTileMap::GetTile(int x, int y, int layerID)
 {
-    std::map<int, RLTileLayer>::iterator itr = Layers.find(layerID);
-    if (itr == Layers.end())
+    std::map<int, std::shared_ptr<RLLayer>>::iterator itr = Layers.find(layerID);
+    if (itr == Layers.end() || itr->second->LayerType != RLLayer::LayerTypes::Tile)
         return RLTile();
 
-    RLTileLayer &layer = itr->second;
+    RLTileLayer::Ptr layer = std::dynamic_pointer_cast<RLTileLayer>(itr->second);
 
-    if (x < 0 || x >= layer.Width || y < 0 || y >= layer.Height)
+    if (x < 0 || x >= layer->Bounds.width || y < 0 || y >= layer->Bounds.height)
         return RLTile();
 
-    int index = y * layer.Width + x;
-    return layer.Tiles[index];
+    int index = y * (int)layer->Bounds.width + x;
+    return layer->Tiles[index];
 }
