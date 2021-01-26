@@ -40,7 +40,7 @@ int main(int argc, char* argv[])
 
     // setup initial camera data
     TPOrbitCamera orbitCam;
-    InitTPOrbitCamera(&orbitCam, 45, Vector3{ 1, 0 ,0 });
+    InitTPOrbitCamera(&orbitCam, 45, (Vector3){ 1, 0 ,0 });
 
     // Main game loop
     while (!WindowShouldClose())    // Detect window close button or ESC key
@@ -53,7 +53,7 @@ int main(int argc, char* argv[])
         BeginMode3D(orbitCam.ViewCamera);
        
         // grid of cubes on a plane to make a "world"
-		DrawPlane(Vector3{ 0,0,0 }, Vector2{ 50,50 }, BLUE); // simple world plane
+		DrawPlane(Vector3{ 0,0,0 }, (Vector2){ 50,50 }, BLUE); // simple world plane
         float spacing = 3;
         int count = 5;
 
@@ -61,7 +61,7 @@ int main(int argc, char* argv[])
         {
             for (float z = -count * spacing; z <= count * spacing; z += spacing)
             {
-                DrawCubeTexture(tx, Vector3{ x, 0.5f, z }, 1, 1, 1, WHITE);
+                DrawCubeTexture(tx, (Vector3){ x, 0.5f, z }, 1, 1, 1, WHITE);
             }
         }
         
