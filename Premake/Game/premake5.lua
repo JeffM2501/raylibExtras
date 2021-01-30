@@ -1,7 +1,7 @@
 workspace "YourGame"
 	configurations { "Debug","Debug.DLL", "Release", "Release.DLL" }
-	platforms { "x64", "x86" }
-	
+	platforms { "x64"}
+
 	filter "configurations:Debug"
 		defines { "DEBUG" }
 		symbols "On"
@@ -18,11 +18,8 @@ workspace "YourGame"
 		defines { "NDEBUG" }
 		optimize "On"	
 		
-	filter { "platforms:x32" }
+	filter { "platforms:x64" }
 		architecture "x86_64"
-	
-	filter { "platforms:x86" }
-		architecture "x86"
 		
 	targetdir "bin/%{cfg.buildcfg}/"
 		
