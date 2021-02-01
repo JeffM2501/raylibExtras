@@ -21,7 +21,7 @@
 
 #include "raylib.h"
 #include "raymath.h"
-#include "TPOrbitCamera.h"
+#include "FPCamera.h"
 
 int main(int argc, char* argv[])
 {
@@ -39,21 +39,22 @@ int main(int argc, char* argv[])
     Texture tx = LoadTextureFromImage(img);
 
     // setup initial camera data
-    TPOrbitCamera orbitCam;
-    InitTPOrbitCamera(&orbitCam, 45, (Vector3){ 1, 0 ,0 });
+    FPCamera cam;
+    InitFPCamera(&cam, 45, (Vector3){ 1, 0 ,0 });
+    cam.MoveSpeed.z = 10;
 
     // Main game loop
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
-        UpdateTPOrbitCamera(&orbitCam);
+        UpdateFPCamera(&cam);
 
         BeginDrawing();
-        ClearBackground(RAYWHITE);
+        ClearBackground(BLACK);
 
-        BeginMode3D(orbitCam.ViewCamera);
+        BeginMode3D(cam.ViewCamera);
        
         // grid of cubes on a plane to make a "world"
-		DrawPlane(Vector3{ 0,0,0 }, (Vector2){ 50,50 }, BLUE); // simple world plane
+		DrawPlane((Vector3){ 0,0,0 }, (Vector2){ 50,50 }, BLUE); // simple world plane
         float spacing = 3;
         int count = 5;
 
@@ -65,13 +66,9 @@ int main(int argc, char* argv[])
             }
         }
         
-        // target point
-        DrawSphere(orbitCam.CameraPosition, 0.25f, RED);
-
         EndMode3D();
 
         // instructions
-        DrawText("Right drag to rotate, Wheel to zoom, WASD to move", 100, 760, 20, GREEN);
         DrawFPS(0, 0);
         EndDrawing();
         //----------------------------------------------------------------------------------

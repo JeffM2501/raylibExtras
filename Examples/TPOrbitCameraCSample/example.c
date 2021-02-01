@@ -53,7 +53,7 @@ int main(int argc, char* argv[])
         BeginMode3D(orbitCam.ViewCamera);
        
         // grid of cubes on a plane to make a "world"
-		DrawPlane(Vector3{ 0,0,0 }, (Vector2){ 50,50 }, BLUE); // simple world plane
+		DrawPlane((Vector3){ 0,0,0 }, (Vector2){ 50,50 }, BLUE); // simple world plane
         float spacing = 3;
         int count = 5;
 

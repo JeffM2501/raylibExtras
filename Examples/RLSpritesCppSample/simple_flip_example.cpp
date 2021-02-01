@@ -46,19 +46,6 @@ int main(int argc, char* argv[])
 
     Sprite baseSprite = Sprite::Load("resources/scarfy.sprite");
 
-//     baseSprite.AddImage("resources/scarfy.png", 6, 1);
-//     baseSprite.AddFlipFrames(0, 5, true, false);
-// 
-//     baseSprite.AddAnimation("walk", DIRECTION_RIGHT, 0, 5);
-//     baseSprite.AddAnimation("walk", DIRECTION_LEFT, 6, 11);
-//     baseSprite.SetAnimationLoop("walk", true);
-//     baseSprite.SetAnimationSpeed("walk", 12);
-// 
-//     baseSprite.AddAnimation("idle", DIRECTION_RIGHT, 2, 2);
-//     baseSprite.AddAnimation("idle", DIRECTION_LEFT, 8, 8);
-//     baseSprite.SetAnimationLoop("idle", true);
-//     baseSprite.SetAnimationSpeed("idle", 1);
-
     SpriteInstance sprite(baseSprite);
     sprite.SetAimation("idle");
     sprite.Direction = DIRECTION_LEFT;

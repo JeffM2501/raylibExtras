@@ -1,0 +1,11 @@
+/.vs
+/bin
+/build
+/rlExtrasC/obj
+/rlExtrasCPP/obj
+/Examples/obj
+*.vcxproj
+*.filters
+*.user
+*.sln
+*.exe

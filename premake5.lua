@@ -38,7 +38,7 @@ project "raylib"
 				
 	filter{}
 	
-	location "./"
+	location "build"
 	language "C"
 	targetdir "bin/%{cfg.buildcfg}"
 	
@@ -80,13 +80,7 @@ project "rlExtrasC"
 	files {"rlExtrasC/**.h", "rlExtrasC/**.c"}
 	
 project "rlExtrasCPP"
-	filter "configurations:Debug.DLL OR Release.DLL"
-		kind "SharedLib"
-		defines {"BUILD_LIBTYPE_SHARED"}
-		links {"raylib"}
-		
-	filter "configurations:Debug OR Release"
-		kind "StaticLib"
+	kind "StaticLib"
 		
 	filter "action:vs*"
 		defines{"_WINSOCK_DEPRECATED_NO_WARNINGS", "_CRT_SECURE_NO_WARNINGS", "_WIN32"}
@@ -122,7 +116,7 @@ project "FPCameraCSample"
 
 	links {"raylib","rlExtrasC"}
 	
-	includedirs { "Examples/FPCameraCSample", "raylib/src", "FPCameraC/" }
+	includedirs { "Examples/FPCameraCSample", "raylib/src", "rlExtrasC" }
 	
 	filter "action:vs*"
 		defines{"_WINSOCK_DEPRECATED_NO_WARNINGS", "_CRT_SECURE_NO_WARNINGS", "_WIN32"}
@@ -136,14 +130,14 @@ project "TOprbitCameraCSample"
 	
 	vpaths 
 	{
-		["Header Files"] = { "Examples/TOprbitCameraCSample/**.h"},
-		["Source Files"] = {"Examples/TOprbitCameraCSample/**.c"},
+		["Header Files"] = { "Examples/TPOrbitCameraCSample/**.h"},
+		["Source Files"] = {"Examples/TPOrbitCameraCSample/**.c"},
 	}
-	files {"Examples/TOprbitCameraCSample/**.c", "Examples/TOprbitCameraCSample/**.h"}
+	files {"Examples/TPOrbitCameraCSample/**.c", "Examples/TPOrbitCameraCSample/**.h"}
 
 	links {"raylib","rlExtrasC"}
 	
-	includedirs { "Examples/TOprbitCameraCSample", "raylib/src", "rlExtrasC/" }
+	includedirs { "Examples/TOprbitCameraCSample", "raylib/src", "rlExtrasC" }
 	
 	filter "action:vs*"
 		defines{"_WINSOCK_DEPRECATED_NO_WARNINGS", "_CRT_SECURE_NO_WARNINGS", "_WIN32"}
@@ -172,28 +166,6 @@ project "RLSpritesCSample"
 		
 		
 group "Examples Cpp"
-project "FPCameraCppSample"
-	kind "ConsoleApp"
-	location "Examples/"
-	language "C++"
-	targetdir "bin/%{cfg.buildcfg}"
-	
-	vpaths 
-	{
-		["Header Files"] = { "Examples/FPCameraCppSample/**.h"},
-		["Source Files"] = {"Examples/FPCameraCppSample/**.cpp"},
-	}
-	files {"Examples/FPCameraCppSample/**.cpp", "Examples/FPCameraCppSample/**.h"}
-
-	links {"raylib","rlExtrasCPP"}
-	
-	includedirs { "Examples/FPCameraCppSample", "raylib/src", "rlExtrasCPP" }
-	
-	filter "action:vs*"
-		defines{"_WINSOCK_DEPRECATED_NO_WARNINGS", "_CRT_SECURE_NO_WARNINGS", "_WIN32"}
-		links {"winmm"}
-		
-
 project "RLSpritesCppSample"
 	kind "ConsoleApp"
 	location "Examples/"
@@ -203,9 +175,9 @@ project "RLSpritesCppSample"
 	vpaths 
 	{
 		["Header Files"] = { "Examples/RLSpritesCppSample/**.h"},
-		["Source Files"] = {"Examples/RLSpritesCppSample/**.c"},
+		["Source Files"] = {"Examples/RLSpritesCppSample/**.cpp"},
 	}
-	files {"Examples/RLSpritesCppSample/**.c", "Examples/RLSpritesCppSample/**.h"}
+	files {"Examples/RLSpritesCppSample/**.cpp", "Examples/RLSpritesCppSample/**.h"}
 
 	links {"raylib","rlExtrasCPP"}
 	
