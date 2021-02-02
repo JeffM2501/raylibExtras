@@ -24,7 +24,7 @@ Sprite Management system
 This is a C++ library that can be build static. It contains the following components.
 
 #### FPCamera
-A first person view camera system
+A first person view camera system with support for user settable near and far clipping planes.
 
 #### RLSprites
 Sprite Management system
