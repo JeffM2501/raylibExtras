@@ -17,7 +17,7 @@ A third person view camera system that orbits a target point based on mouse inpu
 #### RLGeoTools (C)
 Geometry Extensions for raylib, including functions to create dynamic meshes.
 
-## RLSprites
+#### RLSprites
 Sprite Management system
 
 ### rlExtrasCPP
