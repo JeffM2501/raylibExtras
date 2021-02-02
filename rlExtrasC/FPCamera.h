@@ -96,9 +96,6 @@ typedef struct
 	// how far from the base of the camera is the player's view
 	float PlayerEyesPosition;
 
-	// the Raylib camera to pass to raylib view functions.
-	Camera ViewCamera;
-
 	// the field of view in X and Y
 	Vector2 FOV;
 
@@ -116,6 +113,14 @@ typedef struct
 
 	// state for window focus
 	bool Focused;
+
+	// raylib camera for use with raylib modes.
+	Camera3D ViewCamera;
+
+	//clipping planes
+	// note must use BeginModeFP3D and EndModeFP3D instead of BeginMode3D/EndMode3D for clipping planes to work
+	double NearPlane;
+	double FarPlane;
 }FPCamera;
 
 // called to initialize a camera to default values
@@ -132,5 +137,15 @@ RLAPI Vector3 GetFPCameraPosition(FPCamera* camera);
 
 // update the camera for the current frame
 RLAPI void UpdateFPCamera(FPCamera* camera);
+
+// start drawing using the camera, with near/far plane support, (for the screen)
+RLAPI void BeginModeFP3D(FPCamera* camera);
+
+// start drawing using the camera, with near/far plane support, (for a render texture)
+RLAPI void BeginModeFP3DTexture(FPCamera* camera, RenderTexture* targetTexture);
+
+// end drawing with the camera
+RLAPI void EndModeFP3D();
+
 
 #endif //FP_CAMERA_H

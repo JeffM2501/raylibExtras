@@ -30,6 +30,7 @@
 
 
 #include "FPCamera.h"
+#include "rlgl.h"
 #include <stdlib.h>
 #include <math.h>
 
@@ -81,6 +82,9 @@ void InitFPCamera(FPCamera* camera, float fovY, Vector3 position)
 	camera->ViewCamera.up = (Vector3){ 0.0f, 1.0f, 0.0f };
 	camera->ViewCamera.fovy = fovY;
 	camera->ViewCamera.type = CAMERA_PERSPECTIVE;
+
+	camera->NearPlane = 0.01;
+	camera->FarPlane = 1000.0;
 
 	ResizeFPCameraView(camera);
 	UseFPCameraMouse(camera, camera->UseMouse);
@@ -241,3 +245,61 @@ void UpdateFPCamera(FPCamera* camera)
 	camera->ViewCamera.target.z = camera->ViewCamera.position.z - transform.m14;
 }
 
+void SetupCamera(FPCamera* camera, float aspect)
+{
+    rlglDraw();							// Draw Buffers (Only OpenGL 3+ and ES2)
+    rlMatrixMode(RL_PROJECTION);        // Switch to projection matrix
+    rlPushMatrix();                     // Save previous matrix, which contains the settings for the 2d ortho projection
+    rlLoadIdentity();                   // Reset current matrix (projection)
+
+    if (camera->ViewCamera.type == CAMERA_PERSPECTIVE)
+    {
+        // Setup perspective projection
+        double top = RL_CULL_DISTANCE_NEAR * tan(camera->ViewCamera.fovy * 0.5 * DEG2RAD);
+        double right = top * aspect;
+
+        rlFrustum(-right, right, -top, top, camera->NearPlane, camera->FarPlane);
+    }
+    else if (camera->ViewCamera.type == CAMERA_ORTHOGRAPHIC)
+    {
+        // Setup orthographic projection
+        double top = camera->ViewCamera.fovy / 2.0;
+        double right = top * aspect;
+
+        rlOrtho(-right, right, -top, top, camera->NearPlane, camera->FarPlane);
+    }
+
+    // NOTE: zNear and zFar values are important when computing depth buffer values
+
+    rlMatrixMode(RL_MODELVIEW);         // Switch back to modelview matrix
+    rlLoadIdentity();                   // Reset current matrix (modelview)
+
+    // Setup Camera view
+    Matrix matView = MatrixLookAt(camera->ViewCamera.position, camera->ViewCamera.target, camera->ViewCamera.up);
+    rlMultMatrixf(MatrixToFloat(matView));      // Multiply modelview matrix by view matrix (camera)
+
+    rlEnableDepthTest();                // Enable DEPTH_TEST for 3D
+}
+
+void BeginModeFP3D(FPCamera* camera)
+{              
+    if (camera == NULL)
+        return;
+
+	float aspect = (float)GetScreenWidth() / (float)GetScreenHeight();
+	SetupCamera(camera, aspect);
+}
+
+void BeginModeFP3DTexture(FPCamera* camera, RenderTexture* targetTexture)
+{
+	if (camera == NULL || targetTexture == NULL)
+		return;
+
+    float aspect = (float)targetTexture->texture.width / (float)targetTexture->texture.height;
+    SetupCamera(camera, aspect);
+}
+
+void EndModeFP3D()
+{
+	EndMode3D();
+}

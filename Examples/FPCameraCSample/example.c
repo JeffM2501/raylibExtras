@@ -43,6 +43,8 @@ int main(int argc, char* argv[])
     InitFPCamera(&cam, 45, (Vector3){ 1, 0 ,0 });
     cam.MoveSpeed.z = 10;
 
+    cam.FarPlane = 5000;
+
     // Main game loop
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
@@ -51,7 +53,7 @@ int main(int argc, char* argv[])
         BeginDrawing();
         ClearBackground(BLACK);
 
-        BeginMode3D(cam.ViewCamera);
+        BeginModeFP3D(&cam);
        
         // grid of cubes on a plane to make a "world"
 		DrawPlane((Vector3){ 0,0,0 }, (Vector2){ 50,50 }, BLUE); // simple world plane
@@ -66,7 +68,7 @@ int main(int argc, char* argv[])
             }
         }
         
-        EndMode3D();
+        EndModeFP3D();
 
         // instructions
         DrawFPS(0, 0);
