@@ -41,6 +41,7 @@ constexpr char PathDelim = '/';
 
 #elif defined(__APPLE__)
 #include <sys/syslimits.h>
+#include <mach-o/dyld.h>
 constexpr char PathDelim = '/';
 
 #endif // OSs
@@ -112,13 +113,13 @@ const char* rlas_GetApplicationBasePath()
 
         if (_NSGetExecutablePath(path, &size) == 0)
         {
-            int len = strlne(path);
-            for (int i = len; i >= 0; --i)
+            uint32_t len = strlen(path);
+            for (uint32_t i = len; i >= 0; i--)
             {
-                if (path[i] == '/')
+                if (path[i] == '/' && path[i+1] == '.')
                 {
-                    path[i + 1] = '\0';
-                    i = -1;
+                    path[i + 1] = 0;
+                    break
                 }
             }
             appDir = path;
