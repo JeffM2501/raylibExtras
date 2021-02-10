@@ -37,7 +37,7 @@ project "raylib"
 					
 		filter{}
 		
-		location "./raylib/"
+		location "raylib/"
 		language "C++"
 		targetdir "bin/%{cfg.buildcfg}"
 		cppdialect "C++17"
@@ -70,6 +70,7 @@ project "YourGame"
 	links {"raylib"}
 	
 	includedirs { "%{wks.name}", "raylib/src" }
+	defines{"PLATFORM_DESKTOP", "GRAPHICS_API_OPENGL_33"}
 	
 	filter "action:vs*"
 		defines{"_WINSOCK_DEPRECATED_NO_WARNINGS", "_CRT_SECURE_NO_WARNINGS", "_WIN32"}
