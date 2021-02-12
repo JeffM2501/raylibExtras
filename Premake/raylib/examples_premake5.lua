@@ -21,7 +21,12 @@ function examples ()
 		
 		filter "action:vs*"
 			defines{"_WINSOCK_DEPRECATED_NO_WARNINGS", "_CRT_SECURE_NO_WARNINGS", "_WIN32"}
-			links {"winmm"}
+			dependson {"raylib"}
+			links {"winmm", "raylib.lib"}
+			libdirs {"bin/%{cfg.buildcfg}"}
+			
+		filter "action:gmake*"
+			links {"pthread", "GL", "m", "dl", "rt", "X11"}
 			
 	project "core_basic_window_cpp"
 		kind "ConsoleApp"
@@ -44,5 +49,10 @@ function examples ()
 		
 		filter "action:vs*"
 			defines{"_WINSOCK_DEPRECATED_NO_WARNINGS", "_CRT_SECURE_NO_WARNINGS", "_WIN32"}
-			links {"winmm"}
+			dependson {"raylib"}
+			links {"winmm", "raylib.lib"}
+			libdirs {"bin/%{cfg.buildcfg}"}
+			
+		filter "action:gmake*"
+			links {"pthread", "GL", "m", "dl", "rt", "X11"}
 end

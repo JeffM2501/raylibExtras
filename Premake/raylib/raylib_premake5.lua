@@ -11,6 +11,9 @@ function raylib ()
 		filter "action:vs*"
 			defines{"_WINSOCK_DEPRECATED_NO_WARNINGS", "_CRT_SECURE_NO_WARNINGS", "_WIN32"}
 			links {"winmm"}
+			
+		filter "action:gmake*"
+			links {"pthread", "GL", "m", "dl", "rt", "X11"}
 					
 		filter{}
 		
