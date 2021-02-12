@@ -22,6 +22,8 @@ workspace "YourGame"
 		architecture "x86_64"
 		
 	targetdir "bin/%{cfg.buildcfg}/"
+	
+	defines{"PLATFORM_DESKTOP", "GRAPHICS_API_OPENGL_33"}
 		
 project "raylib"
 		filter "configurations:Debug.DLL OR Release.DLL"
@@ -34,10 +36,13 @@ project "raylib"
 		filter "action:vs*"
 			defines{"_WINSOCK_DEPRECATED_NO_WARNINGS", "_CRT_SECURE_NO_WARNINGS", "_WIN32"}
 			links {"winmm"}
-					
+			
+		filter "action:gmake*"
+			links {"pthread", "GL", "m", "dl", "rt", "X11"}
+			
 		filter{}
 		
-		location "raylib/"
+		location "build"
 		language "C++"
 		targetdir "bin/%{cfg.buildcfg}"
 		cppdialect "C++17"
@@ -50,11 +55,9 @@ project "raylib"
 		}
 		files {"raylib/src/*.h", "raylib/src/*.c"}
 		
-		defines{"PLATFORM_DESKTOP", "GRAPHICS_API_OPENGL_33"}
-
 project "YourGame"
 	kind "ConsoleApp"
-	location "%{wks.name}/"
+	location "%{wks.name}"
 	language "C++"
 	targetdir "bin/%{cfg.buildcfg}"
 	cppdialect "C++17"
@@ -74,4 +77,9 @@ project "YourGame"
 	
 	filter "action:vs*"
 		defines{"_WINSOCK_DEPRECATED_NO_WARNINGS", "_CRT_SECURE_NO_WARNINGS", "_WIN32"}
-		links {"winmm"}
+		dependson {"raylib"}
+		links {"winmm", "raylib.lib"}
+		libdirs {"bin/%{cfg.buildcfg}"}
+		
+	filter "action:gmake*"
+		links {"pthread", "GL", "m", "dl", "rt", "X11"}
