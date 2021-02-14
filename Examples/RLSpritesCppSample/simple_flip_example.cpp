@@ -53,7 +53,7 @@ int main(int argc, char* argv[])
     sprite.OriginX = OriginLocations::Center;
     sprite.OriginY = OriginLocations::Center;
 
-    sprite.Postion = Vector2{ 100,100 };
+    sprite.Position = Vector2{ 100,100 };
     sprite.Scale = 1.0f;
 
     SetTargetFPS(60);
@@ -90,11 +90,11 @@ int main(int argc, char* argv[])
 
         if (IsKeyDown(KEY_LEFT))
         {
-            sprite.Postion.x -= speed * sprite.Speed;
+            sprite.Position.x -= speed * sprite.Speed;
         }
         if (IsKeyDown(KEY_RIGHT))
         {
-            sprite.Postion.x += speed * sprite.Speed;
+            sprite.Position.x += speed * sprite.Speed;
         }
 
         sprite.SetAimation(moving ? "walk" : "idle");

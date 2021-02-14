@@ -64,8 +64,8 @@ RLAPI void AllocateMeshData(Mesh* mesh, int verts, int triangles, int colors, bo
 /// Renders the contents of a Vector3 to the screen for easy debugging
 /// </summary>
 /// <param name="vector">The value to output</param>
-/// <param name="posX">Screen postion in X</param>
-/// <param name="posY">Screen postion in Y</param>
+/// <param name="posX">Screen position in X</param>
+/// <param name="posY">Screen position in Y</param>
 /// <param name="rightJustify">If true, posX specifies the right side of the text, if false the left side</param>
 RLAPI void DrawVector3Text(Vector3* vector, int posX, int posY, bool rightJustify);
 
@@ -73,8 +73,8 @@ RLAPI void DrawVector3Text(Vector3* vector, int posX, int posY, bool rightJustif
 /// Renders the contents of a Vector2 to the screen for easy debugging
 /// </summary>
 /// <param name="vector">The value to output</param>
-/// <param name="posX">Screen postion in X</param>
-/// <param name="posY">Screen postion in Y</param>
+/// <param name="posX">Screen position in X</param>
+/// <param name="posY">Screen position in Y</param>
 /// <param name="rightJustify">If true, posX specifies the right side of the text, if false the left side</param>
 RLAPI void DrawVector2Text(Vector2* vector, int posX, int posY, bool rightJustify);
 

@@ -507,7 +507,7 @@ namespace RLSprites
 			if (frame.second != nullptr)
 				LastRectangle = *frame.second;
 
-			Rectangle dest = { Postion.x,Postion.y,(float)fabs(LastRectangle.width) * Scale, (float)fabs(LastRectangle.height) * Scale };
+			Rectangle dest = { Position.x,Position.y,(float)fabs(LastRectangle.width) * Scale, (float)fabs(LastRectangle.height) * Scale };
 			Vector2  center = { GetOriginValue(OriginX,dest.width), GetOriginValue(OriginY, dest.height) };
 
 			DrawTexturePro(*frame.first, LastRectangle, dest, center, Rotation, sprite.Tint);

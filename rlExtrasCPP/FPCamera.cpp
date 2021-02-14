@@ -124,7 +124,7 @@ void FPCamera::Update()
 
     Vector3 right{ forward.z * -1.0f, 0, forward.x };
 
-    Vector3 oldPostion = CameraPosition;
+    Vector3 oldPosition = CameraPosition;
 
     CameraPosition = Vector3Add(CameraPosition, Vector3Scale(forward, direction[MOVE_FRONT] - direction[MOVE_BACK]));
     CameraPosition = Vector3Add(CameraPosition, Vector3Scale(right, direction[MOVE_RIGHT] - direction[MOVE_LEFT]));
@@ -132,8 +132,8 @@ void FPCamera::Update()
     CameraPosition.y += direction[MOVE_UP] - direction[MOVE_DOWN];
 
     // let someone modify the projected position
-    if (ValidateCamPostion != nullptr)
-        ValidateCamPostion(*this, CameraPosition, oldPostion);
+    if (ValidateCamPosition != nullptr)
+        ValidateCamPosition(*this, CameraPosition, oldPosition);
 
     // Camera orientation calculation
     float turnRotation = GetSpeedForAxis(TURN_RIGHT, TurnSpeed.x) - GetSpeedForAxis(TURN_LEFT, TurnSpeed.x);

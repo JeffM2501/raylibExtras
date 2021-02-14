@@ -31,6 +31,7 @@
 #ifndef RLSPRITES_H
 #define RLSPRITES_H
 
+#include <stddef.h>
 #include "raylib.h"
 #include "raymath.h"
 
@@ -130,7 +131,7 @@ typedef struct SpriteInstance
 	size_t LayerCount;
 	SpriteInstanceLayer* Layers;
 
-	Vector2 Postion;
+	Vector2 Position;
 	int Direction;
 	float Rotation;
 	float Scale;

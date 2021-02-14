@@ -31,6 +31,7 @@
 #ifndef RLSPRITES_H
 #define RLSPRITES_H
 
+#include <stddef.h>
 #include <string>
 #include <vector>
 #include <map>
@@ -128,7 +129,7 @@ namespace RLSprites
 
 		std::vector<Layer> Layers;
 
-		Vector2 Postion = { 0,0 };
+		Vector2 Position = { 0,0 };
 		int Direction = 0;
 		float Rotation = 0;
 		float Scale = 1.0f;

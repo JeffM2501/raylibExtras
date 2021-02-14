@@ -611,7 +611,7 @@ SpriteInstance* CreateSpriteInstance(Sprite* sprite, Color tint)
     instance->LayerCount = 0;
     instance->Layers = NULL;
 
-    instance->Postion = (Vector2){ 0,0 };
+    instance->Position = (Vector2){ 0,0 };
     instance->Direction = DIRECTION_DEFAULT;
     instance->LastRectangle = (Rectangle){ 0,0,0,0 };
 
@@ -749,7 +749,7 @@ void RenderSpriteInstance(SpriteInstance* instance)
         if (frame.Rect != NULL)
             instance->LastRectangle = *frame.Rect;
 
-        Rectangle dest = { instance->Postion.x, instance->Postion.y, (float)fabs(instance->LastRectangle.width) * instance->Scale, (float)fabs(instance->LastRectangle.height) * instance->Scale };
+        Rectangle dest = { instance->Position.x, instance->Position.y, (float)fabs(instance->LastRectangle.width) * instance->Scale, (float)fabs(instance->LastRectangle.height) * instance->Scale };
         Vector2  center = { GetOriginValue(instance->OriginX,dest.width), GetOriginValue(instance->OriginY, dest.height) };
 
         DrawTexturePro(*frame.Tx, instance->LastRectangle, dest, center, instance->Rotation, instance->Layers[i].Tint);

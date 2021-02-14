@@ -80,8 +80,8 @@ public:
     float ViewBobbleMagnatude = 0.02f;
     float ViewBobbleWaverMagnitude = 0.002f;
 
-    typedef std::function<bool(FPCamera& camera, Vector3& newPostion, const Vector3& oldPostion)> PostionCallback;
-    PostionCallback ValidateCamPostion = nullptr;
+    typedef std::function<bool(FPCamera& camera, Vector3& newPosition, const Vector3& oldPosition)> PositionCallback;
+    PositionCallback ValidateCamPosition = nullptr;
 
     inline const Camera& GetCamera() const { return ViewCamera; }
 

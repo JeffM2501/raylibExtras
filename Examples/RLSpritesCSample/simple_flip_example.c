@@ -73,7 +73,7 @@ int main(void)
     instance->Direction = DIRECTION_LEFT;
     instance->OriginX = OriginCenter;
     instance->OriginY = OriginCenter;
-    instance->Postion = (Vector2){ 100,100 };
+    instance->Position = (Vector2){ 100,100 };
 
     //--------------------------------------------------------------------------------------
 
@@ -106,11 +106,11 @@ int main(void)
 
         if (IsKeyDown(KEY_LEFT))
         {
-            instance->Postion.x -= speed * instance->Speed;
+            instance->Position.x -= speed * instance->Speed;
         }
         if (IsKeyDown(KEY_RIGHT))
         {
-            instance->Postion.x += speed * instance->Speed;
+            instance->Position.x += speed * instance->Speed;
         }
 
         // set animation based on state
