@@ -23,11 +23,13 @@
 #include "raymath.h"
 #include "FPCamera.h"
 
+#include "Frustum.h"
+
 int main(int argc, char* argv[])
 {
     // Initialization
     //--------------------------------------------------------------------------------------
-    int screenWidth = 800;
+    int screenWidth = 1200;
     int screenHeight = 800;
 
     InitWindow(screenWidth, screenHeight, "raylib [camera] example - third person orbit camera");
@@ -45,6 +47,8 @@ int main(int argc, char* argv[])
 
     cam.FarPlane = 5000;
 
+    Frustum viewFrustum = { 0 };
+
     // Main game loop
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
@@ -53,23 +57,38 @@ int main(int argc, char* argv[])
         BeginDrawing();
         ClearBackground(BLACK);
 
-        BeginModeFP3D(&cam);
-       
+        BeginMode3D(cam.ViewCamera);
+        ExtractFrustum(&viewFrustum);
+
         // grid of cubes on a plane to make a "world"
 		DrawPlane((Vector3){ 0,0,0 }, (Vector2){ 50,50 }, BLUE); // simple world plane
         float spacing = 3;
         int count = 5;
 
+
+        int total = 0;
+        int vis = 0;
+
         for (float x = -count * spacing; x <= count * spacing; x += spacing)
         {
             for (float z = -count * spacing; z <= count * spacing; z += spacing)
             {
-                DrawCubeTexture(tx, (Vector3){ x, 0.5f, z }, 1, 1, 1, WHITE);
+                Vector3 pos = { x, 0.5f, z };
+
+                Vector3 min = { x - 0.5f,0,z - 0.5f };
+                Vector3 max = { x + 0.5f,1,z + 0.5f };
+                total++;
+                if (AABBoxInFrustum(&viewFrustum, min, max))
+                {
+                    DrawCubeTexture(tx, (Vector3) { x, 0.5f, z }, 1, 1, 1, WHITE);
+                    vis++;
+                }
             }
         }
         
-        EndModeFP3D();
+        EndMode3D();
 
+        DrawText(TextFormat("%d visible of %d total", vis, total), 200, 0, 20, GREEN);
         // instructions
         DrawFPS(0, 0);
         EndDrawing();
