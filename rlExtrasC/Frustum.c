@@ -34,6 +34,7 @@
 #include "raymath.h"
 
 #include <math.h>
+#include <stddef.h>
 
 void NormalizePlane(Vector4* plane)
 {
