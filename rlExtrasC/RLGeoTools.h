@@ -38,6 +38,14 @@
 extern "C" {            // Prevents name mangling of functions
 #endif
 
+RLAPI Shader SetModelMaterialShader(Model* model, int materialIndex, Shader shader);
+RLAPI void SetModelMaterialShaderValue(Model* model, int materialIndex, const char* location, const void* value, int uniformType);
+RLAPI void SetModelMaterialShaderValueV(Model* model, int materialIndex, const char* location, const void* value, int uniformType, int count);
+RLAPI void SetModelMaterialTexture(Model* model, int materialIndex, int maptype, Texture2D texture);
+
+RLAPI Shader LoadShaderSet(const char* resourcePath, const char* name);
+RLAPI Shader LoadShaders(const char* resourcePath, const char* vsName, const char* fsName);
+
 // Custom mesh callback type
 typedef void (*MeshGenerateCallback)(Mesh* mesh, void* userData);
 

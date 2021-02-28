@@ -22,83 +22,112 @@
 #include "raylib.h"
 #include "raymath.h"
 #include "FPCamera.h"
+#include "rlgl.h"
 
 #include "Frustum.h"
+#include "RLGeoTools.h"
 
 int main(int argc, char* argv[])
 {
-    // Initialization
-    //--------------------------------------------------------------------------------------
-    int screenWidth = 1200;
-    int screenHeight = 800;
+	// Initialization
+	//--------------------------------------------------------------------------------------
+	int screenWidth = 1200;
+	int screenHeight = 800;
 
-    InitWindow(screenWidth, screenHeight, "raylib [camera] example - third person orbit camera");
-    SetTargetFPS(60);
+	SetConfigFlags(FLAG_MSAA_4X_HINT | FLAG_VSYNC_HINT);
+	InitWindow(screenWidth, screenHeight, "raylib [camera] example - First person camera");
+	//SetTargetFPS(120);
 
-    //--------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------
 
-    Image img = GenImageChecked(256, 256, 64, 64, LIGHTGRAY, WHITE);
-    Texture tx = LoadTextureFromImage(img);
+	Image img = GenImageChecked(256, 256, 32, 32, DARKGRAY, WHITE);
+	Texture tx = LoadTextureFromImage(img);
+	UnloadImage(img);
+	SetTextureFilter(tx, FILTER_ANISOTROPIC_16X);
+	SetTextureWrap(tx, WRAP_CLAMP);
 
-    // setup initial camera data
-    FPCamera cam;
-    InitFPCamera(&cam, 45, (Vector3){ 1, 0 ,0 });
-    cam.MoveSpeed.z = 10;
+	Image skyImg = LoadImage("resources/Daylight Box UV.png");
+	TextureCubemap skyboxTexture = LoadTextureCubemap(skyImg, CUBEMAP_AUTO_DETECT);
+	UnloadImage(skyImg);
 
-    cam.FarPlane = 5000;
+	Model skybox = LoadModelFromMesh(GenMeshCube(1.0f, 1.0f, 1.0f));
 
-    Frustum viewFrustum = { 0 };
+	// Load skybox shader and set options in required locations
+	SetModelMaterialShader(&skybox,0,LoadShaderSet("resources/shaders","skybox"));
+	SetModelMaterialShaderValue(&skybox, 0, "environmentMap", (int[1]) { MAP_CUBEMAP }, UNIFORM_INT);
+	SetModelMaterialShaderValue(&skybox, 0, "noGamma", (int[1]) { 1 }, UNIFORM_INT);
+	SetModelMaterialTexture(&skybox, 0, MAP_CUBEMAP, skyboxTexture);
 
-    // Main game loop
-    while (!WindowShouldClose())    // Detect window close button or ESC key
-    {
-        UpdateFPCamera(&cam);
+	// setup initial camera data
+	FPCamera cam;
+	InitFPCamera(&cam, 45, (Vector3) { 1, 0, 0 });
+	cam.MoveSpeed.z = 10;
+	cam.MoveSpeed.x = 5;
 
-        BeginDrawing();
-        ClearBackground(BLACK);
+	cam.FarPlane = 5000;
 
-        BeginMode3D(cam.ViewCamera);
-        ExtractFrustum(&viewFrustum);
+	Frustum viewFrustum = { 0 };
 
-        // grid of cubes on a plane to make a "world"
-		DrawPlane((Vector3){ 0,0,0 }, (Vector2){ 50,50 }, BLUE); // simple world plane
-        float spacing = 3;
-        int count = 5;
+	// Main game loop
+	while (!WindowShouldClose())    // Detect window close button or ESC key
+	{
+		UpdateFPCamera(&cam);
 
+		BeginDrawing();
+		ClearBackground(WHITE);
 
-        int total = 0;
-        int vis = 0;
+		BeginMode3D(cam.ViewCamera);
+		ExtractFrustum(&viewFrustum);
 
-        for (float x = -count * spacing; x <= count * spacing; x += spacing)
-        {
-            for (float z = -count * spacing; z <= count * spacing; z += spacing)
-            {
-                Vector3 pos = { x, 0.5f, z };
+		rlDisableBackfaceCulling();     // Disable backface culling to render inside the cube
+		rlDisableDepthMask();			// Disable depth writes
+		rlDisableDepthTest();			// Disable depth test for speed
 
-                Vector3 min = { x - 0.5f,0,z - 0.5f };
-                Vector3 max = { x + 0.5f,1,z + 0.5f };
-                total++;
-                if (AABBoxInFrustum(&viewFrustum, min, max))
-                {
-                    DrawCubeTexture(tx, (Vector3) { x, 0.5f, z }, 1, 1, 1, WHITE);
-                    vis++;
-                }
-            }
-        }
-        
-        EndMode3D();
+		DrawModel(skybox, (Vector3) { 0, 0, 0 }, 1.0f, WHITE);
 
-        DrawText(TextFormat("%d visible of %d total", vis, total), 200, 0, 20, GREEN);
-        // instructions
-        DrawFPS(0, 0);
-        EndDrawing();
-        //----------------------------------------------------------------------------------
-    }
+		rlEnableBackfaceCulling();     // enable things we turned off
+		rlEnableDepthMask();
+		rlEnableDepthTest();
 
-    // De-Initialization
-    //--------------------------------------------------------------------------------------   
-    CloseWindow();        // Close window and OpenGL context
-    //--------------------------------------------------------------------------------------
+		// grid of cube trees on a plane to make a "world"
+		DrawPlane((Vector3) { 0, 0, 0 }, (Vector2) { 50, 50 }, BEIGE); // simple world plane
+		float spacing = 4;
+		int count = 5;
 
-    return 0;
+		int total = 0;
+		int vis = 0;
+
+		for (float x = -count * spacing; x <= count * spacing; x += spacing)
+		{
+			for (float z = -count * spacing; z <= count * spacing; z += spacing)
+			{
+				Vector3 pos = { x, 0.5f, z };
+
+				Vector3 min = { x - 0.5f,0,z - 0.5f };
+				Vector3 max = { x + 0.5f,1,z + 0.5f };
+				total++;
+			//	if (AABBoxInFrustum(&viewFrustum, min, max))
+				{
+					DrawCubeTexture(tx, (Vector3) { x, 1.5f, z }, 1, 1, 1, GREEN);
+					DrawCubeTexture(tx, (Vector3) { x, 0.5f, z }, 0.25f, 1, 0.25f, BROWN);
+					vis++;
+				}
+			}
+		}
+
+		EndMode3D();
+
+	//	DrawText(TextFormat("%d visible of %d total", vis, total), 200, 0, 20, GREEN);
+		// instructions
+		DrawFPS(0, 0);
+		EndDrawing();
+		//----------------------------------------------------------------------------------
+	}
+
+	// De-Initialization
+	//--------------------------------------------------------------------------------------   
+	CloseWindow();        // Close window and OpenGL context
+	//--------------------------------------------------------------------------------------
+
+	return 0;
 }
