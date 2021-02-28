@@ -63,7 +63,7 @@ RLAPI Shader LoadShaderSet(const char* resourcePath, const char* name)
 	static char vsTemp[512];
 	static char fsTemp[512];
 
-#if defined(PLATFORM_DESKTOP)
+#if defined(PLATFORM_WEB)
 	static const char* glsl = "glsl110";
 #else
 	static const char* glsl = "glsl330";
@@ -79,7 +79,7 @@ RLAPI Shader LoadShaders(const char* resourcePath, const char* vsName, const cha
 	static char vsTemp[512];
 	static char fsTemp[512];
 
-#if defined(PLATFORM_DESKTOP)
+#if defined(PLATFORM_WEB)
 	static const char* glsl = "glsl110";
 #else
 	static const char* glsl = "glsl330";
