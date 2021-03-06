@@ -99,6 +99,29 @@ project "rlExtrasCPP"
 		["Source Files"] = {"rlExtrasCPP/**.cpp"},
 	}
 	files {"rlExtrasCPP/**.h", "rlExtrasCPP/**.cpp"}
+	
+project "rlImGui"
+	kind "StaticLib"
+		
+	filter "action:vs*"
+		defines{"_WINSOCK_DEPRECATED_NO_WARNINGS", "_CRT_SECURE_NO_WARNINGS", "_WIN32"}
+		links {"winmm"}
+				
+	filter{}
+	
+	location "./rlImGui/"
+	language "C++"
+	targetdir "bin/%{cfg.buildcfg}"
+	
+	includedirs { "raylib/src","rlImGui", "imGui"}
+	vpaths 
+	{
+		["Header Files"] = { "rlImGui/**.h"},
+		["Source Files"] = {"rlImGui/**.cpp"},
+		["ImGui Files"] = { "imGui/*.h","imGui/*.cpp" },
+	}
+	files {"imGui/*.h", "imGui/*.cpp", "rlImGui/**.cpp", "rlImGui/**.h"}
+
 
 group "Examples C"
 project "FPCameraCSample"
@@ -114,9 +137,9 @@ project "FPCameraCSample"
 	}
 	files {"Examples/FPCameraCSample/**.c", "Examples/FPCameraCSample/**.h"}
 
-	links {"raylib","rlExtrasC"}
+	links {"raylib","rlExtrasC", "rlImGui"}
 	
-	includedirs { "Examples/FPCameraCSample", "raylib/src", "rlExtrasC" }
+	includedirs { "Examples/FPCameraCSample", "raylib/src", "rlExtrasC", "rlImGui", "imGui" }
 	
 	filter "action:vs*"
 		defines{"_WINSOCK_DEPRECATED_NO_WARNINGS", "_CRT_SECURE_NO_WARNINGS", "_WIN32"}
