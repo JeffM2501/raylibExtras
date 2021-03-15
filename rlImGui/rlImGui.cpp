@@ -38,6 +38,8 @@
 static std::vector<Texture> LoadedTextures;
 static unsigned int LastTextureId = 0;
 
+static Texture2D FontTexture;
+
 static const char* rlImGuiGetClipText(void*)
 {
     return GetClipboardText();
@@ -64,12 +66,12 @@ static void rlImGuiNewFrame()
 
     if (io.WantSetMousePos)
     {
-        SetMousePosition(io.MousePos.x, io.MousePos.y);
+        SetMousePosition((int)io.MousePos.x, (int)io.MousePos.y);
     }
     else
     {
-        io.MousePos.x = GetMouseX();
-        io.MousePos.y = GetMouseY();
+        io.MousePos.x = (float)GetMouseX();
+        io.MousePos.y = (float)GetMouseY();
     }
 
     io.MouseDown[0] = IsMouseButtonDown(MOUSE_LEFT_BUTTON);
@@ -81,7 +83,7 @@ static void rlImGuiNewFrame()
     else if (GetMouseWheelMove() < 0)
         io.MouseWheel -= 1;
 
-    if (io.ConfigFlags & ImGuiConfigFlags_NoMouseCursorChange == 0)
+    if ((io.ConfigFlags & ImGuiConfigFlags_NoMouseCursorChange) == 0)
     {
         ImGuiMouseCursor imgui_cursor = ImGui::GetMouseCursor();
         if (io.MouseDrawCursor || imgui_cursor == ImGuiMouseCursor_None)
@@ -220,18 +222,18 @@ static void rlImGuiTriangleVert(ImDrawVert& idx_vert)
     rlVertex2f(idx_vert.pos.x, idx_vert.pos.y);
 }
 
-static void rlImGuiRenderTriangles(unsigned int count, int indexStart, const ImVector<ImDrawIdx>& indexBuffer, const ImVector<ImDrawVert>& vertBuffer, size_t textureId)
+static void rlImGuiRenderTriangles(unsigned int count, int indexStart, const ImVector<ImDrawIdx>& indexBuffer, const ImVector<ImDrawVert>& vertBuffer, void* texturePtr)
 {
-    unsigned int texture = static_cast<unsigned int>(textureId);
+    Texture* texture = (Texture*)texturePtr;
 
     for (unsigned int i = 0; i <= (count - 3); i += 3)
     {
         rlPushMatrix();
         rlBegin(RL_TRIANGLES);
-        if (LastTextureId != texture)
+        if (texture != nullptr && LastTextureId != texture->id)
         {
-            rlEnableTexture(texture);
-            LastTextureId = texture;
+            rlEnableTexture(texture->id);
+            LastTextureId = texture->id;
         }
 
         ImDrawIdx index;
@@ -282,10 +284,10 @@ static void rlRenderData(ImDrawData* data)
             if (!enableScissor)
             {
                 enableScissor = true;
-                BeginScissorMode(cmd.ClipRect.x - data->DisplayPos.x, cmd.ClipRect.y - data->DisplayPos.y, cmd.ClipRect.z - (cmd.ClipRect.x - data->DisplayPos.x), cmd.ClipRect.w - (cmd.ClipRect.y - data->DisplayPos.y));
+                BeginScissorMode((int)(cmd.ClipRect.x - data->DisplayPos.x), (int)(cmd.ClipRect.y - data->DisplayPos.y), (int)(cmd.ClipRect.z - (cmd.ClipRect.x - data->DisplayPos.x)), (int)(cmd.ClipRect.w - (cmd.ClipRect.y - data->DisplayPos.y)));
             }
 
-            rlImGuiRenderTriangles(cmd.ElemCount, idxOffset, commandList->IdxBuffer, commandList->VtxBuffer, (size_t)cmd.TextureId);
+            rlImGuiRenderTriangles(cmd.ElemCount, idxOffset, commandList->IdxBuffer, commandList->VtxBuffer, cmd.TextureId);
             idxOffset += cmd.ElemCount;
         }
     }
@@ -350,10 +352,12 @@ void SetupRLImGui(bool dark)
     io.Fonts->GetTexDataAsRGBA32(&pixels, &width, &height, nullptr);
     Image image = GenImageColor(width, height, BLANK);
     memcpy(image.data, pixels, width * height * 4);
-    Texture2D texture = LoadTextureFromImage(image);
+    if (FontTexture.id != 0)
+        UnloadTexture(FontTexture);
+
+    FontTexture = LoadTextureFromImage(image);
     UnloadImage(image);
-    LoadedTextures.emplace_back(texture);
-    io.Fonts->TexID = (void*)texture.id;
+    io.Fonts->TexID = &FontTexture;
 }
 
 void BeginRLImGui()
@@ -375,5 +379,6 @@ void ShutdownRLImGui()
     for (auto tx : LoadedTextures)
         UnloadTexture(tx);
 
+    UnloadTexture(FontTexture);
     LoadedTextures.clear();
 }
