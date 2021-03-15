@@ -259,10 +259,12 @@ static void rlRenderData(ImDrawData* data)
     rlDisableBackfaceCulling();
 
     bool enableScissor = false;
-    int idxOffset = 0;
+   
 
     for (int l = 0; l < data->CmdListsCount; ++l)
     {
+        int idxOffset = 0;
+
         const ImDrawList* commandList = data->CmdLists[l];
 
         for (const auto& cmd : commandList->CmdBuffer)
