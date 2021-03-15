@@ -206,7 +206,7 @@ static void rlImGuiEvents()
     ImGuiIO& io = ImGui::GetIO();
     FOR_ALL_KEYS(SET_KEY_DOWN);
 
-    unsigned int pressed = GetKeyPressed();
+    unsigned int pressed = GetCharPressed();
     if (pressed != 0)
         io.AddInputCharacter(pressed);
 }
