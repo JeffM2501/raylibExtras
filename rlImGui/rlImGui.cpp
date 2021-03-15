@@ -260,7 +260,6 @@ static void rlRenderData(ImDrawData* data)
 
     bool enableScissor = false;
    
-
     for (int l = 0; l < data->CmdListsCount; ++l)
     {
         int idxOffset = 0;
