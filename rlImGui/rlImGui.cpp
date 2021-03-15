@@ -220,9 +220,9 @@ static void rlImGuiTriangleVert(ImDrawVert& idx_vert)
     rlVertex2f(idx_vert.pos.x, idx_vert.pos.y);
 }
 
-static void rlImGuiRenderTriangles(unsigned int count, int indexStart, const ImVector<ImDrawIdx>& indexBuffer, const ImVector<ImDrawVert>& vertBuffer, void* textureId)
+static void rlImGuiRenderTriangles(unsigned int count, int indexStart, const ImVector<ImDrawIdx>& indexBuffer, const ImVector<ImDrawVert>& vertBuffer, size_t textureId)
 {
-    unsigned int texture = (unsigned int)(textureId);
+    unsigned int texture = static_cast<unsigned int>(textureId);
 
     for (unsigned int i = 0; i <= (count - 3); i += 3)
     {
@@ -285,7 +285,7 @@ static void rlRenderData(ImDrawData* data)
                 BeginScissorMode(cmd.ClipRect.x - data->DisplayPos.x, cmd.ClipRect.y - data->DisplayPos.y, cmd.ClipRect.z - (cmd.ClipRect.x - data->DisplayPos.x), cmd.ClipRect.w - (cmd.ClipRect.y - data->DisplayPos.y));
             }
 
-            rlImGuiRenderTriangles(cmd.ElemCount, idxOffset, commandList->IdxBuffer, commandList->VtxBuffer, cmd.TextureId);
+            rlImGuiRenderTriangles(cmd.ElemCount, idxOffset, commandList->IdxBuffer, commandList->VtxBuffer, (size_t)cmd.TextureId);
             idxOffset += cmd.ElemCount;
         }
     }
