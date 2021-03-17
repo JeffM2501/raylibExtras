@@ -50,6 +50,16 @@ RLAPI Shader LoadShaders(const char* resourcePath, const char* vsName, const cha
 typedef void (*MeshGenerateCallback)(Mesh* mesh, void* userData);
 
 /// <summary>
+/// Merges an array of models into a single model with all the meshes from the single model.
+/// Note that this function will move the meshes out of the input models into the output model
+/// The input models will be unloaded and no longer valid
+/// </summary>
+/// <param name="models">an array of models</param>
+/// <param name="count">the size of the array of models</param>
+/// <returns>a new model with all meshes</returns>
+Model MergeModels(Model* models, size_t count);
+
+/// <summary>
 /// Generate custom mesh
 /// </summary>
 /// <param name="generate">callback function that is called with the mesh to be created</param>

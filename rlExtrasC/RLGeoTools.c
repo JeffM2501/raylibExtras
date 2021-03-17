@@ -198,3 +198,60 @@ void DrawRectangleF(float posX, float posY, float width, float height, Color col
 {
 	DrawRectangleV((Vector2) { posX, posY }, (Vector2) { width, height }, color);
 }
+
+Model MergeModels(Model* models, size_t count)
+{
+    Model outModel = { 0 };
+
+    // count the meshes and materials in all models
+    for (size_t i = 0; i < count; ++i)
+    {
+        outModel.meshCount += models[i].meshCount;
+        outModel.materialCount += models[i].materialCount;
+    }
+
+    outModel.transform = MatrixIdentity();
+
+    // allocate buffers for all combined meshes/materials
+    outModel.meshes = MemAlloc(sizeof(Mesh) * outModel.meshCount);
+    outModel.materials = MemAlloc(sizeof(Material) * outModel.materialCount);
+    outModel.meshMaterial = MemAlloc(sizeof(int) * outModel.meshCount);
+
+    // ignore animations
+    outModel.boneCount = 0;
+    outModel.bones = NULL;
+    outModel.bindPose = NULL;
+
+    // merge the meshes
+    int meshOffset = 0;
+    int matOffset = 0;
+
+    for (size_t i = 0; i < count; ++i)
+    {
+        for (int meshIndex = 0; meshIndex < models[i].meshCount; ++meshIndex)
+        {
+            outModel.meshes[meshIndex + meshOffset] = models[i].meshes[meshIndex];
+            outModel.meshMaterial[meshIndex + meshOffset] = models[i].meshMaterial[meshIndex] + matOffset;
+        }
+
+        for (int matIndex = 0; matIndex < models[i].materialCount; ++matIndex)
+        {
+            outModel.materials[matIndex + matOffset] = models[i].materials[matIndex];
+        }
+
+        // delete memory buffers used by old models
+        MemFree(models[i].meshes);
+        models[i].meshes = NULL;
+
+        MemFree(models[i].materials);
+        models[i].materials = NULL;
+
+        MemFree(models[i].meshMaterial);
+        models[i].meshMaterial = NULL;
+
+        meshOffset += models[i].meshCount;
+        matOffset += models[i].materialCount;
+    }
+
+    return outModel;
+}
