@@ -199,6 +199,38 @@ void DrawRectangleF(float posX, float posY, float width, float height, Color col
 	DrawRectangleV((Vector2) { posX, posY }, (Vector2) { width, height }, color);
 }
 
+
+void ApplyModelTransformToMeshes(Model* model)
+{
+    if (model == NULL)
+        return;
+
+    Quaternion normQuat = QuaternionFromMatrix(model->transform);
+
+    for (int i = 0; i < model->meshCount; ++i)
+    {
+        Mesh* mesh = model->meshes + i;
+        for (int v = 0; v < mesh->vertexCount; v += 3)
+        {
+            Vector3 vert = (Vector3){ mesh->vertices[v],mesh->vertices[v + 1],mesh->vertices[v + 2] };
+            vert = Vector3Transform(vert, model->transform);
+            mesh->vertices[v] = vert.x;
+            mesh->vertices[v + 1] = vert.y;
+            mesh->vertices[v + 2] = vert.z;
+
+            Vector3 norm = (Vector3){ mesh->normals[v],mesh->normals[v + 1],mesh->normals[v + 2] };
+            norm = Vector3RotateByQuaternion(norm, normQuat);
+
+            mesh->normals[v] = norm.x;
+            mesh->normals[v + 1] = norm.y;
+            mesh->normals[v + 2] = norm.z;
+        }
+    }
+
+    model->transform = MatrixIdentity();
+}
+
+
 Model MergeModels(Model* models, size_t count)
 {
     Model outModel = { 0 };

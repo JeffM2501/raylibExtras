@@ -60,6 +60,13 @@ typedef void (*MeshGenerateCallback)(Mesh* mesh, void* userData);
 Model MergeModels(Model* models, size_t count);
 
 /// <summary>
+/// Burns the model transform into the mesh geometry and clears the model transform
+/// Useful before doing MergeModels 
+/// </summary>
+/// <param name="model">pointer to the model to modify</param>
+void ApplyModelTransformToMeshes(Model* model);
+
+/// <summary>
 /// Generate custom mesh
 /// </summary>
 /// <param name="generate">callback function that is called with the mesh to be created</param>
