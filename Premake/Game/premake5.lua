@@ -78,7 +78,7 @@ project "YourGame"
 	filter "action:vs*"
 		defines{"_WINSOCK_DEPRECATED_NO_WARNINGS", "_CRT_SECURE_NO_WARNINGS", "_WIN32"}
 		dependson {"raylib"}
-		links {"winmm", "raylib.lib"}
+		links {"winmm", "raylib.lib", "kernel32"}
 		libdirs {"bin/%{cfg.buildcfg}"}
 		
 	filter "action:gmake*"
