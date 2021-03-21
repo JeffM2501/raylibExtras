@@ -31,8 +31,8 @@ int main(int argc, char* argv[])
 {
 	// Initialization
 	//--------------------------------------------------------------------------------------
-	int screenWidth = 1200;
-	int screenHeight = 800;
+	int screenWidth = 1900;
+	int screenHeight = 900;
 
 	SetConfigFlags(FLAG_MSAA_4X_HINT | FLAG_VSYNC_HINT);
 	InitWindow(screenWidth, screenHeight, "raylib [camera] example - First person camera");
@@ -58,6 +58,12 @@ int main(int argc, char* argv[])
 	SetModelMaterialShaderValue(&skybox, 0, "noGamma", (int[1]) { 1 }, UNIFORM_INT);
 	SetModelMaterialTexture(&skybox, 0, MAP_CUBEMAP, skyboxTexture);
 
+	double shakeStart = -1;
+	float shakeMag = 0;
+	float shakeFreq = 0;
+
+	float shakeDecay = 0.5f;
+
 	// setup initial camera data
 	FPCamera cam;
 	InitFPCamera(&cam, 45, (Vector3) { 1, 0, 0 });
@@ -71,12 +77,39 @@ int main(int argc, char* argv[])
 	// Main game loop
 	while (!WindowShouldClose())    // Detect window close button or ESC key
 	{
+		if (IsKeyPressed(KEY_SPACE))
+		{
+			if (shakeStart < 0)
+				shakeStart = GetTime();
+
+			shakeFreq = 50;
+			shakeMag = 0.125f;
+		}
+
+		float shakeOffset = 0;
+		if (shakeStart > 0)
+		{
+			shakeMag -= GetFrameTime() * shakeDecay;
+			shakeFreq -= GetFrameTime() * shakeDecay;
+
+			if (shakeMag < 0 || shakeFreq < 0)
+				shakeStart = -1;
+			else
+			{
+				float delta = (float)(GetTime() - shakeStart);
+				shakeOffset = sinf(delta * shakeFreq) * shakeMag;
+			}
+		}
+
 		UpdateFPCamera(&cam);
 
 		BeginDrawing();
 		ClearBackground(WHITE);
 
-		BeginMode3D(cam.ViewCamera);
+		Camera3D viewCam = cam.ViewCamera;
+		viewCam.position = Vector3Add(viewCam.position, Vector3Scale(cam.Right, shakeOffset));
+
+		BeginMode3D(viewCam);
 		ExtractFrustum(&viewFrustum);
 
 		rlDisableBackfaceCulling();     // Disable backface culling to render inside the cube
