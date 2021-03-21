@@ -156,9 +156,7 @@ void FPCamera::Update()
        Angle.y = MaximumViewY * DEG2RAD;
 
         // Recalculate camera target considering translation and rotation
-    Matrix translation = MatrixTranslate(0, 0, (TargetDistance / 5.1f));
-    Matrix rotation = MatrixRotateXYZ(Vector3{ PI * 2 - Angle.y, PI * 2 - Angle.x, 0 });
-    Matrix transform = MatrixMultiply(translation, rotation);
+    Vector3 target = Vector3Transform(Vector3{ 0, 0, 1 }, MatrixRotateXYZ(Vector3{ Angle.y, -Angle.x, 0 }));
 
     ViewCamera.position = CameraPosition;
 
@@ -187,9 +185,9 @@ void FPCamera::Update()
 
     ViewCamera.position.y += eyeOfset;
 
-    ViewCamera.target.x = ViewCamera.position.x - transform.m12;
-    ViewCamera.target.y = ViewCamera.position.y - transform.m13;
-    ViewCamera.target.z = ViewCamera.position.z - transform.m14;
+    ViewCamera.target.x = ViewCamera.position.x + target.x;
+    ViewCamera.target.y = ViewCamera.position.y + target.y;
+    ViewCamera.target.z = ViewCamera.position.z + target.z;
 }
 
 float FPCamera::GetFOVX() const

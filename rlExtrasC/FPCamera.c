@@ -210,10 +210,7 @@ void UpdateFPCamera(FPCamera* camera)
 		camera->ViewAngles.y = camera->MaximumViewY * DEG2RAD;
 
 	// Recalculate camera target considering translation and rotation
-	Matrix translation = MatrixTranslate(0, 0, (camera->TargetDistance / 5.1f));
-	Matrix rotation = MatrixRotateXYZ((Vector3){ PI * 2 - camera->ViewAngles.y, PI * 2 - camera->ViewAngles.x, 0 });
-	Matrix transform = MatrixMultiply(translation, rotation);
-
+	Vector3 target = Vector3Transform((Vector3) { 0, 0, 1 }, MatrixRotateXYZ((Vector3) { camera->ViewAngles.y, -camera->ViewAngles.x, 0 }));
 	camera->ViewCamera.position = camera->CameraPosition;
 
 	float eyeOfset = camera->PlayerEyesPosition;
@@ -240,9 +237,9 @@ void UpdateFPCamera(FPCamera* camera)
 
 	camera->ViewCamera.position.y += eyeOfset;
 
-	camera->ViewCamera.target.x = camera->ViewCamera.position.x - transform.m12;
-	camera->ViewCamera.target.y = camera->ViewCamera.position.y - transform.m13;
-	camera->ViewCamera.target.z = camera->ViewCamera.position.z - transform.m14;
+	camera->ViewCamera.target.x = camera->ViewCamera.position.x + target.x;
+	camera->ViewCamera.target.y = camera->ViewCamera.position.y + target.y;
+	camera->ViewCamera.target.z = camera->ViewCamera.position.z + target.z;
 }
 
 void SetupCamera(FPCamera* camera, float aspect)
