@@ -177,16 +177,6 @@ void UpdateFPCamera(FPCamera* camera)
 
 	camera->PreviousMousePosition = mousePosition;
 
-	Vector3 forward = Vector3Subtract(camera->ViewCamera.target, camera->ViewCamera.position);
-	forward.y = 0;
-	forward = Vector3Normalize(forward);
-
-	Vector3 right = (Vector3){ forward.z * -1.0f, 0, forward.x };
-
-	camera->CameraPosition = Vector3Add(camera->CameraPosition, Vector3Scale(forward, direction[MOVE_FRONT] - direction[MOVE_BACK]));
-	camera->CameraPosition = Vector3Add(camera->CameraPosition, Vector3Scale(right, direction[MOVE_RIGHT] - direction[MOVE_LEFT]));
-
-	camera->CameraPosition.y += direction[MOVE_UP] - direction[MOVE_DOWN];
 
 	// let someone modify the projected position
 	// Camera orientation calculation
@@ -211,6 +201,16 @@ void UpdateFPCamera(FPCamera* camera)
 
 	// Recalculate camera target considering translation and rotation
 	Vector3 target = Vector3Transform((Vector3) { 0, 0, 1 }, MatrixRotateXYZ((Vector3) { camera->ViewAngles.y, -camera->ViewAngles.x, 0 }));
+
+	camera->Forward = Vector3Transform((Vector3) { 0, 0, 1 }, MatrixRotateXYZ((Vector3) { 0, -camera->ViewAngles.x, 0 }));
+
+	camera->Right = (Vector3){ camera->Forward.z * -1.0f, 0, camera->Forward.x };
+
+	camera->CameraPosition = Vector3Add(camera->CameraPosition, Vector3Scale(camera->Forward, direction[MOVE_FRONT] - direction[MOVE_BACK]));
+	camera->CameraPosition = Vector3Add(camera->CameraPosition, Vector3Scale(camera->Right, direction[MOVE_RIGHT] - direction[MOVE_LEFT]));
+
+	camera->CameraPosition.y += direction[MOVE_UP] - direction[MOVE_DOWN];
+
 	camera->ViewCamera.position = camera->CameraPosition;
 
 	float eyeOfset = camera->PlayerEyesPosition;

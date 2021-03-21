@@ -117,6 +117,9 @@ typedef struct
 	// raylib camera for use with raylib modes.
 	Camera3D ViewCamera;
 
+	Vector3 Forward;
+	Vector3 Right;
+
 	//clipping planes
 	// note must use BeginModeFP3D and EndModeFP3D instead of BeginMode3D/EndMode3D for clipping planes to work
 	double NearPlane;
