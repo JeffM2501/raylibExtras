@@ -5,6 +5,9 @@ Utilities and shared components for use with raylib (https://www.raylib.com/)
 
 Raylib Extras is made up of two main libraries, 
 
+### rlImGui
+Simple ImGui bindings for raylib with image support.
+
 ### rlExtrasC
 This is a pure C library that can be build static or dynamic (DLL). It contains the following components.
 
