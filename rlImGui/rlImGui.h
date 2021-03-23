@@ -29,8 +29,12 @@
 **********************************************************************************************/
 
 #pragma once
+#include "raylib.h"
 
 void SetupRLImGui(bool dark);
 void BeginRLImGui();
 void EndRLImGui();
 void ShutdownRLImGui();
+
+void RLImGuiImage(Texture image);
+void RLImGuiImageSize(Texture image, int height, int width);

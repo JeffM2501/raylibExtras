@@ -226,34 +226,36 @@ static void rlImGuiRenderTriangles(unsigned int count, int indexStart, const ImV
 {
     Texture* texture = (Texture*)texturePtr;
 
+    rlBegin(RL_TRIANGLES);
+	if (texture != nullptr && LastTextureId != texture->id)
+	{
+		rlEnableTexture(texture->id);
+		LastTextureId = texture->id;
+	}
+    else if (texture == nullptr)
+    {
+        rlDisableTexture();
+        LastTextureId = 0xffffffff;
+    }
+
     for (unsigned int i = 0; i <= (count - 3); i += 3)
     {
-        rlPushMatrix();
-        rlBegin(RL_TRIANGLES);
-        if (texture != nullptr && LastTextureId != texture->id)
-        {
-            rlEnableTexture(texture->id);
-            LastTextureId = texture->id;
-        }
+        ImDrawIdx indexA = indexBuffer[indexStart + i];
+        ImDrawIdx indexB = indexBuffer[indexStart + i + 2];
+        ImDrawIdx indexC = indexBuffer[indexStart + i + 1];
 
-        ImDrawIdx index;
-        ImDrawVert vertex;
+        ImDrawVert vertexA = vertBuffer[indexA];
+        ImDrawVert vertexB = vertBuffer[indexB];
+        ImDrawVert vertexC = vertBuffer[indexC];
 
-        index = indexBuffer[indexStart+i];
-        vertex = vertBuffer[index];
-        rlImGuiTriangleVert(vertex);
+        rlImGuiTriangleVert(vertexA);
+        rlImGuiTriangleVert(vertexB);
+        rlImGuiTriangleVert(vertexC);
 
-        index = indexBuffer[indexStart + i + 2];
-        vertex = vertBuffer[index];
-        rlImGuiTriangleVert(vertex);
-
-        index = indexBuffer[indexStart + i + 1];
-        vertex = vertBuffer[index];
-        rlImGuiTriangleVert(vertex);
-
-        rlEnd();
-        rlPopMatrix();
     }
+    rlEnd(); 
+    
+    rlglDraw();
 }
 
 static void rlRenderData(ImDrawData* data)
@@ -381,4 +383,14 @@ void ShutdownRLImGui()
 
     UnloadTexture(FontTexture);
     LoadedTextures.clear();
+}
+
+void RLImGuiImage(Texture image)
+{
+    ImGui::Image(&image, ImVec2(image.width, image.height));
+}
+
+void RLImGuiImageSize(Texture image, int height, int width)
+{
+    ImGui::Image(&image, ImVec2(width, height));
 }
