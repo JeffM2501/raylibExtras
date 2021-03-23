@@ -225,24 +225,23 @@ static void rlImGuiTriangleVert(ImDrawVert& idx_vert)
 static void rlImGuiRenderTriangles(unsigned int count, int indexStart, const ImVector<ImDrawIdx>& indexBuffer, const ImVector<ImDrawVert>& vertBuffer, void* texturePtr)
 {
     Texture* texture = (Texture*)texturePtr;
+    
+    if (texture == nullptr || LastTextureId != texture->id)
+        rlglDraw();
 
-    rlBegin(RL_TRIANGLES);
+	rlPushMatrix();
+	rlBegin(RL_TRIANGLES);
 	if (texture != nullptr && LastTextureId != texture->id)
 	{
 		rlEnableTexture(texture->id);
 		LastTextureId = texture->id;
 	}
-    else if (texture == nullptr)
-    {
-        rlDisableTexture();
-        LastTextureId = 0xffffffff;
-    }
 
     for (unsigned int i = 0; i <= (count - 3); i += 3)
     {
         ImDrawIdx indexA = indexBuffer[indexStart + i];
-        ImDrawIdx indexB = indexBuffer[indexStart + i + 2];
-        ImDrawIdx indexC = indexBuffer[indexStart + i + 1];
+        ImDrawIdx indexB = indexBuffer[indexStart + i + 1];
+        ImDrawIdx indexC = indexBuffer[indexStart + i + 2];
 
         ImDrawVert vertexA = vertBuffer[indexA];
         ImDrawVert vertexB = vertBuffer[indexB];
@@ -251,11 +250,10 @@ static void rlImGuiRenderTriangles(unsigned int count, int indexStart, const ImV
         rlImGuiTriangleVert(vertexA);
         rlImGuiTriangleVert(vertexB);
         rlImGuiTriangleVert(vertexC);
-
     }
-    rlEnd(); 
-    
-    rlglDraw();
+    rlEnd();
+    rlPopMatrix();
+  
 }
 
 static void rlRenderData(ImDrawData* data)
@@ -300,7 +298,7 @@ static void rlRenderData(ImDrawData* data)
     if (LastTextureId != 0)
         rlDisableTexture();
     LastTextureId = 0;
-
+    rlglDraw();
     rlEnableBackfaceCulling();
 }
 
