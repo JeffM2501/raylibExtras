@@ -209,3 +209,24 @@ project "RLSpritesCppSample"
 	filter "action:vs*"
 		defines{"_WINSOCK_DEPRECATED_NO_WARNINGS", "_CRT_SECURE_NO_WARNINGS", "_WIN32"}
 		links {"winmm"}
+		
+project "ImGuiSample"
+	kind "ConsoleApp"
+	location "Examples/"
+	language "C++"
+	targetdir "bin/%{cfg.buildcfg}"
+	
+	vpaths 
+	{
+		["Header Files"] = { "Examples/ImGuiSample/**.h"},
+		["Source Files"] = {"Examples/ImGuiSample/**.cpp"},
+	}
+	files {"Examples/ImGuiSample/**.cpp", "Examples/ImGuiSample/**.h"}
+
+	links {"raylib","rlImGui"}
+	
+	includedirs { "Examples/ImGuiSample", "raylib/src", "rlImGui", "imGui" }
+	
+	filter "action:vs*"
+		defines{"_WINSOCK_DEPRECATED_NO_WARNINGS", "_CRT_SECURE_NO_WARNINGS", "_WIN32"}
+		links {"winmm"}
