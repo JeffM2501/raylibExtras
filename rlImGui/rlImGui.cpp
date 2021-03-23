@@ -229,7 +229,6 @@ static void rlImGuiRenderTriangles(unsigned int count, int indexStart, const ImV
     if (texture == nullptr || LastTextureId != texture->id)
         rlglDraw();
 
-	rlPushMatrix();
 	rlBegin(RL_TRIANGLES);
 	if (texture != nullptr && LastTextureId != texture->id)
 	{
@@ -252,8 +251,7 @@ static void rlImGuiRenderTriangles(unsigned int count, int indexStart, const ImV
         rlImGuiTriangleVert(vertexC);
     }
     rlEnd();
-    rlPopMatrix();
-  
+ 
 }
 
 static void rlRenderData(ImDrawData* data)
@@ -383,12 +381,12 @@ void ShutdownRLImGui()
     LoadedTextures.clear();
 }
 
-void RLImGuiImage(Texture image)
+void RLImGuiImage(Texture *image)
 {
-    ImGui::Image(&image, ImVec2(image.width, image.height));
+    ImGui::Image(image, ImVec2(image->width, image->height));
 }
 
-void RLImGuiImageSize(Texture image, int height, int width)
+void RLImGuiImageSize(Texture *image, int height, int width)
 {
-    ImGui::Image(&image, ImVec2(width, height));
+    ImGui::Image(image, ImVec2(width, height));
 }
