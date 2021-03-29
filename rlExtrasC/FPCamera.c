@@ -81,7 +81,7 @@ void InitFPCamera(FPCamera* camera, float fovY, Vector3 position)
 	camera->ViewCamera.target = Vector3Add(camera->ViewCamera.position, (Vector3){ 0, 0, camera->TargetDistance });
 	camera->ViewCamera.up = (Vector3){ 0.0f, 1.0f, 0.0f };
 	camera->ViewCamera.fovy = fovY;
-	camera->ViewCamera.type = CAMERA_PERSPECTIVE;
+	camera->ViewCamera.projection = CAMERA_PERSPECTIVE;
 
 	camera->NearPlane = 0.01;
 	camera->FarPlane = 1000.0;
@@ -244,12 +244,12 @@ void UpdateFPCamera(FPCamera* camera)
 
 void SetupCamera(FPCamera* camera, float aspect)
 {
-    rlglDraw();							// Draw Buffers (Only OpenGL 3+ and ES2)
+	rlDrawRenderBatchActive();			// Draw Buffers (Only OpenGL 3+ and ES2)
     rlMatrixMode(RL_PROJECTION);        // Switch to projection matrix
     rlPushMatrix();                     // Save previous matrix, which contains the settings for the 2d ortho projection
     rlLoadIdentity();                   // Reset current matrix (projection)
 
-    if (camera->ViewCamera.type == CAMERA_PERSPECTIVE)
+    if (camera->ViewCamera.projection == CAMERA_PERSPECTIVE)
     {
         // Setup perspective projection
         double top = RL_CULL_DISTANCE_NEAR * tan(camera->ViewCamera.fovy * 0.5 * DEG2RAD);
@@ -257,7 +257,7 @@ void SetupCamera(FPCamera* camera, float aspect)
 
         rlFrustum(-right, right, -top, top, camera->NearPlane, camera->FarPlane);
     }
-    else if (camera->ViewCamera.type == CAMERA_ORTHOGRAPHIC)
+    else if (camera->ViewCamera.projection == CAMERA_ORTHOGRAPHIC)
     {
         // Setup orthographic projection
         double top = camera->ViewCamera.fovy / 2.0;

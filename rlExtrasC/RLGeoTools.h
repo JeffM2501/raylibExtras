@@ -72,7 +72,7 @@ void ApplyModelTransformToMeshes(Model* model);
 /// <param name="generate">callback function that is called with the mesh to be created</param>
 /// <param name="userData">arbitary user data passed to the callback</param>
 /// <returns>The completed mesh</returns>
-RLAPI Mesh GenMeshCustom(MeshGenerateCallback generate, void* userData); 
+RLAPI Mesh GenMeshCustomCallback(MeshGenerateCallback generate, void* userData); 
 
 /// <summary>
 /// Allocate mesh data based on passed in counts

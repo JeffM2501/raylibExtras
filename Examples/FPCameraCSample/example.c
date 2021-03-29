@@ -43,20 +43,20 @@ int main(int argc, char* argv[])
 	Image img = GenImageChecked(256, 256, 32, 32, DARKGRAY, WHITE);
 	Texture tx = LoadTextureFromImage(img);
 	UnloadImage(img);
-	SetTextureFilter(tx, FILTER_ANISOTROPIC_16X);
-	SetTextureWrap(tx, WRAP_CLAMP);
+	SetTextureFilter(tx, TEXTURE_FILTER_ANISOTROPIC_16X);
+	SetTextureWrap(tx, TEXTURE_WRAP_CLAMP);
 
 	Image skyImg = LoadImage("resources/Daylight Box UV.png");
-	TextureCubemap skyboxTexture = LoadTextureCubemap(skyImg, CUBEMAP_AUTO_DETECT);
+	TextureCubemap skyboxTexture = LoadTextureCubemap(skyImg, CUBEMAP_LAYOUT_AUTO_DETECT);
 	UnloadImage(skyImg);
 
 	Model skybox = LoadModelFromMesh(GenMeshCube(1.0f, 1.0f, 1.0f));
 
 	// Load skybox shader and set options in required locations
 	SetModelMaterialShader(&skybox,0,LoadShaderSet("resources/shaders","skybox"));
-	SetModelMaterialShaderValue(&skybox, 0, "environmentMap", (int[1]) { MAP_CUBEMAP }, UNIFORM_INT);
-	SetModelMaterialShaderValue(&skybox, 0, "noGamma", (int[1]) { 1 }, UNIFORM_INT);
-	SetModelMaterialTexture(&skybox, 0, MAP_CUBEMAP, skyboxTexture);
+	SetModelMaterialShaderValue(&skybox, 0, "environmentMap", (int[1]) { MATERIAL_MAP_CUBEMAP }, SHADER_UNIFORM_INT);
+	SetModelMaterialShaderValue(&skybox, 0, "noGamma", (int[1]) { 1 }, SHADER_UNIFORM_INT);
+	SetModelMaterialTexture(&skybox, 0, MATERIAL_MAP_CUBEMAP, skyboxTexture);
 
 	double shakeStart = -1;
 	float shakeMag = 0;

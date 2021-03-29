@@ -30,6 +30,7 @@
 
 #include <cmath>
 #include "RLFrustum.h"
+#include "rlgl.h"
 
 void NormalizePlane(Vector4& plane)
 {
@@ -53,8 +54,8 @@ RLFrustum::RLFrustum()
 
 void RLFrustum::ExtractFrustum()
 {
-    Matrix projection = GetMatrixProjection();
-    Matrix modelview = GetMatrixModelview();
+    Matrix projection = rlGetMatrixProjection();
+    Matrix modelview = rlGetMatrixModelview();
 
     Matrix planes = { 0 };
 

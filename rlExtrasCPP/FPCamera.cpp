@@ -45,7 +45,7 @@ void FPCamera::Setup(float fovY, Vector3&& position)
     ViewCamera.target = Vector3Add(ViewCamera.position, Vector3{ 0, 0, 1 });
     ViewCamera.up = { 0.0f, 1.0f, 0.0f };
     ViewCamera.fovy = fovY;
-    ViewCamera.type = CAMERA_PERSPECTIVE;
+    ViewCamera.projection = CAMERA_PERSPECTIVE;
 
     Focused = IsWindowFocused();
     if (Focused && (UseMouseX || UseMouseY))
