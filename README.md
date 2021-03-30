@@ -1,5 +1,7 @@
-# Raylib Extras
+# Raylib Extras 3.5
 Utilities and shared components for use with raylib (https://www.raylib.com/)
+
+This branch is for compatability with raylib 3.5
 
 ## Libraries
 
