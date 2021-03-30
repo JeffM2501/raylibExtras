@@ -118,7 +118,7 @@ void AllocateMeshData(Mesh* mesh, int verts, int triangles, int colors, bool uvs
 	mesh->triangleCount = triangles;
 }
 
-Mesh GenMeshCustom(MeshGenerateCallback generate, void* userData)
+Mesh GenMeshCustomCallback(MeshGenerateCallback generate, void* userData)
 {
 	Mesh mesh = { 0 };
 	
@@ -126,7 +126,7 @@ Mesh GenMeshCustom(MeshGenerateCallback generate, void* userData)
 		generate(&mesh, userData);
 
 	// Upload vertex data to GPU (static mesh)
-	rlLoadMesh(&mesh, false);
+	UploadMesh(&mesh, false);
 
 	return mesh;
 }

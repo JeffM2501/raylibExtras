@@ -51,10 +51,10 @@ typedef struct
 	Vector4 Planes[6];
 }Frustum;
 
-RLAPI void ExtractFrustum(Frustum* frustrum);
-RLAPI bool PointInFrustumV(Frustum* frustrum, Vector3 position);
-RLAPI bool SphereInFrustumV(Frustum* frustrum, Vector3 position, float radius);
+RLAPI void ExtractFrustum(Frustum* frustum);
+RLAPI bool PointInFrustumV(Frustum* frustum, Vector3 position);
+RLAPI bool SphereInFrustumV(Frustum* frustum, Vector3 position, float radius);
 
-RLAPI bool AABBoxInFrustum(Frustum* frustrum, Vector3 min, Vector3 max);
+RLAPI bool AABBoxInFrustum(Frustum* frustum, BoundingBox* box);
 
 #endif //FRUSTUM_H

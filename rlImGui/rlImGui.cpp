@@ -227,12 +227,12 @@ static void rlImGuiRenderTriangles(unsigned int count, int indexStart, const ImV
     Texture* texture = (Texture*)texturePtr;
     
     if (texture == nullptr || LastTextureId != texture->id)
-        rlglDraw();
+        rlDrawRenderBatchActive();
 
 	rlBegin(RL_TRIANGLES);
 	if (texture != nullptr && LastTextureId != texture->id)
 	{
-		rlEnableTexture(texture->id);
+        rlSetTexture(texture->id);
 		LastTextureId = texture->id;
 	}
 
@@ -271,7 +271,7 @@ static void rlRenderData(ImDrawData* data)
             if (cmd.UserCallback != nullptr)
             {
                 if (LastTextureId != 0)
-                    rlDisableTexture();
+                    rlSetTexture(0);
                 LastTextureId = 0;
 
                 cmd.UserCallback(commandList, &cmd);
@@ -294,9 +294,9 @@ static void rlRenderData(ImDrawData* data)
         EndScissorMode();
 
     if (LastTextureId != 0)
-        rlDisableTexture();
+        rlSetTexture(0);
     LastTextureId = 0;
-    rlglDraw();
+    rlDrawRenderBatchActive();
     rlEnableBackfaceCulling();
 }
 
@@ -383,10 +383,10 @@ void ShutdownRLImGui()
 
 void RLImGuiImage(Texture *image)
 {
-    ImGui::Image(image, ImVec2(image->width, image->height));
+    ImGui::Image(image, ImVec2(float(image->width), float(image->height)));
 }
 
 void RLImGuiImageSize(Texture *image, int height, int width)
 {
-    ImGui::Image(image, ImVec2(width, height));
+    ImGui::Image(image, ImVec2(float(width), float(height)));
 }

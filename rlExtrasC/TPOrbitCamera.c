@@ -86,7 +86,7 @@ void InitTPOrbitCamera(TPOrbitCamera* camera, float fovY, Vector3 position)
     camera->ViewCamera.position = Vector3Add(camera->ViewCamera.target, (Vector3){ 0, 0, camera->CameraPullbackDistance });
     camera->ViewCamera.up = (Vector3){ 0.0f, 1.0f, 0.0f };
     camera->ViewCamera.fovy = fovY;
-    camera->ViewCamera.type = CAMERA_PERSPECTIVE;
+    camera->ViewCamera.projection = CAMERA_PERSPECTIVE;
 
     ResizeTPOrbitCameraView(camera);
     UseTPOrbitCameraMouse(camera, true, 1);

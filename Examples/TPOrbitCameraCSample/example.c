@@ -32,7 +32,6 @@ int main(int argc, char* argv[])
 
     InitWindow(screenWidth, screenHeight, "raylib [camera] example - third person orbit camera");
     SetTargetFPS(60);
-
     //--------------------------------------------------------------------------------------
 
     Image img = GenImageChecked(256, 256, 64, 64, LIGHTGRAY, WHITE);
