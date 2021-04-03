@@ -30,8 +30,11 @@
 
 #pragma once
 
+#include "RLFrustum.h"
+
 #include "raylib.h"
 #include "raymath.h"
+
 #include <functional>
 
 class FPCamera
@@ -84,9 +87,23 @@ public:
     PositionCallback ValidateCamPosition = nullptr;
 
     inline const Camera& GetCamera() const { return ViewCamera; }
+    inline const RLFrustum& GetFrustum() const { return Frustum; }
+
+    inline void ExtractFrustum() { Frustum.Extract(); }
+
+    // start drawing using the camera, with near/far plane support
+    void BeginMode3D();
+
+    // end drawing with the camera
+    void EndMode3D();
 
     bool UseMouseX = true;
     bool UseMouseY = true;
+
+    //clipping planes
+    // note must use BeginMode3D and EndMode3D on the camera object for clipping planes to work
+    double NearPlane = 0.01;
+    double FarPlane = 1000;
 
 protected:
     bool Focused = true;
@@ -102,6 +119,8 @@ protected:
     Vector2 Angle = { 0,0 };                // Camera angle in plane XZ
 
     float CurrentBobble = 0;
+
+    RLFrustum Frustum;
 
     float GetSpeedForAxis(CameraControls axis, float speed);
 };

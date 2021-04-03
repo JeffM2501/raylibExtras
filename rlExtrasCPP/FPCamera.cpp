@@ -28,9 +28,13 @@
 *
 **********************************************************************************************/
 
-#include <cmath>
 #include "FPCamera.h"
+
+#include "raylib.h"
+#include "rlgl.h"
 #include "raymath.h"
+
+#include <cmath>
 
 FPCamera::FPCamera() : ControlsKeys{ 'W', 'S', 'D', 'A', 'E', 'Q', KEY_LEFT, KEY_RIGHT, KEY_UP, KEY_DOWN, KEY_LEFT_SHIFT }
 {
@@ -82,6 +86,50 @@ float FPCamera::GetSpeedForAxis(CameraControls axis, float speed)
         return speed * GetFrameTime() * factor;
 
     return 0.0f;
+}
+
+void FPCamera::BeginMode3D()
+{
+    float aspect = (float)GetScreenWidth() / (float)GetScreenHeight();
+
+    rlDrawRenderBatchActive();			// Draw Buffers (Only OpenGL 3+ and ES2)
+    rlMatrixMode(RL_PROJECTION);        // Switch to projection matrix
+    rlPushMatrix();                     // Save previous matrix, which contains the settings for the 2d ortho projection
+    rlLoadIdentity();                   // Reset current matrix (projection)
+
+    if (ViewCamera.projection == CAMERA_PERSPECTIVE)
+    {
+        // Setup perspective projection
+        double top = RL_CULL_DISTANCE_NEAR * tan(ViewCamera.fovy * 0.5 * DEG2RAD);
+        double right = top * aspect;
+
+        rlFrustum(-right, right, -top, top, NearPlane, FarPlane);
+    }
+    else if (ViewCamera.projection == CAMERA_ORTHOGRAPHIC)
+    {
+        // Setup orthographic projection
+        double top = ViewCamera.fovy / 2.0;
+        double right = top * aspect;
+
+        rlOrtho(-right, right, -top, top, NearPlane, FarPlane);
+    }
+
+    // NOTE: zNear and zFar values are important when computing depth buffer values
+
+    rlMatrixMode(RL_MODELVIEW);         // Switch back to modelview matrix
+    rlLoadIdentity();                   // Reset current matrix (modelview)
+
+    // Setup Camera view
+    Matrix matView = MatrixLookAt(ViewCamera.position, ViewCamera.target, ViewCamera.up);
+    rlMultMatrixf(MatrixToFloat(matView));      // Multiply modelview matrix by view matrix (camera)
+
+    rlEnableDepthTest();                // Enable DEPTH_TEST for 3D
+    ExtractFrustum();
+}
+
+void FPCamera::EndMode3D()
+{
+    ::EndMode3D();
 }
 
 void FPCamera::Update()

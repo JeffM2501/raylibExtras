@@ -52,7 +52,7 @@ RLFrustum::RLFrustum()
     Planes[FrustumPlanes::Back] = Vector4{ 0 };
 }
 
-void RLFrustum::ExtractFrustum()
+void RLFrustum::Extract()
 {
     Matrix projection = rlGetMatrixProjection();
     Matrix modelview = rlGetMatrixModelview();
@@ -95,7 +95,7 @@ void RLFrustum::ExtractFrustum()
     NormalizePlane(Planes[FrustumPlanes::Front]);
 }
 
-float DistanceToPlaneV(const Vector4& plane, const Vector3& position)
+float DistanceToPlane(const Vector4& plane, const Vector3& position)
 {
     return (plane.x * position.x + plane.y * position.y + plane.z * position.z + plane.w);
 }
@@ -105,18 +105,18 @@ float DistanceToPlane(const Vector4& plane, float x, float y, float z)
     return (plane.x * x + plane.y * y + plane.z * z + plane.w);
 }
 
-bool RLFrustum::PointInFrustum(const Vector3& position) const
+bool RLFrustum::PointIn(const Vector3& position) const
 {
     for (auto& plane : Planes)
     {
-        if (DistanceToPlaneV(plane.second, position) <= 0) // point is behind plane
+        if (DistanceToPlane(plane.second, position) <= 0) // point is behind plane
             return false;
     }
 
     return true;
 }
 
-bool RLFrustum::PointInFrustum(float x, float y, float z) const
+bool RLFrustum::PointIn(float x, float y, float z) const
 {
     for (auto& plane : Planes)
     {
@@ -127,42 +127,42 @@ bool RLFrustum::PointInFrustum(float x, float y, float z) const
     return true;
 }
 
-bool RLFrustum::SphereInFrustum( const Vector3 &position, float radius) const
+bool RLFrustum::SphereIn( const Vector3 &position, float radius) const
 {
     for (auto& plane : Planes)
     {
-        if (DistanceToPlaneV(plane.second, position) < -radius) // center is behind plane by more than the radius
+        if (DistanceToPlane(plane.second, position) < -radius) // center is behind plane by more than the radius
             return false;
     }
 
     return true;
 }
 
-bool RLFrustum::AABBoxInFrustum(const Vector3& min, const Vector3 &max) const
+bool RLFrustum::AABBoxIn(const Vector3& min, const Vector3 &max) const
 {
     // if any point is in and we are good
-    if (PointInFrustum(min.x, min.y, min.z))
+    if (PointIn(min.x, min.y, min.z))
         return true;
 
-    if (PointInFrustum(min.x, max.y, min.z))
+    if (PointIn(min.x, max.y, min.z))
         return true;
 
-    if (PointInFrustum(max.x, max.y, min.z))
+    if (PointIn(max.x, max.y, min.z))
         return true;
 
-    if (PointInFrustum(max.x, min.y, min.z))
+    if (PointIn(max.x, min.y, min.z))
         return true;
 
-    if (PointInFrustum(min.x, min.y, max.z))
+    if (PointIn(min.x, min.y, max.z))
         return true;
 
-    if (PointInFrustum(min.x, max.y, max.z))
+    if (PointIn(min.x, max.y, max.z))
         return true;
 
-    if (PointInFrustum(max.x, max.y, max.z))
+    if (PointIn(max.x, max.y, max.z))
         return true;
 
-    if (PointInFrustum(max.x, min.y, max.z))
+    if (PointIn(max.x, min.y, max.z))
         return true;
 
     // check to see if all points are outside of any one plane, if so the entire box is outside

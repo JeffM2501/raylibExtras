@@ -1,7 +1,7 @@
 # Raylib Extras 3.5
 Utilities and shared components for use with raylib (https://www.raylib.com/)
 
-This branch is for compatability with raylib git head (3.6)
+This branch is for compatability with raylib git head (~3.7)
 
 For compatability with raylib 3.5 please see
 https://github.com/JeffM2501/raylibExtras/tree/Raylib_3.5
@@ -17,7 +17,9 @@ Simple ImGui bindings for raylib with image support.
 This is a pure C library that can be build static or dynamic (DLL). It contains the following components.
 
 #### FPCamera
-A first person view camera system
+A first person view camera system. 
+Breaking changes from 3.5.
+BeginModeFP3DTexture has been removed, BeginModeFP3D now works for both the screeen and render textures.
 
 #### TPOrbitCamera 
 A third person view camera system that orbits a target point based on mouse input

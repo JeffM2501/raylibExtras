@@ -53,11 +53,11 @@ public:
     RLFrustum();
     virtual ~RLFrustum() {}
 
-    void ExtractFrustum();
+    void Extract();
 
-    bool PointInFrustum(const Vector3& position) const;
-    bool PointInFrustum(float x, float y, float z) const;
+    bool PointIn(const Vector3& position) const;
+    bool PointIn(float x, float y, float z) const;
 
-    bool SphereInFrustum(const Vector3& position, float radius) const;
-    bool AABBoxInFrustum(const Vector3& min, const Vector3&  max) const;
+    bool SphereIn(const Vector3& position, float radius) const;
+    bool AABBoxIn(const Vector3& min, const Vector3&  max) const;
 };

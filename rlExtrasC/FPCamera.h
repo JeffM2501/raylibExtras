@@ -141,11 +141,8 @@ RLAPI Vector3 GetFPCameraPosition(FPCamera* camera);
 // update the camera for the current frame
 RLAPI void UpdateFPCamera(FPCamera* camera);
 
-// start drawing using the camera, with near/far plane support, (for the screen)
+// start drawing using the camera, with near/far plane support
 RLAPI void BeginModeFP3D(FPCamera* camera);
-
-// start drawing using the camera, with near/far plane support, (for a render texture)
-RLAPI void BeginModeFP3DTexture(FPCamera* camera, RenderTexture* targetTexture);
 
 // end drawing with the camera
 RLAPI void EndModeFP3D();
