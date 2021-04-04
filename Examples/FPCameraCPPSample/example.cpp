@@ -24,8 +24,6 @@
 #include "FPCamera.h"
 #include "rlgl.h"
 
-#include "Frustum.h"
-
 int main(int argc, char* argv[])
 {
 	// Initialization
