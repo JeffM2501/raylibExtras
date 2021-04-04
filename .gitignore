@@ -9,3 +9,11 @@
 *.user
 *.sln
 *.exe
+/rlImGui/obj/x64/Debug.DLL/*.obj
+/rlImGui/obj/x64/Debug.DLL/*.log
+/rlImGui/obj/x64/Debug.DLL/*.idb
+/rlImGui/obj/x64/Debug.DLL/*.recipe
+/rlImGui/obj/x64/Debug.DLL/*.pdb
+/rlImGui/obj/x64/Debug.DLL/rlImGui.tlog/*.tlog
+/rlImGui/obj/x64/Debug.DLL/rlImGui.tlog/*.lastbuildstate
+/rlImGui/obj/x64/Debug.DLL/*.txt

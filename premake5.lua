@@ -230,3 +230,25 @@ project "ImGuiSample"
 	filter "action:vs*"
 		defines{"_WINSOCK_DEPRECATED_NO_WARNINGS", "_CRT_SECURE_NO_WARNINGS", "_WIN32"}
 		links {"winmm"}
+		
+project "FPCameraCPPSample"
+	kind "ConsoleApp"
+	location "Examples/"
+	language "C++"
+	targetdir "bin/%{cfg.buildcfg}"
+	
+	vpaths 
+	{
+		["Header Files"] = { "Examples/FPCameraCPPSample/**.h"},
+		["Source Files"] = {"Examples/FPCameraCPPSample/**.cpp"},
+	}
+	files {"Examples/FPCameraCPPSample/**.cpp", "Examples/FPCameraCPPSample/**.h"}
+
+	links {"raylib","rlExtrasCPP"}
+	
+	includedirs { "Examples/FPCameraCPPSample", "raylib/src", "rlExtrasCPP" }
+	
+	filter "action:vs*"
+		defines{"_WINSOCK_DEPRECATED_NO_WARNINGS", "_CRT_SECURE_NO_WARNINGS", "_WIN32"}
+		links {"winmm"}
+		
