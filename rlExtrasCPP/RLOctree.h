@@ -30,7 +30,7 @@ public:
 
     std::vector<RLOctreeLeaf> Children;
 
-    RLOctreeLeaf(BoundingBox& bounds);
+    RLOctreeLeaf(const BoundingBox& bounds);
     inline RLOctreeLeaf(Vector3& min, Vector3& max) : RLOctreeLeaf(BoundingBox{ min,max }) {}
 
     virtual ~RLOctreeLeaf() {}
@@ -41,6 +41,8 @@ public:
 
     virtual size_t GetObjectsInFrustum(std::vector<RLOctreeObject::Ptr>& objets, const RLFrustum& frustum);
     virtual size_t GetObjectsInBoundingBox(std::vector<RLOctreeObject::Ptr>& objets, BoundingBox& box);
+
+    void DrawDebug();
 
 protected:
     void Split();

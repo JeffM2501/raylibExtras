@@ -138,7 +138,37 @@ bool RLFrustum::SphereIn( const Vector3 &position, float radius) const
     return true;
 }
 
-bool RLFrustum::AABBoxIn(const Vector3& min, const Vector3 &max) const
+bool RLFrustum::AABBoxIn(const Vector3& min, const Vector3& max) const
+{
+    // if any point is in and we are good
+    if (!PointIn(min.x, min.y, min.z))
+        return false;
+
+    if (!PointIn(min.x, max.y, min.z))
+        return false;
+
+    if (!PointIn(max.x, max.y, min.z))
+        return false;
+
+    if (!PointIn(max.x, min.y, min.z))
+        return false;
+
+    if (!PointIn(min.x, min.y, max.z))
+        return false;
+
+    if (!PointIn(min.x, max.y, max.z))
+        return false;
+
+    if (!PointIn(max.x, max.y, max.z))
+        return false;
+
+    if (!PointIn(max.x, min.y, max.z))
+        return false;
+
+    return true;
+}
+
+bool RLFrustum::AABBoxInOrIntersects(const Vector3& min, const Vector3 &max) const
 {
     // if any point is in and we are good
     if (PointIn(min.x, min.y, min.z))

@@ -1,5 +1,12 @@
 #include "RLOctree.h"
 
+#include "raylib.h"
+
+#include <limits>
+
+constexpr Vector3 MinVec3 = { std::numeric_limits<float>::min(),std::numeric_limits<float>::min(),std::numeric_limits<float>::min() };
+constexpr Vector3 MaxVec3 = { std::numeric_limits<float>::max(),std::numeric_limits<float>::max(),std::numeric_limits<float>::max() };
+static BoundingBox InvalidBox = {MaxVec3 , MinVec3};
 
 enum class rlContainmentType
 {
@@ -30,7 +37,7 @@ enum class rlContainmentType
     return rlContainmentType::Intersects;
 }
 
-RLOctreeLeaf::RLOctreeLeaf(BoundingBox& bounds)
+RLOctreeLeaf::RLOctreeLeaf(const BoundingBox &bounds) : Bounds(bounds)
 {
 
 }
@@ -83,7 +90,6 @@ void RLOctreeLeaf::Distribute(int depth)
 
 size_t RLOctreeLeaf::GetObjectsInFrustum(std::vector<RLOctreeObject::Ptr>& objects, const RLFrustum& frustum)
 {
-
     // if the current box is totally contained in our leaf, then add me and all my kids
     if (DoFastOut && frustum.AABBoxIn(Bounds.min,Bounds.max))
         FastAddChildren(objects);
@@ -160,17 +166,27 @@ void RLOctreeLeaf::FastAddChildren(std::vector<RLOctreeObject::Ptr>& objects)
         leaf.FastAddChildren(objects);
 }
 
+void RLOctreeLeaf::DrawDebug()
+{
+    Vector3 size = Vector3Subtract(Bounds.max, Bounds.min);
+    Vector3 pos = Vector3Add(Vector3Scale(size, 0.5f), Bounds.min);
+    DrawCubeWiresV(pos, size, RED);
+
+    for (auto& leaf : Children)
+        leaf.DrawDebug();
+}
+
 void MergeBox(BoundingBox &original, BoundingBox &additional)
 {
     original.min.x = std::min(original.min.x, additional.min.x);
     original.min.y = std::min(original.min.y, additional.min.y);
     original.min.z = std::min(original.min.z, additional.min.z);
-    original.max.x = std::min(original.max.x, additional.max.x);
-    original.max.y = std::min(original.max.y, additional.max.y);
-    original.max.z = std::min(original.max.z, additional.max.z);
+    original.max.x = std::max(original.max.x, additional.max.x);
+    original.max.y = std::max(original.max.y, additional.max.y);
+    original.max.z = std::max(original.max.z, additional.max.z);
 }
 
-RLOctree::RLOctree() : RLOctreeLeaf(BoundingBox{0,0,0,0})
+RLOctree::RLOctree() : RLOctreeLeaf(InvalidBox)
 {
 
 }

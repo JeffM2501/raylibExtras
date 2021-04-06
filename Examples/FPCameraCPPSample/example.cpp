@@ -70,8 +70,8 @@ int main(int argc, char* argv[])
             Vector3 min = { x - 0.5f,0,z - 0.5f };
             Vector3 max = { x + 0.5f,2,z + 0.5f };
             total++;
+			octree.Add(min, max, reinterpret_cast<void*>(trees.size()));
 			trees.push_back(pos);
-			octree.Add(min, max, &trees[trees.size() - 1]);
         }
     }
 
@@ -93,11 +93,14 @@ int main(int argc, char* argv[])
 
 		for (auto item : visibile)
 		{
-			Vector3 *pos = (Vector3 * )item->Object;
+			size_t index = reinterpret_cast<size_t>(item->Object);
+			Vector3 pos = trees[index];
 
-            DrawCubeTexture(tx, Vector3{ pos->x, 1.5f, pos->z }, 1, 1, 1, GREEN);
-            DrawCubeTexture(tx, Vector3{ pos->x, 0.5f, pos->z }, 0.25f, 1, 0.25f, BROWN);
+            DrawCubeTexture(tx, Vector3{ pos.x, 1.5f, pos.z }, 1, 1, 1, GREEN);
+            DrawCubeTexture(tx, Vector3{ pos.x, 0.5f, pos.z }, 0.25f, 1, 0.25f, BROWN);
 		}
+
+		octree.DrawDebug();
 
 		cam.EndMode3D();
 
