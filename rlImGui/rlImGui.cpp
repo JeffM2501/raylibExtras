@@ -36,8 +36,6 @@
 #include <vector>
 
 static std::vector<Texture> LoadedTextures;
-static unsigned int LastTextureId = 0;
-
 static Texture2D FontTexture;
 
 static const char* rlImGuiGetClipText(void*)
@@ -225,16 +223,12 @@ static void rlImGuiTriangleVert(ImDrawVert& idx_vert)
 static void rlImGuiRenderTriangles(unsigned int count, int indexStart, const ImVector<ImDrawIdx>& indexBuffer, const ImVector<ImDrawVert>& vertBuffer, void* texturePtr)
 {
     Texture* texture = (Texture*)texturePtr;
-    
-    if (texture == nullptr || LastTextureId != texture->id)
-        rlDrawRenderBatchActive();
 
 	rlBegin(RL_TRIANGLES);
-	if (texture != nullptr && LastTextureId != texture->id)
-	{
-        rlSetTexture(texture->id);
-		LastTextureId = texture->id;
-	}
+    if (texture == nullptr)
+        rlSetTexture(0);
+    else
+	    rlSetTexture(texture->id);
 
     for (unsigned int i = 0; i <= (count - 3); i += 3)
     {
@@ -254,8 +248,15 @@ static void rlImGuiRenderTriangles(unsigned int count, int indexStart, const ImV
  
 }
 
+static void EnableScissor(float x, float y, float width, float height)
+{
+    rlEnableScissorTest();
+    rlScissor(x, GetScreenHeight() - (y + height), width, height);
+}
+
 static void rlRenderData(ImDrawData* data)
 {
+    rlDrawRenderBatchActive();
     rlDisableBackfaceCulling();
 
     bool enableScissor = false;
@@ -268,35 +269,23 @@ static void rlRenderData(ImDrawData* data)
 
         for (const auto& cmd : commandList->CmdBuffer)
         {
+            EnableScissor(cmd.ClipRect.x - data->DisplayPos.x, cmd.ClipRect.y - data->DisplayPos.y, cmd.ClipRect.z - (cmd.ClipRect.x - data->DisplayPos.x), cmd.ClipRect.w - (cmd.ClipRect.y - data->DisplayPos.y));
             if (cmd.UserCallback != nullptr)
             {
-                if (LastTextureId != 0)
-                    rlSetTexture(0);
-                LastTextureId = 0;
-
                 cmd.UserCallback(commandList, &cmd);
                 idxOffset += cmd.ElemCount;
                 continue;
             }
 
-            if (!enableScissor)
-            {
-                enableScissor = true;
-                BeginScissorMode((int)(cmd.ClipRect.x - data->DisplayPos.x), (int)(cmd.ClipRect.y - data->DisplayPos.y), (int)(cmd.ClipRect.z - (cmd.ClipRect.x - data->DisplayPos.x)), (int)(cmd.ClipRect.w - (cmd.ClipRect.y - data->DisplayPos.y)));
-            }
-
             rlImGuiRenderTriangles(cmd.ElemCount, idxOffset, commandList->IdxBuffer, commandList->VtxBuffer, cmd.TextureId);
             idxOffset += cmd.ElemCount;
+
+            rlDrawRenderBatchActive();
         }
     }
 
-    if (enableScissor)
-        EndScissorMode();
-
-    if (LastTextureId != 0)
-        rlSetTexture(0);
-    LastTextureId = 0;
-    rlDrawRenderBatchActive();
+    rlSetTexture(0);
+    rlDisableScissorTest();
     rlEnableBackfaceCulling();
 }
 
@@ -360,7 +349,6 @@ void SetupRLImGui(bool dark)
 
 void BeginRLImGui()
 {
-    LastTextureId = 0;
     rlImGuiNewFrame();
     rlImGuiEvents();
     ImGui::NewFrame();
