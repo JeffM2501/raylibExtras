@@ -54,12 +54,12 @@ static bool RLImGuiSetMouseCursor(ImGuiMouseCursor imguiMouseCursor)
 {
 	ImGuiIO& io = ImGui::GetIO();
 
-	if (io.ConfigFlags & ImGuiConfigFlags_NoMouseCursorChange) {
+	if (io.ConfigFlags & ImGuiConfigFlags_NoMouseCursorChange)
 		return false;
-	}
 	
 	int cursor;
-	switch (imguiMouseCursor) {
+	switch (imguiMouseCursor)
+    {
 		case ImGuiMouseCursor_Arrow:      cursor = MOUSE_CURSOR_ARROW;         break;
 		case ImGuiMouseCursor_TextInput:  cursor = MOUSE_CURSOR_IBEAM;         break;
 		case ImGuiMouseCursor_Hand:       cursor = MOUSE_CURSOR_POINTING_HAND; break;
@@ -115,7 +115,8 @@ static void rlImGuiNewFrame()
 			lastMouseCursor = imgui_cursor;
 			if (io.MouseDrawCursor || imgui_cursor == ImGuiMouseCursor_None)
 				HideCursor();
-			else {
+			else
+            {
 				ShowCursor();
 				RLImGuiSetMouseCursor(imgui_cursor);
 			}
