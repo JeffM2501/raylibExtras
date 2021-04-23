@@ -52,47 +52,47 @@ static void rlImGuiSetClipText(void*, const char* text)
 
 static bool RLImGuiSetMouseCursor(ImGuiMouseCursor imguiMouseCursor)
 {
-	ImGuiIO& io = ImGui::GetIO();
+    ImGuiIO &io = ImGui::GetIO();
 
-	if (io.ConfigFlags & ImGuiConfigFlags_NoMouseCursorChange)
-		return false;
-	
-	int cursor;
-	switch (imguiMouseCursor)
+    if (io.ConfigFlags & ImGuiConfigFlags_NoMouseCursorChange)
+        return false;
+
+    int cursor;
+    switch (imguiMouseCursor)
     {
-		case ImGuiMouseCursor_Arrow:
+        case ImGuiMouseCursor_Arrow:
             cursor = MOUSE_CURSOR_ARROW;
             break;
-		case ImGuiMouseCursor_TextInput:
+        case ImGuiMouseCursor_TextInput:
             cursor = MOUSE_CURSOR_IBEAM;
             break;
-		case ImGuiMouseCursor_Hand:
+        case ImGuiMouseCursor_Hand:
             cursor = MOUSE_CURSOR_POINTING_HAND;
             break;
-		case ImGuiMouseCursor_ResizeAll:
+        case ImGuiMouseCursor_ResizeAll:
             cursor = MOUSE_CURSOR_RESIZE_ALL;
             break;
-		case ImGuiMouseCursor_ResizeEW:
+        case ImGuiMouseCursor_ResizeEW:
             cursor = MOUSE_CURSOR_RESIZE_EW;
             break;
-		case ImGuiMouseCursor_ResizeNESW:
+        case ImGuiMouseCursor_ResizeNESW:
             cursor = MOUSE_CURSOR_RESIZE_NESW;
             break;
-		case ImGuiMouseCursor_ResizeNS:
+        case ImGuiMouseCursor_ResizeNS:
             cursor = MOUSE_CURSOR_RESIZE_NS;
             break;
-		case ImGuiMouseCursor_ResizeNWSE:
+        case ImGuiMouseCursor_ResizeNWSE:
             cursor = MOUSE_CURSOR_RESIZE_NWSE;
             break;
-		case ImGuiMouseCursor_NotAllowed:
+        case ImGuiMouseCursor_NotAllowed:
             cursor = MOUSE_CURSOR_NOT_ALLOWED;
             break;
-		default:
+        default:
             cursor = MOUSE_CURSOR_DEFAULT;
             break;
-	}
-	SetMouseCursor(cursor);
-	return true;
+    }
+    SetMouseCursor(cursor);
+    return true;
 }
 
 static void rlImGuiNewFrame()
@@ -131,19 +131,19 @@ static void rlImGuiNewFrame()
     if ((io.ConfigFlags & ImGuiConfigFlags_NoMouseCursorChange) == 0)
     {
         ImGuiMouseCursor imgui_cursor = ImGui::GetMouseCursor();
-		if (imgui_cursor != lastMouseCursor || io.MouseDrawCursor)
+        if (imgui_cursor != lastMouseCursor || io.MouseDrawCursor)
         {
-			lastMouseCursor = imgui_cursor;
-			if (io.MouseDrawCursor || imgui_cursor == ImGuiMouseCursor_None)
+            lastMouseCursor = imgui_cursor;
+            if (io.MouseDrawCursor || imgui_cursor == ImGuiMouseCursor_None)
             {
                 HideCursor();
             }
-			else
+            else
             {
-				ShowCursor();
-				RLImGuiSetMouseCursor(imgui_cursor);
-			}
-		}
+                ShowCursor();
+                RLImGuiSetMouseCursor(imgui_cursor);
+            }
+        }
     }
 }
 
@@ -280,11 +280,11 @@ static void rlImGuiRenderTriangles(unsigned int count, int indexStart, const ImV
 {
     Texture* texture = (Texture*)texturePtr;
 
-	rlBegin(RL_TRIANGLES);
+    rlBegin(RL_TRIANGLES);
     if (texture == nullptr)
         rlSetTexture(0);
     else
-	    rlSetTexture(texture->id);
+        rlSetTexture(texture->id);
 
     for (unsigned int i = 0; i <= (count - 3); i += 3)
     {
@@ -358,7 +358,7 @@ void SetupRLImGui(bool dark)
     ImGuiIO& io = ImGui::GetIO();
     io.BackendPlatformName = "imgui_impl_raylib";
 
-	io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors;
+    io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors;
 
     io.KeyMap[ImGuiKey_Tab] = KEY_TAB;
     io.KeyMap[ImGuiKey_LeftArrow] = KEY_LEFT;
