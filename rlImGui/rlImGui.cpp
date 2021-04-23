@@ -60,16 +60,36 @@ static bool RLImGuiSetMouseCursor(ImGuiMouseCursor imguiMouseCursor)
 	int cursor;
 	switch (imguiMouseCursor)
     {
-		case ImGuiMouseCursor_Arrow:      cursor = MOUSE_CURSOR_ARROW;         break;
-		case ImGuiMouseCursor_TextInput:  cursor = MOUSE_CURSOR_IBEAM;         break;
-		case ImGuiMouseCursor_Hand:       cursor = MOUSE_CURSOR_POINTING_HAND; break;
-		case ImGuiMouseCursor_ResizeAll:  cursor = MOUSE_CURSOR_RESIZE_ALL;    break;
-		case ImGuiMouseCursor_ResizeEW:   cursor = MOUSE_CURSOR_RESIZE_EW;     break;
-		case ImGuiMouseCursor_ResizeNESW: cursor = MOUSE_CURSOR_RESIZE_NESW;   break;
-		case ImGuiMouseCursor_ResizeNS:   cursor = MOUSE_CURSOR_RESIZE_NS;     break;
-		case ImGuiMouseCursor_ResizeNWSE: cursor = MOUSE_CURSOR_RESIZE_NWSE;   break;
-		case ImGuiMouseCursor_NotAllowed: cursor = MOUSE_CURSOR_NOT_ALLOWED;   break;
-		default:                          cursor = MOUSE_CURSOR_DEFAULT;       break;
+		case ImGuiMouseCursor_Arrow:
+            cursor = MOUSE_CURSOR_ARROW;
+            break;
+		case ImGuiMouseCursor_TextInput:
+            cursor = MOUSE_CURSOR_IBEAM;
+            break;
+		case ImGuiMouseCursor_Hand:
+            cursor = MOUSE_CURSOR_POINTING_HAND;
+            break;
+		case ImGuiMouseCursor_ResizeAll:
+            cursor = MOUSE_CURSOR_RESIZE_ALL;
+            break;
+		case ImGuiMouseCursor_ResizeEW:
+            cursor = MOUSE_CURSOR_RESIZE_EW;
+            break;
+		case ImGuiMouseCursor_ResizeNESW:
+            cursor = MOUSE_CURSOR_RESIZE_NESW;
+            break;
+		case ImGuiMouseCursor_ResizeNS:
+            cursor = MOUSE_CURSOR_RESIZE_NS;
+            break;
+		case ImGuiMouseCursor_ResizeNWSE:
+            cursor = MOUSE_CURSOR_RESIZE_NWSE;
+            break;
+		case ImGuiMouseCursor_NotAllowed:
+            cursor = MOUSE_CURSOR_NOT_ALLOWED;
+            break;
+		default:
+            cursor = MOUSE_CURSOR_DEFAULT;
+            break;
 	}
 	SetMouseCursor(cursor);
 	return true;
@@ -111,10 +131,13 @@ static void rlImGuiNewFrame()
     if ((io.ConfigFlags & ImGuiConfigFlags_NoMouseCursorChange) == 0)
     {
         ImGuiMouseCursor imgui_cursor = ImGui::GetMouseCursor();
-		if (imgui_cursor != lastMouseCursor || io.MouseDrawCursor) {
+		if (imgui_cursor != lastMouseCursor || io.MouseDrawCursor)
+        {
 			lastMouseCursor = imgui_cursor;
 			if (io.MouseDrawCursor || imgui_cursor == ImGuiMouseCursor_None)
-				HideCursor();
+            {
+                HideCursor();
+            }
 			else
             {
 				ShowCursor();
