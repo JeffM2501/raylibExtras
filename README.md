@@ -72,6 +72,9 @@ Exprimental tiled reading and rendering for raylib.
 
 All compoents are licensed under the MIT license.
 
-#Contributors
+# Contributors
 Many thanks to those that have submited fixes and updates to Raylib Extras.
-* https://github.com/Julianiolo
+
+ - [**Julianiolo**](https://github.com/Julianiolo)
+
+Do you want to contribute to **raylibExtras**? Check out [**CONTRIBUTING**](https://github.com/JeffM2501/raylibExtras/blob/index/CONTRIBUTING)
