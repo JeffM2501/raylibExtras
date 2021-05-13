@@ -6,6 +6,8 @@ This branch is for compatability with raylib git head (~3.7)
 For compatability with raylib 3.5 please see
 https://github.com/JeffM2501/raylibExtras/tree/Raylib_3.5
 
+This project is under the [**ZLib/libpng License**](https://github.com/JeffM2501/raylibExtras/blob/index/LICENSE)
+
 ## Libraries
 
 Raylib Extras is made up of two main libraries, 
@@ -72,6 +74,9 @@ Exprimental tiled reading and rendering for raylib.
 
 All compoents are licensed under the MIT license.
 
-#Contributors
+# Contributors
 Many thanks to those that have submited fixes and updates to Raylib Extras.
-* https://github.com/Julianiolo
+
+ - [**Julianiolo**](https://github.com/Julianiolo)
+
+Do you want to contribute to **raylibExtras**? Check out [**CONTRIBUTING**](https://github.com/JeffM2501/raylibExtras/blob/index/CONTRIBUTING)
