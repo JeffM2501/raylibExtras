@@ -33,6 +33,7 @@
 
 #include "raylib.h"															// Required for structs: Vector3, Matrix
 #include <math.h>
+#include <stddef.h>
 
 #if defined(__cplusplus)
 extern "C" {            // Prevents name mangling of functions
