@@ -50,7 +50,7 @@ namespace Colors
     constexpr ::Color  DarkBlue{ 0, 82, 172, 255 };
     constexpr ::Color  Purple{ 200, 122, 255, 255 };
     constexpr ::Color  Violet{ 135, 60, 190, 255 };
-    constexpr ::Color  DarkPurpple{ 112, 31, 126, 255 };
+    constexpr ::Color  DarkPurple{ 112, 31, 126, 255 };
     constexpr ::Color  Beige{ 211, 176, 131, 255 };
     constexpr ::Color  Brown{ 127, 106, 79, 255 };
     constexpr ::Color  DarkBrown{ 76, 63, 47, 255 };
