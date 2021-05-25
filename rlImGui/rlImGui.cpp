@@ -114,6 +114,7 @@ static void rlImGuiNewFrame()
 }
 
 #define FOR_ALL_KEYS(X) \
+    do { \
     X(KEY_APOSTROPHE); \
     X(KEY_COMMA); \
     X(KEY_MINUS); \
@@ -218,7 +219,8 @@ static void rlImGuiNewFrame()
     X(KEY_KP_SUBTRACT); \
     X(KEY_KP_ADD); \
     X(KEY_KP_ENTER); \
-    X(KEY_KP_EQUAL);
+    X(KEY_KP_EQUAL); \
+    } while(0)
 
 #define SET_KEY_DOWN(KEY) io.KeysDown[KEY] = IsKeyDown(KEY)
 
@@ -246,14 +248,19 @@ static void rlImGuiRenderTriangles(unsigned int count, int indexStart, const ImV
 {
     Texture* texture = (Texture*)texturePtr;
 
+    unsigned int textureId = (texture == nullptr) ? 0 : texture->id;
+
     rlBegin(RL_TRIANGLES);
-    if (texture == nullptr)
-        rlSetTexture(0);
-    else
-        rlSetTexture(texture->id);
+    rlSetTexture(textureId);
 
     for (unsigned int i = 0; i <= (count - 3); i += 3)
     {
+        if(rlCheckRenderBatchLimit(3)) 
+        {
+            rlBegin(RL_TRIANGLES);
+            rlSetTexture(textureId);
+        }
+
         ImDrawIdx indexA = indexBuffer[indexStart + i];
         ImDrawIdx indexB = indexBuffer[indexStart + i + 1];
         ImDrawIdx indexC = indexBuffer[indexStart + i + 2];
@@ -267,7 +274,6 @@ static void rlImGuiRenderTriangles(unsigned int count, int indexStart, const ImV
         rlImGuiTriangleVert(vertexC);
     }
     rlEnd();
- 
 }
 
 static void EnableScissor(float x, float y, float width, float height)
