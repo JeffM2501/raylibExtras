@@ -287,8 +287,6 @@ static void rlRenderData(ImDrawData* data)
     rlDrawRenderBatchActive();
     rlDisableBackfaceCulling();
 
-    bool enableScissor = false;
-   
     for (int l = 0; l < data->CmdListsCount; ++l)
     {
         int idxOffset = 0;
@@ -380,8 +378,8 @@ void SetupRLImGui(bool dark)
 
     unsigned char* pixels = nullptr;
 
-    int width = GetScreenWidth();
-    int height = GetScreenHeight();
+    int width;
+    int height;
     io.Fonts->GetTexDataAsRGBA32(&pixels, &width, &height, nullptr);
     Image image = GenImageColor(width, height, BLANK);
     memcpy(image.data, pixels, width * height * 4);
