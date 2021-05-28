@@ -69,6 +69,9 @@ std::vector<std::string> AssetRootPaths;
 
 std::string AssetTempPath;
 
+unsigned char* LoadBinFile(const char* fileName, unsigned int* bytesRead);      // FileIO: Load binary data
+char* LoadTextFile(const char* fileName);                                       // FileIO: Load text data
+
 std::string ToUpper(const char* c)
 {
     if (c == nullptr)
@@ -111,6 +114,9 @@ void rlas_SetTempPath(const char* path)
 
 void rlas_SetAssetRootPath(const char* path, bool relativeToApp)
 {
+    SetLoadFileDataCallback(LoadBinFile);
+    SetLoadFileTextCallback(LoadTextFile);
+
     AssetRootPaths.clear();
 
     if (relativeToApp)
@@ -318,53 +324,75 @@ bool rlas_FileIsArchive(const char* path)
     return itr->second.ArchiveFile != nullptr;
 }
 
-Texture rlas_LoadTexture(const char* path)
+void* ReadFileContents(const char* fileName, unsigned int* bytesRead, bool binary)
 {
-    MetaMap::iterator itr = AssetMap.find(ToUpper(path));
-    if (itr == AssetMap.end())
-    {
-        // can't be found, default texture
-        Image img = GenImageChecked(256, 256, 64, 64, RAYWHITE, LIGHTGRAY);
-        Texture texture = LoadTextureFromImage(img);
-        UnloadImage(img);
-        return texture;
-    }
-   
-    if (itr->second.ArchiveFile != nullptr)
-    {
-        unsigned char* buffer = new unsigned char[itr->second.ArchiveInfo.file_size];
-        itr->second.ArchiveFile->readBin(itr->second.ArchiveInfo, buffer);
-        Image img = LoadImageFromMemory(GetExtension(itr->second.RelativeName.c_str()), buffer, (int)itr->second.ArchiveInfo.file_size);
-        delete[](buffer);
+    void* data = NULL;
+    *bytesRead = 0;
 
-        Texture tx = LoadTextureFromImage(img);
-        UnloadImage(img);
-        return tx;
+    if (fileName != NULL)
+    {
+        FILE* file = fopen(fileName, binary ? "rb" : "rt");
+
+        if (file != NULL)
+        {
+            fseek(file, 0, SEEK_END);
+            int size = ftell(file);
+            fseek(file, 0, SEEK_SET);
+
+            if (size > 0)
+            {
+                data = MemAlloc(size * sizeof(unsigned char));
+
+                // NOTE: fread() returns number of read elements instead of bytes, so we read [1 byte, size elements]
+                *bytesRead = (unsigned int)fread(data, sizeof(unsigned char), size, file);
+            }
+            fclose(file);
+        }
     }
 
-    return LoadTexture(itr->second.PathOnDisk.c_str());
+    return data;
 }
 
-Image rlas_LoadImage(const char* path)
+unsigned char* LoadBinFile(const char* fileName, unsigned int* bytesRead)
 {
-    MetaMap::iterator itr = AssetMap.find(ToUpper(path));
+    MetaMap::iterator itr = AssetMap.find(ToUpper(fileName));
     if (itr == AssetMap.end())
     {
-        // can't be found, default image
-        Image img = GenImageChecked(256, 256, 64, 64, RAYWHITE, LIGHTGRAY);
-        return img;
+        *bytesRead = 0;
+        return nullptr;
     }
 
     if (itr->second.ArchiveFile != nullptr)
     {
-        unsigned char* buffer = new unsigned char[itr->second.ArchiveInfo.file_size];
+        *bytesRead = (unsigned int)itr->second.ArchiveInfo.file_size;
+        void* buffer = (unsigned char*)MemAlloc((unsigned int)itr->second.ArchiveInfo.file_size);
         itr->second.ArchiveFile->readBin(itr->second.ArchiveInfo, buffer);
-        Image img = LoadImageFromMemory(GetExtension(itr->second.RelativeName.c_str()), buffer, (int)itr->second.ArchiveInfo.file_size);
-        delete[](buffer);
-        return img;
+      
+        return (unsigned char*)buffer;
     }
 
-    return LoadImage(itr->second.PathOnDisk.c_str());
+    return (unsigned char*)ReadFileContents(itr->second.PathOnDisk.c_str(), bytesRead, true);
+}
+
+char* LoadTextFile(const char* fileName)
+{
+    MetaMap::iterator itr = AssetMap.find(ToUpper(fileName));
+    if (itr == AssetMap.end())
+    {
+        return nullptr;
+    }
+
+    if (itr->second.ArchiveFile != nullptr)
+    {
+        std::string data = itr->second.ArchiveFile->read(itr->second.ArchiveInfo);
+        char* buffer = (char*)MemAlloc((unsigned int)data.size() + 1);
+        memcpy(buffer, data.c_str(), data.size());
+        buffer[data.size()] = '\0';
+
+        return buffer;
+    }
+    unsigned int bytesRead = 0;
+    return (char*)ReadFileContents(itr->second.PathOnDisk.c_str(), &bytesRead, false);
 }
 
 unsigned int rlas_GetFileSize(const char* path)
@@ -400,70 +428,3 @@ unsigned int rlas_GetFileSize(const char* path)
 
     return size;
 }
-
-unsigned int rlas_GetFileText(const char* path, char* text)
-{
-    MetaMap::iterator itr = AssetMap.find(ToUpper(path));
-    if (itr == AssetMap.end())
-        return 0;
-
-    if (itr->second.ArchiveFile != nullptr)
-    {
-        std::string data = itr->second.ArchiveFile->read(itr->second.ArchiveInfo);
-
-        if (text != nullptr)
-        {
-#ifdef _WIN32
-            strncpy_s(text, data.size(), data.c_str(), data.size());
-#else
-            strncpy(text, data.c_str(), data.size());
-#endif //_WIN32
-        }
-
-        return (unsigned int)data.size();
-    }
-
-    char *data = LoadFileText(itr->second.PathOnDisk.c_str());
-    unsigned int len = (unsigned int)strlen(data);
-    
-    if (text != nullptr)
-    {
-#ifdef _WIN32
-        strncpy_s(text, len, data, len);
-#else
-        strncpy(text, data, len);
-#endif //_WIN32
-    }
-
-    UnloadFileText((unsigned char*)data);
-
-    return len;
-}
-
-unsigned int rlas_GetFileBytes(const char* path, void* data)
-{
-    MetaMap::iterator itr = AssetMap.find(ToUpper(path));
-    if (itr == AssetMap.end())
-        return 0;
-
-    if (itr->second.ArchiveFile != nullptr)
-    {
-        return (unsigned int)itr->second.ArchiveFile->readBin(itr->second.ArchiveInfo, data);
-    }
-
-    unsigned int len = 0;
-    unsigned char* buffer = LoadFileData(itr->second.PathOnDisk.c_str(), &len);
-
-    if (data != nullptr)
-    {
-#ifdef _WIN32
-        memcpy_s(data, len, buffer, len);
-#else
-        memcpy(data, buffer, len);
-#endif //_WIN32
-    }
-
-    UnloadFileData(buffer);
-
-    return len;
-}   // Unload file text data allocated by LoadFileText()

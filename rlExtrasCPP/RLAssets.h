@@ -119,41 +119,11 @@ int rlas_GetAssetsInPath(const char* path, bool includeSubDirectories, char** re
 bool rlas_FileIsArchive(const char* path);
 
 /// <summary>
-/// Loads a texture from any source
-/// </summary>
-/// <param name="path">The relative virtual path to the asset</param>
-/// <returns>The raylib texture</returns>
-Texture rlas_LoadTexture(const char* path);
-
-/// <summary>
-/// Loads an image from any source
-/// </summary>
-/// <param name="path">The relative virtual path to the asset</param>
-/// <returns>The raylib image</returns>
-Image rlas_LoadImage(const char* path);
-
-/// <summary>
 /// Gets the file size of an asset from any source
 /// </summary>
 /// <param name="path">The relative virtual path to the asset</param>
 /// <returns>The file size in bytes</returns>
 unsigned int rlas_GetFileSize(const char* path);
-
-/// <summary>
-/// Reads the contents of the file as text from any source
-/// </summary>
-/// <param name="path">The relative virtual path to the asset</param>
-/// <param name="text">A pointer to a buffer of the correct size to contain the data</param>
-/// <returns>The data size read (0) if there was an error</returns>
-unsigned int rlas_GetFileText(const char* path, char* text);
-
-/// <summary>
-/// Reads the contents of the file as binary data from any source
-/// </summary>
-/// <param name="path">The relative virtual path to the asset</param>
-/// <param name="data">A pointer to a buffer of the correct size to contain the data</param>
-/// <returns>The data size read (0) if there was an error</returns>
-unsigned int rlas_GetFileBytes(const char* path, void* data);
 
 #endif //RLASSETS_H
 

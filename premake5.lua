@@ -252,3 +252,24 @@ project "FPCameraCPPSample"
 		defines{"_WINSOCK_DEPRECATED_NO_WARNINGS", "_CRT_SECURE_NO_WARNINGS", "_WIN32"}
 		links {"winmm"}
 		
+project "RLAssetsSample"
+	kind "ConsoleApp"
+	location "Examples/"
+	language "C++"
+	targetdir "bin/%{cfg.buildcfg}"
+	
+	vpaths 
+	{
+		["Header Files"] = { "Examples/RLAssetsSample/**.h"},
+		["Source Files"] = {"Examples/RLAssetsSample/**.cpp"},
+	}
+	files {"Examples/RLAssetsSample/**.cpp", "Examples/RLAssetsSample/**.h"}
+
+	links {"raylib","rlExtrasCPP"}
+	
+	includedirs { "Examples/RLAssetsSample", "raylib/src", "rlExtrasCPP" }
+	
+	filter "action:vs*"
+		defines{"_WINSOCK_DEPRECATED_NO_WARNINGS", "_CRT_SECURE_NO_WARNINGS", "_WIN32"}
+		links {"winmm"}
+		
