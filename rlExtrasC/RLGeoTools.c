@@ -37,57 +37,57 @@
 
 Shader SetModelMaterialShader(Model* model, int materialIndex, Shader shader)
 {
-	model->materials[materialIndex].shader = shader;
-	return shader;
+    model->materials[materialIndex].shader = shader;
+    return shader;
 }
 
 void SetModelMaterialShaderValue(Model* model, int materialIndex, const char* location, const void* value, int uniformType)
 {
-	Shader shader = model->materials[materialIndex].shader;
-	SetShaderValue(shader, GetShaderLocation(shader, location), value, uniformType);
+    Shader shader = model->materials[materialIndex].shader;
+    SetShaderValue(shader, GetShaderLocation(shader, location), value, uniformType);
 }
 
 void SetModelMaterialShaderValueV(Model* model, int materialIndex, const char* location, const void* value, int uniformType, int count)
 {
-	Shader shader = model->materials[materialIndex].shader;
-	SetShaderValueV(shader, GetShaderLocation(shader, location), value, uniformType, count);
+    Shader shader = model->materials[materialIndex].shader;
+    SetShaderValueV(shader, GetShaderLocation(shader, location), value, uniformType, count);
 }
 
 void SetModelMaterialTexture(Model* model, int materialIndex, int maptype, Texture2D texture)
 {
-	SetMaterialTexture(&model->materials[materialIndex], maptype, texture);
+    SetMaterialTexture(&model->materials[materialIndex], maptype, texture);
 }
 
 RLAPI Shader LoadShaderSet(const char* resourcePath, const char* name)
 {
-	static char vsTemp[512];
-	static char fsTemp[512];
+    static char vsTemp[512];
+    static char fsTemp[512];
 
 #if defined(PLATFORM_WEB)
-	static const char* glsl = "glsl110";
+    static const char* glsl = "glsl110";
 #else
-	static const char* glsl = "glsl330";
+    static const char* glsl = "glsl330";
 #endif
-	sprintf(vsTemp, "%s/%s/%s.vs", resourcePath, glsl, name);
-	sprintf(fsTemp, "%s/%s/%s.fs", resourcePath, glsl, name);
+    sprintf(vsTemp, "%s/%s/%s.vs", resourcePath, glsl, name);
+    sprintf(fsTemp, "%s/%s/%s.fs", resourcePath, glsl, name);
 
-	return LoadShader(vsTemp, fsTemp);
+    return LoadShader(vsTemp, fsTemp);
 }
 
 RLAPI Shader LoadShaders(const char* resourcePath, const char* vsName, const char* fsName)
 {
-	static char vsTemp[512];
-	static char fsTemp[512];
+    static char vsTemp[512];
+    static char fsTemp[512];
 
 #if defined(PLATFORM_WEB)
-	static const char* glsl = "glsl110";
+    static const char* glsl = "glsl110";
 #else
-	static const char* glsl = "glsl330";
+    static const char* glsl = "glsl330";
 #endif
-	sprintf(vsTemp, "%s/%s/%s.vs", resourcePath, glsl, vsName);
-	sprintf(fsTemp, "%s/%s/%s.fs", resourcePath, glsl, fsName);
+    sprintf(vsTemp, "%s/%s/%s.vs", resourcePath, glsl, vsName);
+    sprintf(fsTemp, "%s/%s/%s.fs", resourcePath, glsl, fsName);
 
-	return LoadShader(vsTemp, fsTemp);
+    return LoadShader(vsTemp, fsTemp);
 }
 
 #ifndef DEFAULT_MESH_VERTEX_BUFFERS
@@ -96,107 +96,107 @@ RLAPI Shader LoadShaders(const char* resourcePath, const char* vsName, const cha
 
 void AllocateMeshData(Mesh* mesh, int verts, int triangles, int colors, bool uvs, bool uv2s)
 {
-	mesh->vboId = (unsigned int*)MemAlloc(DEFAULT_MESH_VERTEX_BUFFERS *sizeof(unsigned int));
-	for (int i = 0; i < DEFAULT_MESH_VERTEX_BUFFERS; i++)
-		mesh->vboId[i] = 0;
+    mesh->vboId = (unsigned int*)MemAlloc(DEFAULT_MESH_VERTEX_BUFFERS * sizeof(unsigned int));
+    for (int i = 0; i < DEFAULT_MESH_VERTEX_BUFFERS; i++)
+        mesh->vboId[i] = 0;
 
-	mesh->vertices = (float*)MemAlloc(verts * 3 * sizeof(float));
-	mesh->normals = (float*)MemAlloc(verts * 3 * sizeof(float));
+    mesh->vertices = (float*)MemAlloc(verts * 3 * sizeof(float));
+    mesh->normals = (float*)MemAlloc(verts * 3 * sizeof(float));
 
-	if (uvs)
-		mesh->texcoords = (float*)MemAlloc(verts * 2 * sizeof(float));
-	else
-		mesh->texcoords = NULL;
+    if (uvs)
+        mesh->texcoords = (float*)MemAlloc(verts * 2 * sizeof(float));
+    else
+        mesh->texcoords = NULL;
 
-	if (uv2s)
-		mesh->texcoords2 = (float*)MemAlloc(verts * 2 * sizeof(float));
-	else
-		mesh->texcoords2 = NULL;
+    if (uv2s)
+        mesh->texcoords2 = (float*)MemAlloc(verts * 2 * sizeof(float));
+    else
+        mesh->texcoords2 = NULL;
 
-	mesh->indices = (unsigned short*)MemAlloc(triangles * 3 * sizeof(unsigned short));
-	mesh->vertexCount = verts;
-	mesh->triangleCount = triangles;
+    mesh->indices = (unsigned short*)MemAlloc(triangles * 3 * sizeof(unsigned short));
+    mesh->vertexCount = verts;
+    mesh->triangleCount = triangles;
 }
 
 Mesh GenMeshCustomCallback(MeshGenerateCallback generate, void* userData)
 {
-	Mesh mesh = { 0 };
-	
-	if (generate != NULL)   // ask the callback to generate the mesh data
-		generate(&mesh, userData);
+    Mesh mesh = { 0 };
 
-	// Upload vertex data to GPU (static mesh)
-	UploadMesh(&mesh, false);
+    if (generate != NULL)   // ask the callback to generate the mesh data
+        generate(&mesh, userData);
 
-	return mesh;
+    // Upload vertex data to GPU (static mesh)
+    UploadMesh(&mesh, false);
+
+    return mesh;
 }
 
 void DrawVector3Text(Vector3* vector, int posX, int posY, bool rightJustify)
 {
-	const int size = 20;
-	const char* text = TextFormat("%.2f,%.2f,%.2f", vector->x, vector->y, vector->z);
+    const int size = 20;
+    const char* text = TextFormat("%.2f,%.2f,%.2f", vector->x, vector->y, vector->z);
 
-	int offset = 0;
-	if (rightJustify)
-		offset = MeasureText(text, size);
-	DrawText(text, posX - offset, posY, size, LIME);
+    int offset = 0;
+    if (rightJustify)
+        offset = MeasureText(text, size);
+    DrawText(text, posX - offset, posY, size, LIME);
 }
 
 void DrawVector2Text(Vector2* vector, int posX, int posY, bool rightJustify)
 {
-	const int size = 20;
-	const char* text = TextFormat("%.2f,%.2f", vector->x, vector->y);
+    const int size = 20;
+    const char* text = TextFormat("%.2f,%.2f", vector->x, vector->y);
 
-	int offset = 0;
-	if (rightJustify)
-		offset = MeasureText(text, size);
-	DrawText(text, posX - offset, posY, size, LIME);
+    int offset = 0;
+    if (rightJustify)
+        offset = MeasureText(text, size);
+    DrawText(text, posX - offset, posY, size, LIME);
 }
 
 void DrawLine3DF(float spx, float spy, float spz, float epx, float epy, float epz, Color color)
 {
-	rlBegin(RL_LINES);
-	rlColor4ub(color.r, color.g, color.b, color.a);
-	rlVertex3f(spx, spy, spz);
-	rlVertex3f(epx, epy, epz);
-	rlEnd();
+    rlBegin(RL_LINES);
+    rlColor4ub(color.r, color.g, color.b, color.a);
+    rlVertex3f(spx, spy, spz);
+    rlVertex3f(epx, epy, epz);
+    rlEnd();
 }
 
 void DrawRect3DXZ(Rectangle rect, float y, Color color)
 {
-	rlBegin(RL_LINES);
-	rlColor4ub(color.r, color.g, color.b, color.a);
-	rlVertex3f(rect.x, y, rect.y);
-	rlVertex3f(rect.x + rect.width, y, rect.y);
+    rlBegin(RL_LINES);
+    rlColor4ub(color.r, color.g, color.b, color.a);
+    rlVertex3f(rect.x, y, rect.y);
+    rlVertex3f(rect.x + rect.width, y, rect.y);
 
-	rlVertex3f(rect.x + rect.width, y, rect.y);
- 	rlVertex3f(rect.x + rect.width, y, rect.y + rect.height);
+    rlVertex3f(rect.x + rect.width, y, rect.y);
+    rlVertex3f(rect.x + rect.width, y, rect.y + rect.height);
 
-	rlVertex3f(rect.x + rect.width, y, rect.y + rect.height);
- 	rlVertex3f(rect.x, y, rect.y + rect.height);
-	
-	rlVertex3f(rect.x, y, rect.y + rect.height);
-	rlVertex3f(rect.x, y, rect.y);
-	rlEnd();
+    rlVertex3f(rect.x + rect.width, y, rect.y + rect.height);
+    rlVertex3f(rect.x, y, rect.y + rect.height);
+
+    rlVertex3f(rect.x, y, rect.y + rect.height);
+    rlVertex3f(rect.x, y, rect.y);
+    rlEnd();
 }
 
 void DrawCircleF(float centerX, float centerY, float radius, Color color)
 {
-	DrawCircleV((Vector2) { centerX, centerY }, radius, color);
+    DrawCircleV((Vector2) { centerX, centerY }, radius, color);
 }
 
 void DrawLineF(float startPosX, float startPosY, float endPosX, float endPosY, Color color)
 {
-	rlBegin(RL_LINES);
-	rlColor4ub(color.r, color.g, color.b, color.a);
-	rlVertex2f(startPosX, startPosY);
-	rlVertex2f(endPosX, endPosY);
-	rlEnd();
+    rlBegin(RL_LINES);
+    rlColor4ub(color.r, color.g, color.b, color.a);
+    rlVertex2f(startPosX, startPosY);
+    rlVertex2f(endPosX, endPosY);
+    rlEnd();
 }
 
 void DrawRectangleF(float posX, float posY, float width, float height, Color color)
 {
-	DrawRectangleV((Vector2) { posX, posY }, (Vector2) { width, height }, color);
+    DrawRectangleV((Vector2) { posX, posY }, (Vector2) { width, height }, color);
 }
 
 

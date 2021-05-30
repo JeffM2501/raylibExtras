@@ -48,7 +48,7 @@ public:
         MAX = 6
     };
 
-    std::map<FrustumPlanes,Vector4> Planes;
+    std::map<FrustumPlanes, Vector4> Planes;
 
     RLFrustum();
     virtual ~RLFrustum() {}
@@ -59,5 +59,5 @@ public:
     bool PointIn(float x, float y, float z) const;
 
     bool SphereIn(const Vector3& position, float radius) const;
-    bool AABBoxIn(const Vector3& min, const Vector3&  max) const;
+    bool AABBoxIn(const Vector3& min, const Vector3& max) const;
 };

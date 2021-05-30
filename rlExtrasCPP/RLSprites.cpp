@@ -33,204 +33,204 @@
 
 namespace RLSprites
 {
-	std::pair<Texture*, Rectangle*> GetRenderFrame(Sprite* sprite, SpriteAnimation* animation, int direction, int frame)
-	{
-		if (sprite != nullptr)
-		{
-			int realFrame = 0;
-			if (animation != nullptr)
-			{
-				std::vector<int>& directionFrames = animation->DirectionFrames[direction];
-				realFrame = directionFrames[frame];
-			}
+    std::pair<Texture*, Rectangle*> GetRenderFrame(Sprite* sprite, SpriteAnimation* animation, int direction, int frame)
+    {
+        if (sprite != nullptr)
+        {
+            int realFrame = 0;
+            if (animation != nullptr)
+            {
+                std::vector<int>& directionFrames = animation->DirectionFrames[direction];
+                realFrame = directionFrames[frame];
+            }
 
-			size_t count = 0;
-			for (size_t i = 0; i < sprite->Images.size(); ++i)
-			{
-				SpriteImage& image = sprite->Images[i];
+            size_t count = 0;
+            for (size_t i = 0; i < sprite->Images.size(); ++i)
+            {
+                SpriteImage& image = sprite->Images[i];
 
-				size_t max = image.Frames.size() + count;
-				if (realFrame < max)
-				{
-					return std::pair<Texture*, Rectangle*>(&image.Sheet, &(image.Frames[realFrame - count]));
-				}
+                size_t max = image.Frames.size() + count;
+                if (realFrame < max)
+                {
+                    return std::pair<Texture*, Rectangle*>(&image.Sheet, &(image.Frames[realFrame - count]));
+                }
 
-				count += image.Frames.size();
-			}
-		}
+                count += image.Frames.size();
+            }
+        }
 
-		return std::pair<Texture*, Rectangle*>(nullptr, nullptr);
-	}
+        return std::pair<Texture*, Rectangle*>(nullptr, nullptr);
+    }
 
 
-	SpriteAnimation SpriteAnimation::Clone()
-	{
-		SpriteAnimation anim;
-		anim.Name = Name;
-		anim.FramesPerSecond = FramesPerSecond;
-		anim.Loop = Loop;
-		anim.DirectionFrames = DirectionFrames;
-		anim.FrameCallbacks = FrameCallbacks;
+    SpriteAnimation SpriteAnimation::Clone()
+    {
+        SpriteAnimation anim;
+        anim.Name = Name;
+        anim.FramesPerSecond = FramesPerSecond;
+        anim.Loop = Loop;
+        anim.DirectionFrames = DirectionFrames;
+        anim.FrameCallbacks = FrameCallbacks;
 
-		return anim;
-	}
+        return anim;
+    }
 
-	void SpriteAnimation::Reverse()
-	{
-		int max = 0;
-		for (std::map<int, std::vector<int>>::iterator itr = DirectionFrames.begin(); itr != DirectionFrames.end(); itr++)
-		{
-			std::reverse(itr->second.begin(), itr->second.end());
-			if (itr->second.size() > max)
-				max = (int)itr->second.size();
-		}
+    void SpriteAnimation::Reverse()
+    {
+        int max = 0;
+        for (std::map<int, std::vector<int>>::iterator itr = DirectionFrames.begin(); itr != DirectionFrames.end(); itr++)
+        {
+            std::reverse(itr->second.begin(), itr->second.end());
+            if (itr->second.size() > max)
+                max = (int)itr->second.size();
+        }
 
-		std::map<int, SpriteFrameInfo> newCallbacks;
-		for (auto& cb : FrameCallbacks)
-		{
-			newCallbacks[(max - 1) - cb.first] = cb.second;
-		}
+        std::map<int, SpriteFrameInfo> newCallbacks;
+        for (auto& cb : FrameCallbacks)
+        {
+            newCallbacks[(max - 1) - cb.first] = cb.second;
+        }
 
-		FrameCallbacks = newCallbacks;
-	}
+        FrameCallbacks = newCallbacks;
+    }
 
-	int Sprite::AddImage(Texture tx, int xFrameCount, int yFrameCount, const char* name)
-	{
-		float cellW = tx.width / (float)xFrameCount;
-		float cellH = tx.height / (float)yFrameCount;
+    int Sprite::AddImage(Texture tx, int xFrameCount, int yFrameCount, const char* name)
+    {
+        float cellW = tx.width / (float)xFrameCount;
+        float cellH = tx.height / (float)yFrameCount;
 
-		SpriteImage img;
-		img.Sheet = tx;
-		img.ImageSource = name;
+        SpriteImage img;
+        img.Sheet = tx;
+        img.ImageSource = name;
 
-		img.StartFrame = 0;
-		if (!Images.empty())
-			img.StartFrame = Images[(int)Images.size() - 1].StartFrame + (int)Images[(int)Images.size() - 1].Frames.size();
+        img.StartFrame = 0;
+        if (!Images.empty())
+            img.StartFrame = Images[(int)Images.size() - 1].StartFrame + (int)Images[(int)Images.size() - 1].Frames.size();
 
-		for (float y = 0; y < tx.height; y += cellH)
-		{
-			for (float x = 0; x < tx.width; x += cellW)
-			{
-				Rectangle rect = { x, y, cellW, cellH };
-				img.Frames.emplace_back(rect);
-			}
-		}
+        for (float y = 0; y < tx.height; y += cellH)
+        {
+            for (float x = 0; x < tx.width; x += cellW)
+            {
+                Rectangle rect = { x, y, cellW, cellH };
+                img.Frames.emplace_back(rect);
+            }
+        }
 
-		Images.emplace_back(img);
-		return img.StartFrame;
-	}
+        Images.emplace_back(img);
+        return img.StartFrame;
+    }
 
-	int Sprite::AddImage(const std::string& imageName, int xFrameCount, int yFrameCount)
-	{
-		Texture tx = LoadTexture(imageName.c_str());
+    int Sprite::AddImage(const std::string& imageName, int xFrameCount, int yFrameCount)
+    {
+        Texture tx = LoadTexture(imageName.c_str());
 
-		return AddImage(tx, xFrameCount, yFrameCount, imageName.c_str());
-	}
+        return AddImage(tx, xFrameCount, yFrameCount, imageName.c_str());
+    }
 
-	void FixSpriteFrameIDs(Sprite* sprite)
-	{
-		int count = 0;
-		for (auto& img : sprite->Images)
-		{
-			img.StartFrame = count;
-			count += (int)img.Frames.size();
-		}
-	}
+    void FixSpriteFrameIDs(Sprite* sprite)
+    {
+        int count = 0;
+        for (auto& img : sprite->Images)
+        {
+            img.StartFrame = count;
+            count += (int)img.Frames.size();
+        }
+    }
 
-	SpriteImage* FindImageByFrame(Sprite* sprite, int frame)
-	{
-		if (sprite == nullptr)
-			return nullptr;
+    SpriteImage* FindImageByFrame(Sprite* sprite, int frame)
+    {
+        if (sprite == nullptr)
+            return nullptr;
 
-		for (std::vector<SpriteImage>::iterator itr = sprite->Images.begin(); itr != sprite->Images.end(); itr++)
-		{
-			int end = itr->StartFrame + (int)itr->Frames.size();
+        for (std::vector<SpriteImage>::iterator itr = sprite->Images.begin(); itr != sprite->Images.end(); itr++)
+        {
+            int end = itr->StartFrame + (int)itr->Frames.size();
 
-			if (frame >= itr->StartFrame && frame <= end)
-				return &(*itr);
-		}
+            if (frame >= itr->StartFrame && frame <= end)
+                return &(*itr);
+        }
 
-		return nullptr;
-	}
+        return nullptr;
+    }
 
-	int Sprite::AddFlipFrames(int startFrame, int endFrame, bool flipHorizontal, bool flipVertical)
-	{
-		SpriteImage* img = FindImageByFrame(this, startFrame);
-		if (img == nullptr)
-			return -1;
+    int Sprite::AddFlipFrames(int startFrame, int endFrame, bool flipHorizontal, bool flipVertical)
+    {
+        SpriteImage* img = FindImageByFrame(this, startFrame);
+        if (img == nullptr)
+            return -1;
 
-		std::vector<Rectangle> flipRects;
-		int localFrame = startFrame - img->StartFrame;
+        std::vector<Rectangle> flipRects;
+        int localFrame = startFrame - img->StartFrame;
 
-		float hScale = flipHorizontal ? -1.0f : 1.0f;
-		float vScale = flipVertical ? -1.0f : 1.0f;
+        float hScale = flipHorizontal ? -1.0f : 1.0f;
+        float vScale = flipVertical ? -1.0f : 1.0f;
 
-		for (int i = localFrame; i < img->Frames.size() && i <= endFrame - startFrame; ++i)
-		{
-			Rectangle& frameRect = img->Frames[i];
+        for (int i = localFrame; i < img->Frames.size() && i <= endFrame - startFrame; ++i)
+        {
+            Rectangle& frameRect = img->Frames[i];
 
-			float offsetX = 0;// flipHorizontal ? frameRect.width : 0;
-			float offsetY = 0;// flipVertical ? frameRect.height : 0;
+            float offsetX = 0;// flipHorizontal ? frameRect.width : 0;
+            float offsetY = 0;// flipVertical ? frameRect.height : 0;
 
-			flipRects.emplace_back(Rectangle{ frameRect.x + offsetX, frameRect.y + offsetY, frameRect.width * hScale, frameRect.height * vScale });
-		}
+            flipRects.emplace_back(Rectangle{ frameRect.x + offsetX, frameRect.y + offsetY, frameRect.width * hScale, frameRect.height * vScale });
+        }
 
-		int newStart = img->StartFrame + (int)img->Frames.size();
+        int newStart = img->StartFrame + (int)img->Frames.size();
 
-		for (auto& newRect : flipRects)
-			img->Frames.emplace_back(newRect);
+        for (auto& newRect : flipRects)
+            img->Frames.emplace_back(newRect);
 
-		FixSpriteFrameIDs(this);
-		return newStart;
-	}
+        FixSpriteFrameIDs(this);
+        return newStart;
+    }
 
-	SpriteAnimation* Sprite::FindAnimation(const std::string& name)
-	{
-		auto& itr = Animations.find(name);
-		if (itr == Animations.end())
-			return nullptr;
+    SpriteAnimation* Sprite::FindAnimation(const std::string& name)
+    {
+        auto& itr = Animations.find(name);
+        if (itr == Animations.end())
+            return nullptr;
 
-		return &(itr->second);
-	}
+        return &(itr->second);
+    }
 
-	void Sprite::AddAnimation(SpriteAnimation& animation)
-	{
-		Animations[animation.Name] = animation;
-	}
+    void Sprite::AddAnimation(SpriteAnimation& animation)
+    {
+        Animations[animation.Name] = animation;
+    }
 
-	SpriteAnimation* Sprite::AddAnimation(const std::string name, int direction, int start, int end)
-	{
-		SpriteAnimation* anim = FindAnimation(name);
-		if (anim == nullptr)
-		{
-			AddAnimation(SpriteAnimation() = { name });
-			anim = FindAnimation(name);
-		}
-
-		std::vector<int> frames;
-		if (end > start)
-		{
-			for (int i = start; i <= end; ++i)
-				frames.push_back(i);
-		}
-		else
-		{
-			for (int i = start; i >= end; --i)
-                frames.push_back(i);
-		}
-		anim->DirectionFrames[direction] = frames;
-
-		return anim;
-	}
-
-	void Sprite::SetAnimationLoop(const std::string& name, bool loop)
-	{
+    SpriteAnimation* Sprite::AddAnimation(const std::string name, int direction, int start, int end)
+    {
         SpriteAnimation* anim = FindAnimation(name);
-		if (anim == nullptr)
-			return;
+        if (anim == nullptr)
+        {
+            AddAnimation(SpriteAnimation() = { name });
+            anim = FindAnimation(name);
+        }
 
-		anim->Loop = loop;
-	}
+        std::vector<int> frames;
+        if (end > start)
+        {
+            for (int i = start; i <= end; ++i)
+                frames.push_back(i);
+        }
+        else
+        {
+            for (int i = start; i >= end; --i)
+                frames.push_back(i);
+        }
+        anim->DirectionFrames[direction] = frames;
+
+        return anim;
+    }
+
+    void Sprite::SetAnimationLoop(const std::string& name, bool loop)
+    {
+        SpriteAnimation* anim = FindAnimation(name);
+        if (anim == nullptr)
+            return;
+
+        anim->Loop = loop;
+    }
 
     void Sprite::SetAnimationSpeed(const std::string& name, float fps)
     {
@@ -241,36 +241,36 @@ namespace RLSprites
         anim->FramesPerSecond = fps;
     }
 
-	void Sprite::AddAnimationFrameCallback(const std::string& animationName, SpriteFrameCallback callback, const std::string& frameName, int frame)
-	{
+    void Sprite::AddAnimationFrameCallback(const std::string& animationName, SpriteFrameCallback callback, const std::string& frameName, int frame)
+    {
         SpriteAnimation* anim = FindAnimation(animationName);
         if (anim == nullptr)
             return;
 
-		SpriteFrameInfo info;
-		info.Name = frameName;
-		info.Callback = callback;
+        SpriteFrameInfo info;
+        info.Name = frameName;
+        info.Callback = callback;
 
-		anim->FrameCallbacks[frame] = info;
-	}
+        anim->FrameCallbacks[frame] = info;
+    }
 
-	void Sprite::SetAnimationFrameCallback(const std::string& animationName, SpriteFrameCallback callback, const std::string& frameName)
-	{
+    void Sprite::SetAnimationFrameCallback(const std::string& animationName, SpriteFrameCallback callback, const std::string& frameName)
+    {
         SpriteAnimation* anim = FindAnimation(animationName);
         if (anim == nullptr)
             return;
 
-		for (auto& cb : anim->FrameCallbacks)
-		{
-			if (cb.second.Name == frameName)
-			{
-				cb.second.Callback = callback;
-				return;
-			}
-		}
-	}
+        for (auto& cb : anim->FrameCallbacks)
+        {
+            if (cb.second.Name == frameName)
+            {
+                cb.second.Callback = callback;
+                return;
+            }
+        }
+    }
 
-	bool Sprite::Save(const char* filePath)
+    bool Sprite::Save(const char* filePath)
     {
         FILE* fp = fopen(filePath, "w");
         if (fp == NULL)
@@ -309,12 +309,12 @@ namespace RLSprites
 
         fclose(fp);
 
-		return true;
-	}
+        return true;
+    }
 
-	Sprite Sprite::Load(const char* filePath)
-	{
-		Sprite sprite;
+    Sprite Sprite::Load(const char* filePath)
+    {
+        Sprite sprite;
 
         FILE* fp = fopen(filePath, "r");
         if (fp == nullptr)
@@ -322,30 +322,30 @@ namespace RLSprites
 
         int version = 0;
 
-		char tempStr[512];
-		size_t tempSize = 0, tempSize2 = 0, tempSize3;
+        char tempStr[512];
+        size_t tempSize = 0, tempSize2 = 0, tempSize3;
 
         if (fscanf(fp, "RLSprite V:%d\n", &version) == 1 && version == 1)
         {
-			size_t imageCount = 0;
+            size_t imageCount = 0;
             if (fscanf(fp, "Images %zu\n", &(imageCount)) == 1)
             {
                 for (size_t i = 0; i < imageCount; i++)
                 {
-					SpriteImage image;
+                    SpriteImage image;
 
                     if (fscanf(fp, "Image %s\n", tempStr) == 1 && fscanf(fp, "Frameset %d %zu\n", &image.StartFrame, &tempSize) == 2)
                     {
-						image.ImageSource = tempStr;
+                        image.ImageSource = tempStr;
                         image.Sheet = LoadTexture(image.ImageSource.c_str());
 
-						for (int f = 0; f < tempSize; f++)
-						{
-							Rectangle rect = { 0,0,0,0 };
-							fscanf(fp, "%f %f %f %f\n", &rect.x, &rect.y, &rect.width, &rect.height);
-							image.Frames.push_back(rect);
-						}
-						sprite.Images.emplace_back(image);
+                        for (int f = 0; f < tempSize; f++)
+                        {
+                            Rectangle rect = { 0,0,0,0 };
+                            fscanf(fp, "%f %f %f %f\n", &rect.x, &rect.y, &rect.width, &rect.height);
+                            image.Frames.push_back(rect);
+                        }
+                        sprite.Images.emplace_back(image);
                     }
                 }
 
@@ -353,28 +353,28 @@ namespace RLSprites
                 {
                     for (size_t i = 0; i < tempSize; i++)
                     {
-						SpriteAnimation animation;
+                        SpriteAnimation animation;
 
                         char temp[128] = { 0 };
                         if (fscanf(fp, "Animation %s\n", tempStr) == 1 && fscanf(fp, "Options %f %s\n", &animation.FramesPerSecond, temp) == 2 && fscanf(fp, "Framesets %zu\n", &tempSize2) == 1)
                         {
-							animation.Name = tempStr;
-							animation.Loop = temp[0] == 'l';
+                            animation.Name = tempStr;
+                            animation.Loop = temp[0] == 'l';
 
                             for (size_t d = 0; d < tempSize2; d++)
                             {
-								int direction = 0;
+                                int direction = 0;
                                 if (fscanf(fp, "Frames %zu %d\n", &tempSize3, &direction) == 2)
                                 {
-									animation.DirectionFrames[direction] = std::vector<int>();
+                                    animation.DirectionFrames[direction] = std::vector<int>();
 
                                     for (size_t f = 0; f < tempSize3; f++)
                                     {
-										int frame = 0;
-										if (fscanf(fp, " %d", &frame) == 1)
-										{
-											animation.DirectionFrames[direction].push_back(frame);
-										}
+                                        int frame = 0;
+                                        if (fscanf(fp, " %d", &frame) == 1)
+                                        {
+                                            animation.DirectionFrames[direction].push_back(frame);
+                                        }
                                     }
                                     fscanf(fp, "\n");
                                 }
@@ -384,21 +384,21 @@ namespace RLSprites
                             {
                                 if (tempSize2 > 0)
                                 {
-                 
+
                                     for (size_t c = 0; c < tempSize2; c++)
                                     {
-										SpriteFrameInfo frameCallbackInfo;
-										int frame = 0;
-										if (fscanf(fp, "%d %s\n", &frame, tempStr) == 2)
-										{
-											frameCallbackInfo.Name = tempStr;
-											animation.FrameCallbacks[frame] = frameCallbackInfo;
-										}
+                                        SpriteFrameInfo frameCallbackInfo;
+                                        int frame = 0;
+                                        if (fscanf(fp, "%d %s\n", &frame, tempStr) == 2)
+                                        {
+                                            frameCallbackInfo.Name = tempStr;
+                                            animation.FrameCallbacks[frame] = frameCallbackInfo;
+                                        }
                                     }
                                 }
                             }
 
-							sprite.Animations[animation.Name] = animation;
+                            sprite.Animations[animation.Name] = animation;
                         }
                     }
                 }
@@ -407,116 +407,116 @@ namespace RLSprites
 
         fclose(fp);
 
-		return sprite;
-	}
+        return sprite;
+    }
 
-	void SpriteInstance::SetAimation(const std::string& name)
-	{
-		if (Layers.empty() || (CurrentAnimation != nullptr && CurrentAnimation->Name == name))
-			return;
+    void SpriteInstance::SetAimation(const std::string& name)
+    {
+        if (Layers.empty() || (CurrentAnimation != nullptr && CurrentAnimation->Name == name))
+            return;
 
-		CurrentAnimation = Layers[0].Image->FindAnimation(name);
-		CurrentFrame = 0;
-		LastFrameTime = GetTime();
-	}
+        CurrentAnimation = Layers[0].Image->FindAnimation(name);
+        CurrentFrame = 0;
+        LastFrameTime = GetTime();
+    }
 
-	void SpriteInstance::Update()
-	{
-		TriggerFrameName.clear();
+    void SpriteInstance::Update()
+    {
+        TriggerFrameName.clear();
 
-		if (CurrentAnimation == nullptr)
-			return;
+        if (CurrentAnimation == nullptr)
+            return;
 
-		double now = GetTime();
-		double frameTime = 1.0 / ((double)CurrentAnimation->FramesPerSecond * Speed);
+        double now = GetTime();
+        double frameTime = 1.0 / ((double)CurrentAnimation->FramesPerSecond * Speed);
 
-		if (LastFrameTime <= 0)
-			LastFrameTime = now;
+        if (LastFrameTime <= 0)
+            LastFrameTime = now;
 
-		CurrentDirection = Direction;
-		if (CurrentAnimation->DirectionFrames.find(CurrentDirection) == CurrentAnimation->DirectionFrames.end())
-		{
-			CurrentDirection = DIRECTION_DEFAULT;
-			if (CurrentAnimation->DirectionFrames.find(CurrentDirection) == CurrentAnimation->DirectionFrames.end())
-				return;
-		}
+        CurrentDirection = Direction;
+        if (CurrentAnimation->DirectionFrames.find(CurrentDirection) == CurrentAnimation->DirectionFrames.end())
+        {
+            CurrentDirection = DIRECTION_DEFAULT;
+            if (CurrentAnimation->DirectionFrames.find(CurrentDirection) == CurrentAnimation->DirectionFrames.end())
+                return;
+        }
 
-		if (CurrentAnimation->DirectionFrames[CurrentDirection].size() <= 1)
-		{
-			CurrentFrame = 0;
-			return;
-		}
+        if (CurrentAnimation->DirectionFrames[CurrentDirection].size() <= 1)
+        {
+            CurrentFrame = 0;
+            return;
+        }
 
-		double frameChangeTime = LastFrameTime + frameTime;
+        double frameChangeTime = LastFrameTime + frameTime;
 
-		if (frameChangeTime <= now)
-		{
-			++CurrentFrame;
+        if (frameChangeTime <= now)
+        {
+            ++CurrentFrame;
 
-			auto itr = CurrentAnimation->FrameCallbacks.find(CurrentFrame);
-			if (itr != CurrentAnimation->FrameCallbacks.end())
-			{
-				TriggerFrameName = itr->second.Name;
-				if (itr->second.Callback != nullptr)
-					itr->second.Callback(this, CurrentFrame);
-			}
+            auto itr = CurrentAnimation->FrameCallbacks.find(CurrentFrame);
+            if (itr != CurrentAnimation->FrameCallbacks.end())
+            {
+                TriggerFrameName = itr->second.Name;
+                if (itr->second.Callback != nullptr)
+                    itr->second.Callback(this, CurrentFrame);
+            }
 
-			LastFrameTime = now;
-			if (CurrentFrame >= CurrentAnimation->DirectionFrames[CurrentDirection].size())
-			{
-				if (CurrentAnimation->Loop)
-				{
-					CurrentFrame = 0;
-				}
-				else
-				{
-					--CurrentFrame;
-					LastFrameTime = 99999999999;
+            LastFrameTime = now;
+            if (CurrentFrame >= CurrentAnimation->DirectionFrames[CurrentDirection].size())
+            {
+                if (CurrentAnimation->Loop)
+                {
+                    CurrentFrame = 0;
+                }
+                else
+                {
+                    --CurrentFrame;
+                    LastFrameTime = 99999999999;
 
-					auto itr = CurrentAnimation->FrameCallbacks.find(-1);
-					if (itr != CurrentAnimation->FrameCallbacks.end())
-					{
-						TriggerFrameName = itr->second.Name;
-						if (itr->second.Callback != nullptr)
-							itr->second.Callback(this, -1);
-					}
-				}
-			}
-		}
-	}
+                    auto itr = CurrentAnimation->FrameCallbacks.find(-1);
+                    if (itr != CurrentAnimation->FrameCallbacks.end())
+                    {
+                        TriggerFrameName = itr->second.Name;
+                        if (itr->second.Callback != nullptr)
+                            itr->second.Callback(this, -1);
+                    }
+                }
+            }
+        }
+    }
 
-	float GetOriginValue(OriginLocations origin, float max)
-	{
-		switch (origin)
-		{
-		default:
-		case OriginLocations::Minium:
-			return 0;
-		case OriginLocations::Center:
-			return max * 0.5f;
-		case OriginLocations::Maximum:
-			return max;
-		}
-	}
+    float GetOriginValue(OriginLocations origin, float max)
+    {
+        switch (origin)
+        {
+        default:
+        case OriginLocations::Minium:
+            return 0;
+        case OriginLocations::Center:
+            return max * 0.5f;
+        case OriginLocations::Maximum:
+            return max;
+        }
+    }
 
-	void SpriteInstance::Render()
-	{
-		for (auto& sprite : Layers)
-		{
-			auto frame = GetRenderFrame(sprite.Image, CurrentAnimation, CurrentDirection, CurrentFrame);
-			if (frame.second != nullptr)
-				LastRectangle = *frame.second;
+    void SpriteInstance::Render()
+    {
+        for (auto& sprite : Layers)
+        {
+            auto frame = GetRenderFrame(sprite.Image, CurrentAnimation, CurrentDirection, CurrentFrame);
+            if (frame.second != nullptr)
+                LastRectangle = *frame.second;
 
-			Rectangle dest = { Position.x,Position.y,(float)fabs(LastRectangle.width) * Scale, (float)fabs(LastRectangle.height) * Scale };
-			Vector2  center = { GetOriginValue(OriginX,dest.width), GetOriginValue(OriginY, dest.height) };
+            Rectangle dest = { Position.x,Position.y,(float)fabs(LastRectangle.width) * Scale, (float)fabs(LastRectangle.height) * Scale };
+            Vector2  center = { GetOriginValue(OriginX,dest.width), GetOriginValue(OriginY, dest.height) };
 
-			DrawTexturePro(*frame.first, LastRectangle, dest, center, Rotation, sprite.Tint);
-		}
-	}
+            DrawTexturePro(*frame.first, LastRectangle, dest, center, Rotation, sprite.Tint);
+        }
+    }
 
-	void SpriteInstance::UpdateRender()
-	{
-		Update();
-		Render();
-	}
+    void SpriteInstance::UpdateRender()
+    {
+        Update();
+        Render();
+    }
 }

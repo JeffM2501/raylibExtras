@@ -1,9 +1,9 @@
 /**********************************************************************************************
 *
 *   raylibExtras * Utilities and Shared Components for Raylib
-* 
+*
 *   RLAssets * Simple Asset Managment System for Raylib
-* 
+*
 *   LICENSE: MIT
 *
 *   Copyright (c) 2020 Jeffery Myers

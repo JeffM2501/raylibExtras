@@ -51,7 +51,7 @@ constexpr char PathDelim = '/';
 
 #include "zip_file.h"
 
-typedef struct  
+typedef struct
 {
     std::string RelativeName;
     std::string PathOnDisk;
@@ -97,10 +97,10 @@ void rlas_Cleanup()
         }
         catch (...)
         {
-        	
+
         }
     }
-        
+
     TempFiles.clear();
 }
 
@@ -205,14 +205,14 @@ void RecurseAddFiles(const std::string& root, const std::string& relRootPath)
         else
         {
             subDirs.push_back(path[i]);
-           
+
         }
     }
     ClearDirectoryFiles();
 
     for (auto subDir : subDirs)
     {
-        RecurseAddFiles(root + subDir + PathDelim , relRootPath + subDir + "/");
+        RecurseAddFiles(root + subDir + PathDelim, relRootPath + subDir + "/");
     }
 }
 
@@ -231,7 +231,7 @@ void rlas_AddAssetResourcePath(const char* path)
 void rlas_AddAssetResourceArchive(const char* path, bool relativeToApp)
 {
     std::string pathToUse = path;
-    
+
     if (relativeToApp)
     {
         pathToUse = rlas_GetApplicationBasePath();
@@ -367,7 +367,7 @@ unsigned char* LoadBinFile(const char* fileName, unsigned int* bytesRead)
         *bytesRead = (unsigned int)itr->second.ArchiveInfo.file_size;
         void* buffer = (unsigned char*)MemAlloc((unsigned int)itr->second.ArchiveInfo.file_size);
         itr->second.ArchiveFile->readBin(itr->second.ArchiveInfo, buffer);
-      
+
         return (unsigned char*)buffer;
     }
 

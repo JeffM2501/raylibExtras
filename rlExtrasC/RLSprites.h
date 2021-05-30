@@ -45,40 +45,40 @@
 
 typedef struct SpriteImage
 {
-	char ImageSource[MAX_NAME];
-	size_t FrameCount;
-	Rectangle *Frames;
-	Texture Sheet;
-	int StartFrame;
+    char ImageSource[MAX_NAME];
+    size_t FrameCount;
+    Rectangle* Frames;
+    Texture Sheet;
+    int StartFrame;
 }SpriteImage;
 
 typedef void(*SpriteFrameCallback)(void*, int);
 
 typedef struct SpriteFrameCallbackFrame
 {
-	int Frame;
-	char Name[MAX_NAME];
-	SpriteFrameCallback Callback;
+    int Frame;
+    char Name[MAX_NAME];
+    SpriteFrameCallback Callback;
 }SpriteFrameCallbackFrame;
 
 typedef struct DirectionFrameset
 {
-	int Direction;
-	size_t FrameCount;
-	int* Frames;
+    int Direction;
+    size_t FrameCount;
+    int* Frames;
 }DirectionFrameset;
 
 typedef struct SpriteAnimation
 {
-	char Name[MAX_NAME];
-	float FramesPerSecond;
-	bool Loop;
-		
-	size_t DirectionFrameCount;
-	DirectionFrameset* DirectionFrames;
+    char Name[MAX_NAME];
+    float FramesPerSecond;
+    bool Loop;
 
-	size_t FrameCallbackCount;
-	SpriteFrameCallbackFrame* FrameCallbaks;
+    size_t DirectionFrameCount;
+    DirectionFrameset* DirectionFrames;
+
+    size_t FrameCallbackCount;
+    SpriteFrameCallbackFrame* FrameCallbaks;
 }SpriteAnimation;
 
 RLAPI SpriteAnimation CloneAnimation(SpriteAnimation* anim);
@@ -86,11 +86,11 @@ RLAPI void ReverseAnimation(SpriteAnimation* anim);
 
 typedef struct Sprite
 {
-	size_t ImageCount;
-	SpriteImage* Images;
+    size_t ImageCount;
+    SpriteImage* Images;
 
     size_t AnimationCount;
-	SpriteAnimation* Animations;
+    SpriteAnimation* Animations;
 }Sprite;
 
 RLAPI int AddSpriteImage(Sprite* sprite, Texture tx, int xFrameCount, int yFrameCount, const char* name);
@@ -115,9 +115,9 @@ RLAPI void FreeSprite(Sprite* sprite);
 
 typedef enum
 {
-	OriginMinium,
-	OriginCenter,
-	OriginMaximum
+    OriginMinium,
+    OriginCenter,
+    OriginMaximum
 }OriginLocations;
 
 typedef struct SpriteInstanceLayer
@@ -128,28 +128,28 @@ typedef struct SpriteInstanceLayer
 
 typedef struct SpriteInstance
 {
-	size_t LayerCount;
-	SpriteInstanceLayer* Layers;
+    size_t LayerCount;
+    SpriteInstanceLayer* Layers;
 
-	Vector2 Position;
-	int Direction;
-	float Rotation;
-	float Scale;
-	float Speed;
+    Vector2 Position;
+    int Direction;
+    float Rotation;
+    float Scale;
+    float Speed;
 
-	OriginLocations OriginX;
-	OriginLocations OriginY;
+    OriginLocations OriginX;
+    OriginLocations OriginY;
 
-	Rectangle LastRectangle;
+    Rectangle LastRectangle;
 
-	SpriteAnimation* CurrentAnimation;
+    SpriteAnimation* CurrentAnimation;
 
-	const char* NameFrameTrigger;
+    const char* NameFrameTrigger;
 
-	int CurrentFrame;
-	int CurrentDirection;
-	int CurrentRealFrame;
-	double LastFrameTime;
+    int CurrentFrame;
+    int CurrentDirection;
+    int CurrentRealFrame;
+    double LastFrameTime;
 }SpriteInstance;
 
 RLAPI SpriteInstance* CreateSpriteInstance(Sprite* sprite, Color tint);

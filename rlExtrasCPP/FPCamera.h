@@ -53,7 +53,7 @@ public:
 
     inline Vector2 GetViewAngles() const { return Vector2Scale(Angle, 1.0f / DEG2RAD); }
 
-   typedef enum
+    typedef enum
     {
         MOVE_FRONT = 0,
         MOVE_BACK,

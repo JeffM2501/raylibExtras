@@ -116,7 +116,7 @@ const char* rlas_GetApplicationBasePath()
             uint32_t len = strlen(path);
             for (uint32_t i = len; i >= 0; i--)
             {
-                if (path[i] == '/' && path[i+1] == '.')
+                if (path[i] == '/' && path[i + 1] == '.')
                 {
                     path[i + 1] = 0;
                     break

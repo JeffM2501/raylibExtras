@@ -127,7 +127,7 @@ bool RLFrustum::PointIn(float x, float y, float z) const
     return true;
 }
 
-bool RLFrustum::SphereIn( const Vector3 &position, float radius) const
+bool RLFrustum::SphereIn(const Vector3& position, float radius) const
 {
     for (auto& plane : Planes)
     {
@@ -138,7 +138,7 @@ bool RLFrustum::SphereIn( const Vector3 &position, float radius) const
     return true;
 }
 
-bool RLFrustum::AABBoxIn(const Vector3& min, const Vector3 &max) const
+bool RLFrustum::AABBoxIn(const Vector3& min, const Vector3& max) const
 {
     // if any point is in and we are good
     if (PointIn(min.x, min.y, min.z))

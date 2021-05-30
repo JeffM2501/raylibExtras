@@ -83,7 +83,7 @@ void InitTPOrbitCamera(TPOrbitCamera* camera, float fovY, Vector3 position)
     camera->FOV.y = fovY;
 
     camera->ViewCamera.target = position;
-    camera->ViewCamera.position = Vector3Add(camera->ViewCamera.target, (Vector3){ 0, 0, camera->CameraPullbackDistance });
+    camera->ViewCamera.position = Vector3Add(camera->ViewCamera.target, (Vector3) { 0, 0, camera->CameraPullbackDistance });
     camera->ViewCamera.up = (Vector3){ 0.0f, 1.0f, 0.0f };
     camera->ViewCamera.fovy = fovY;
     camera->ViewCamera.projection = CAMERA_PERSPECTIVE;
@@ -183,7 +183,7 @@ void UpdateTPOrbitCamera(TPOrbitCamera* camera)
         camera->ViewAngles.x -= turnRotation * DEG2RAD;
     else if (useMouse && camera->Focused)
         camera->ViewAngles.x -= (mousePositionDelta.x / -camera->MouseSensitivity);
-  
+
     if (tiltRotation)
         camera->ViewAngles.y += tiltRotation * DEG2RAD;
     else if (useMouse && camera->Focused)

@@ -154,7 +154,7 @@ void FPCamera::Update()
     float mouseWheelMove = GetMouseWheelMove();
 
     // Keys input detection
-    float direction[MOVE_DOWN+1] = {  GetSpeedForAxis(MOVE_FRONT,MoveSpeed.z),
+    float direction[MOVE_DOWN + 1] = { GetSpeedForAxis(MOVE_FRONT,MoveSpeed.z),
                                       GetSpeedForAxis(MOVE_BACK,MoveSpeed.z),
                                       GetSpeedForAxis(MOVE_RIGHT,MoveSpeed.x),
                                       GetSpeedForAxis(MOVE_LEFT,MoveSpeed.x),
@@ -166,7 +166,7 @@ void FPCamera::Update()
 
     PreviousMousePosition = mousePosition;
 
-    Vector3 forward = Vector3Subtract(ViewCamera.target,ViewCamera.position);
+    Vector3 forward = Vector3Subtract(ViewCamera.target, ViewCamera.position);
     forward.y = 0;
     forward = Vector3Normalize(forward);
 
@@ -191,19 +191,19 @@ void FPCamera::Update()
         Angle.x -= turnRotation * DEG2RAD;
     else if (UseMouseX && Focused)
         Angle.x += (mousePositionDelta.x / -MouseSensitivity);
-    
+
     if (tiltRotation)
         Angle.y += tiltRotation * DEG2RAD;
     else if (UseMouseY && Focused)
         Angle.y += (mousePositionDelta.y / -MouseSensitivity);
 
-        // Angle clamp
+    // Angle clamp
     if (Angle.y < MinimumViewY * DEG2RAD)
         Angle.y = MinimumViewY * DEG2RAD;
-    else if (Angle.y > MaximumViewY * DEG2RAD) 
-       Angle.y = MaximumViewY * DEG2RAD;
+    else if (Angle.y > MaximumViewY * DEG2RAD)
+        Angle.y = MaximumViewY * DEG2RAD;
 
-        // Recalculate camera target considering translation and rotation
+    // Recalculate camera target considering translation and rotation
     Vector3 target = Vector3Transform(Vector3{ 0, 0, 1 }, MatrixRotateXYZ(Vector3{ Angle.y, -Angle.x, 0 }));
 
     ViewCamera.position = CameraPosition;

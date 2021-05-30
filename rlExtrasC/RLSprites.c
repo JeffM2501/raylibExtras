@@ -424,8 +424,8 @@ void SaveSpriteInfo(Sprite* sprite, const char* filePath)
     fprintf(fp, "RLSprite V:1\nImages %zu\n", sprite->ImageCount);
     for (size_t i = 0; i < sprite->ImageCount; i++)
     {
-        fprintf(fp,"Image %s\n", sprite->Images[i].ImageSource);
-        fprintf(fp, "Frameset %d %zu\n", sprite->Images[i].StartFrame,sprite->Images[i].FrameCount);
+        fprintf(fp, "Image %s\n", sprite->Images[i].ImageSource);
+        fprintf(fp, "Frameset %d %zu\n", sprite->Images[i].StartFrame, sprite->Images[i].FrameCount);
         for (int f = 0; f < sprite->Images[i].FrameCount; f++)
             fprintf(fp, "%f %f %f %f\n", sprite->Images[i].Frames[f].x, sprite->Images[i].Frames[f].y, sprite->Images[i].Frames[f].width, sprite->Images[i].Frames[f].height);
     }
@@ -446,7 +446,7 @@ void SaveSpriteInfo(Sprite* sprite, const char* filePath)
         }
 
         fprintf(fp, "NamedFrames %zu\n", sprite->Animations[i].FrameCallbackCount);
-        for (size_t c = 0; c < sprite->Animations[i].FrameCallbackCount;c++)
+        for (size_t c = 0; c < sprite->Animations[i].FrameCallbackCount; c++)
         {
             fprintf(fp, "%d %s\n", sprite->Animations[i].FrameCallbaks[c].Frame, sprite->Animations[i].FrameCallbaks[c].Name);
         }
@@ -476,7 +476,7 @@ bool LoadSpriteInfo(Sprite* sprite, const char* filePath)
             {
                 SpriteImage* image = &(sprite->Images[i]);
                 memset(image->ImageSource, 0, MAX_NAME);
-              
+
                 if (fscanf(fp, "Image %s\n", image->ImageSource) == 1 && fscanf(fp, "Frameset %d %zu\n", &image->StartFrame, &image->FrameCount) == 2)
                 {
                     image->Sheet = LoadTexture(image->ImageSource);
@@ -620,7 +620,7 @@ SpriteInstance* CreateSpriteInstance(Sprite* sprite, Color tint)
     instance->CurrentFrame = 0;
     instance->CurrentDirection = 0;
     instance->CurrentRealFrame = 0;
-    instance->LastFrameTime =  -99999999;
+    instance->LastFrameTime = -99999999;
 
     if (sprite != NULL)
     {
@@ -699,7 +699,7 @@ void UpdateSpriteInstance(SpriteInstance* instance)
             if (callback->Callback != NULL)
                 callback->Callback(instance, instance->CurrentFrame);
         }
-            
+
         instance->LastFrameTime = now;
         if (instance->CurrentFrame >= dirFrames->FrameCount)
         {

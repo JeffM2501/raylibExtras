@@ -35,20 +35,20 @@
 #include "raylib.h"
 #include "raymath.h"
 
-typedef enum 
+typedef enum
 {
     Back = 0,
-    Front = 1, 
+    Front = 1,
     Bottom = 2,
     Top = 3,
-	Right = 4,
-	Left = 5,
-	MAX = 6
+    Right = 4,
+    Left = 5,
+    MAX = 6
 }FrustumPlanes;
 
-typedef struct 
+typedef struct
 {
-	Vector4 Planes[6];
+    Vector4 Planes[6];
 }Frustum;
 
 RLAPI void ExtractFrustum(Frustum* frustrum);
