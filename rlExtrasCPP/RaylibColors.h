@@ -2,7 +2,7 @@
 *
 *   raylibExtras * Utilities and Shared Components for Raylib
 *
-*   RLAssets * Simple Asset Managment System for Raylib
+*   RaylibColors.h * CPP port of raylib colors
 *
 *   LICENSE: MIT
 *
