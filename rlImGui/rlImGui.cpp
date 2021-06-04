@@ -406,7 +406,7 @@ void EndRLImGui()
 
 void ShutdownRLImGui()
 {
-    for (auto tx : LoadedTextures)
+    for (const auto& tx : LoadedTextures)
         UnloadTexture(tx);
 
     UnloadTexture(FontTexture);
@@ -418,7 +418,7 @@ void RLImGuiImage(Texture *image)
     ImGui::Image(image, ImVec2(float(image->width), float(image->height)));
 }
 
-void RLImGuiImageSize(Texture *image, int height, int width)
+void RLImGuiImageSize(Texture *image, int width, int height)
 {
     ImGui::Image(image, ImVec2(float(width), float(height)));
 }

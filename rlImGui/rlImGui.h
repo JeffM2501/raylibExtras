@@ -37,4 +37,4 @@ void EndRLImGui();
 void ShutdownRLImGui();
 
 void RLImGuiImage(Texture *image);
-void RLImGuiImageSize(Texture *image, int height, int width);
+void RLImGuiImageSize(Texture *image, int width, int height);
