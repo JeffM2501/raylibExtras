@@ -280,7 +280,7 @@ static void rlImGuiRenderTriangles(unsigned int count, int indexStart, const ImV
 static void EnableScissor(float x, float y, float width, float height)
 {
     rlEnableScissorTest();
-    rlScissor(x, GetScreenHeight() - (y + height), width, height);
+    rlScissor((int)x, GetScreenHeight() - (int)(y + height), (int)width, (int)height);
 }
 
 static void rlRenderData(ImDrawData* data)
@@ -429,8 +429,16 @@ void RLImGuiImageRect(Texture* image, int destWidth, int destHeight, Rectangle s
     ImVec2 uv0;
     ImVec2 uv1;
 
-    uv0.x = (float)sourceRect.x / image->width;
-    uv1.x = uv0.x + (float)(sourceRect.width / image->width);
+    if (sourceRect.width < 0)
+    {
+        uv0.x = -((float)sourceRect.x / image->width);
+        uv1.x = (uv0.x - (float)(fabs(sourceRect.width) / image->width));
+    }
+    else
+    {
+        uv0.x = (float)sourceRect.x / image->width;
+        uv1.x = uv0.x + (float)(sourceRect.width / image->width);
+    }
 
     if (sourceRect.height < 0)
     {
