@@ -75,6 +75,15 @@ public:
         {
             Focused = ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows);
 
+            ImVec2 size = ImGui::GetContentRegionAvail();
+
+            // center the scratchpad in the view
+            Rectangle viewRect = { 0 };
+            viewRect.x = ViewTexture.texture.width / 2 - size.x / 2;
+            viewRect.y = ViewTexture.texture.height / 2 - size.y / 2;
+            viewRect.width = size.x;
+            viewRect.height = -size.y;
+
             if (ImGui::BeginChild("Toolbar", ImVec2(ImGui::GetContentRegionAvailWidth(), 25)))
             {
                 ImGui::SetCursorPosX(2);
@@ -90,12 +99,6 @@ public:
                 {
                     CurrentToolMode = ToolMode::Move;
                 }
-                ImGui::SameLine();
-
-                if (ImGui::Button("Zoom"))
-                {
-                    CurrentToolMode = ToolMode::Zoom;
-                }
 
                 ImGui::SameLine();
                 switch (CurrentToolMode)
@@ -106,9 +109,6 @@ public:
                 case ToolMode::Move:
                     ImGui::TextUnformatted("Move Tool");
                     break;
-                case ToolMode::Zoom:
-                    ImGui::TextUnformatted("Zoom Tool");
-                    break;
                 default:
                     break;
                 }
@@ -118,20 +118,7 @@ public:
                 ImGui::EndChild();
             }
 
-            ImVec2 size = ImGui::GetContentRegionAvail();
-
-            // center the scratchpad in the view
-            Rectangle viewRect = { 0 };
-            viewRect.x = ViewTexture.texture.width / 2 - size.x / 2;
-            viewRect.y = ViewTexture.texture.height / 2 - size.y / 2;
-            viewRect.width = size.x;
-            viewRect.height = -size.y;
-
-            // draw the scratchpad
             RLImGuiImageRect(&ViewTexture.texture, (int)size.x, (int)size.y, viewRect);
-
-            ImGui::SetCursorPos(ImVec2(0, 0));
-            // some tools
 
             ImGui::End();
         }
@@ -171,27 +158,12 @@ public:
                     mouseDelta.y /= Camera.zoom;
                     Camera.target = Vector2Add(LastTarget, mouseDelta);
 
-                    UpdateRenderTexture();
+                    DirtyScene = true;
+                    
                 }
                 else
                 {
                     Dragging = false;
-                }
-            }
-            else if (CurrentToolMode == ToolMode::Zoom)
-            {
-                if (IsMouseButtonPressed(0))
-                {
-                    Vector2 mousePos = GetMousePosition();
-                    Vector2 localCameraPos = GetScreenToWorld2D(mousePos, Camera);
-                    Camera.target = localCameraPos;
-
-                    if (IsKeyDown(KEY_LEFT_SHIFT) || IsKeyDown(KEY_RIGHT_SHIFT))
-                        Camera.zoom /= 1.25f;
-                    else
-                        Camera.zoom *= 1.25f;
-
-                    UpdateRenderTexture();
                 }
             }
 		}
@@ -199,6 +171,12 @@ public:
 		{
 			Dragging = false;
 		}
+
+        if (DirtyScene)
+        {
+            DirtyScene = false;
+            UpdateRenderTexture();
+        }
 	}
 
     Texture ImageTexture;
@@ -208,11 +186,12 @@ public:
     Vector2 LastTarget = { 0 };
     bool Dragging = false;
 
+    bool DirtyScene = false;
+
     enum class ToolMode
     {
         None,
         Move,
-        Zoom
     };
 
     ToolMode CurrentToolMode = ToolMode::None;
