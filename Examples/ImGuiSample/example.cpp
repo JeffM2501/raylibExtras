@@ -140,6 +140,9 @@ public:
 
 	void Update() override
 	{
+        if (!Open)
+            return;
+
         if (IsWindowResized())
         {
             UnloadRenderTexture(ViewTexture);
@@ -287,6 +290,9 @@ public:
 
     void Update() override
     {
+        if (!Open)
+            return;
+
         if (IsWindowResized())
         {
             UnloadRenderTexture(ViewTexture);
