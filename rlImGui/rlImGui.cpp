@@ -33,6 +33,7 @@
 #include "raylib.h"
 #include "rlgl.h"
 
+#include <math.h>
 #include <vector>
 #include <map>
 
@@ -425,8 +426,22 @@ void RLImGuiImageSize(Texture *image, int width, int height)
 
 void RLImGuiImageRect(Texture* image, int destWidth, int destHeight, Rectangle sourceRect)
 {
-    ImVec2 uv0((float)sourceRect.x / image->width,  -((float)sourceRect.y / image->height));
-    ImVec2 uv1(uv0.x + (float)(sourceRect.width/image->width), (uv0.y - (float)(sourceRect.height / image->height)));
+    ImVec2 uv0;
+    ImVec2 uv1;
+
+    uv0.x = (float)sourceRect.x / image->width;
+    uv1.x = uv0.x + (float)(sourceRect.width / image->width);
+
+    if (sourceRect.height < 0)
+    {
+        uv0.y = -((float)sourceRect.y / image->height);
+        uv1.y = (uv0.y - (float)(fabs(sourceRect.height) / image->height));
+    }
+    else
+    {
+        uv0.y = (float)sourceRect.y / image->height;
+        uv1.y = uv0.y + (float)(sourceRect.height / image->height);
+    }
 
     ImGui::Image(image, ImVec2(float(destWidth), float(destHeight)),uv0,uv1);
 }

@@ -125,7 +125,7 @@ public:
             viewRect.x = ViewTexture.texture.width / 2 - size.x / 2;
             viewRect.y = ViewTexture.texture.height / 2 - size.y / 2;
             viewRect.width = size.x;
-            viewRect.height = size.y;
+            viewRect.height = -size.y;
 
             // draw the scratchpad
             RLImGuiImageRect(&ViewTexture.texture, (int)size.x, (int)size.y, viewRect);
@@ -276,7 +276,7 @@ public:
             viewRect.x = ViewTexture.texture.width / 2 - size.x / 2;
             viewRect.y = ViewTexture.texture.height / 2 - size.y / 2;
             viewRect.width = size.x;
-            viewRect.height = size.y;
+            viewRect.height = -size.y;
 
             // draw the view
             RLImGuiImageRect(&ViewTexture.texture, (int)size.x, (int)size.y, viewRect);
