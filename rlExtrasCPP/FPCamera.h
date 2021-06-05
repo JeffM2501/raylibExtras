@@ -105,6 +105,8 @@ public:
     double NearPlane = 0.01;
     double FarPlane = 1000;
 
+    bool HideCursor = true;
+
 protected:
     bool Focused = true;
     Vector3 CameraPosition = { 0.0f,0.0f,0.0f };

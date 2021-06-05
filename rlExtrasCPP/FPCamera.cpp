@@ -52,7 +52,7 @@ void FPCamera::Setup(float fovY, Vector3&& position)
     ViewCamera.projection = CAMERA_PERSPECTIVE;
 
     Focused = IsWindowFocused();
-    if (Focused && (UseMouseX || UseMouseY))
+    if (HideCursor && Focused && (UseMouseX || UseMouseY))
         DisableCursor();
 
     TargetDistance = 1;
@@ -134,7 +134,7 @@ void FPCamera::EndMode3D()
 
 void FPCamera::Update()
 {
-    if (IsWindowFocused() != Focused && (UseMouseX || UseMouseY))
+    if (HideCursor && IsWindowFocused() != Focused && (UseMouseX || UseMouseY))
     {
         Focused = IsWindowFocused();
         if (Focused)

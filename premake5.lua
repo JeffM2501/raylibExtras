@@ -223,9 +223,9 @@ project "ImGuiSample"
 	}
 	files {"Examples/ImGuiSample/**.cpp", "Examples/ImGuiSample/**.h"}
 
-	links {"raylib","rlImGui"}
+	links {"raylib","rlImGui","rlExtrasCPP"}
 	
-	includedirs { "Examples/ImGuiSample", "raylib/src", "rlImGui", "imGui" }
+	includedirs { "Examples/ImGuiSample", "raylib/src", "rlImGui", "imGui", "rlExtrasCPP" }
 	
 	filter "action:vs*"
 		defines{"_WINSOCK_DEPRECATED_NO_WARNINGS", "_CRT_SECURE_NO_WARNINGS", "_WIN32"}
