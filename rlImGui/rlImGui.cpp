@@ -330,14 +330,13 @@ void SetupMouseCursors()
     MouseCursorMap[ImGuiMouseCursor_NotAllowed] = MOUSE_CURSOR_NOT_ALLOWED;
 }
 
-void SetupRLImGui(bool dark)
+void InitRLGLImGui()
 {
     ImGui::CreateContext(nullptr);
-    if (dark)
-        ImGui::StyleColorsDark();
-    else
-        ImGui::StyleColorsLight();
+}
 
+void FinishRLGLImguSetup()
+{
     SetupMouseCursors();
 
     rlEnableScissorTest();
@@ -374,9 +373,28 @@ void SetupRLImGui(bool dark)
 
     io.SetClipboardTextFn = rlImGuiSetClipText;
     io.GetClipboardTextFn = rlImGuiGetClipText;
-    
+
     io.ClipboardUserData = nullptr;
 
+
+    ReloadImGuiFonts();
+}
+
+void SetupRLImGui(bool dark)
+{
+    InitRLGLImGui();
+
+    if (dark)
+        ImGui::StyleColorsDark();
+    else
+        ImGui::StyleColorsLight();
+
+    FinishRLGLImguSetup();
+}
+
+void ReloadImGuiFonts()
+{
+    ImGuiIO& io = ImGui::GetIO();
     unsigned char* pixels = nullptr;
 
     int width;
@@ -384,6 +402,7 @@ void SetupRLImGui(bool dark)
     io.Fonts->GetTexDataAsRGBA32(&pixels, &width, &height, nullptr);
     Image image = GenImageColor(width, height, BLANK);
     memcpy(image.data, pixels, width * height * 4);
+
     if (FontTexture.id != 0)
         UnloadTexture(FontTexture);
 

@@ -41,11 +41,18 @@ namespace ImGuiColors
     }
 }
 
+// basic API
 void SetupRLImGui(bool dark);
 void BeginRLImGui();
 void EndRLImGui();
 void ShutdownRLImGui();
 
+// Advanced StartupAPI
+void InitRLGLImGui();
+void FinishRLGLImguSetup();
+void ReloadImGuiFonts();
+
+// image API
 void RLImGuiImage(Texture *image);
 void RLImGuiImageSize(Texture *image, int width, int height);
 void RLImGuiImageRect(Texture* image, int destWidth, int destHeight, Rectangle sourceRect);
