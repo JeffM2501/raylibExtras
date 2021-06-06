@@ -184,7 +184,7 @@ void RecurseAddFiles(const std::string& root, const std::string& relRootPath)
 
         std::string relPath = relRootPath + path[i];
         std::string fullPath = root + path[i];
-        if (FileExists(fullPath.c_str()))
+        if (!DirectoryExists(fullPath.c_str()) && FileExists(fullPath.c_str()))
         {
             if (IsFileExtension(path[i], ".zip"))
             {
