@@ -74,6 +74,9 @@ void FPCamera::ViewResized()
 
 float FPCamera::GetSpeedForAxis(CameraControls axis, float speed)
 {
+    if (!UseKeyboard)
+        return 0;
+
     int key = ControlsKeys[axis];
     if (key == -1)
         return 0;

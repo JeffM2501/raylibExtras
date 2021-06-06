@@ -100,6 +100,8 @@ public:
     bool UseMouseX = true;
     bool UseMouseY = true;
 
+    bool UseKeyboard = true;
+
     //clipping planes
     // note must use BeginMode3D and EndMode3D on the camera object for clipping planes to work
     double NearPlane = 0.01;
