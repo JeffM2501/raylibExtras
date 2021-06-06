@@ -35,6 +35,7 @@
 namespace Colors
 {
     constexpr ::Color  LightGray = { 200, 200, 200, 255 };
+    constexpr ::Color  Gray = { 128, 128, 128, 255 };
     constexpr ::Color  DarkGray{ 80, 80, 80, 255 };
     constexpr ::Color  Yellow{ 253, 249, 0, 255 };
     constexpr ::Color  Gold{ 255, 203, 0, 255 };
