@@ -433,17 +433,17 @@ void ShutdownRLImGui()
     LoadedTextures.clear();
 }
 
-void RLImGuiImage(Texture *image)
+void RLImGuiImage(const Texture *image)
 {
-    ImGui::Image(image, ImVec2(float(image->width), float(image->height)));
+    ImGui::Image((ImTextureID)image, ImVec2(float(image->width), float(image->height)));
 }
 
-void RLImGuiImageSize(Texture *image, int width, int height)
+void RLImGuiImageSize(const Texture *image, int width, int height)
 {
-    ImGui::Image(image, ImVec2(float(width), float(height)));
+    ImGui::Image((ImTextureID)image, ImVec2(float(width), float(height)));
 }
 
-void RLImGuiImageRect(Texture* image, int destWidth, int destHeight, Rectangle sourceRect)
+void RLImGuiImageRect(const Texture* image, int destWidth, int destHeight, Rectangle sourceRect)
 {
     ImVec2 uv0;
     ImVec2 uv1;
@@ -470,5 +470,5 @@ void RLImGuiImageRect(Texture* image, int destWidth, int destHeight, Rectangle s
         uv1.y = uv0.y + (float)(sourceRect.height / image->height);
     }
 
-    ImGui::Image(image, ImVec2(float(destWidth), float(destHeight)),uv0,uv1);
+    ImGui::Image((ImTextureID)image, ImVec2(float(destWidth), float(destHeight)),uv0,uv1);
 }

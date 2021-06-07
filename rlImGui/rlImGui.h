@@ -53,6 +53,6 @@ void FinishRLGLImguSetup();
 void ReloadImGuiFonts();
 
 // image API
-void RLImGuiImage(Texture *image);
-void RLImGuiImageSize(Texture *image, int width, int height);
-void RLImGuiImageRect(Texture* image, int destWidth, int destHeight, Rectangle sourceRect);
+void RLImGuiImage(const Texture *image);
+void RLImGuiImageSize(const Texture *image, int width, int height);
+void RLImGuiImageRect(const Texture* image, int destWidth, int destHeight, Rectangle sourceRect);
