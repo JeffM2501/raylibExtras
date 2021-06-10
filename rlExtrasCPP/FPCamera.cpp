@@ -164,6 +164,42 @@ void FPCamera::Update()
                                       GetSpeedForAxis(MOVE_UP,MoveSpeed.y),
                                       GetSpeedForAxis(MOVE_DOWN,MoveSpeed.y) };
 
+    if (UseController && IsGamepadAvailable(ControlerID))
+    {
+        bool sprint = IsKeyDown(ControlsKeys[SPRINT]) || IsGamepadButtonDown(ControlerID, ControlerSprintButton);
+        float factor = MoveSpeed.z * GetFrameTime();
+        if (sprint)
+            factor *= 2;
+
+        float forward = -GetGamepadAxisMovement(ControlerID, ControlerForwardAxis) * factor;
+        if (forward > 0)
+        {
+            direction[MOVE_FRONT] = std::max(direction[MOVE_FRONT], forward);
+            direction[MOVE_BACK] = 0;
+        }
+        else if(forward < 0)
+        {
+            direction[MOVE_BACK] = std::max(direction[MOVE_BACK], fabs(forward));
+            direction[MOVE_FRONT] = 0;
+        }
+
+        factor = MoveSpeed.x * GetFrameTime();
+        if (sprint)
+            factor *= 2;
+
+        float side = GetGamepadAxisMovement(ControlerID, ControllerSideAxis) * factor;
+        if (side > 0)
+        {
+            direction[MOVE_RIGHT] = std::max(direction[MOVE_RIGHT], side);
+            direction[MOVE_LEFT] = 0;
+        }
+        else if (side < 0)
+        {
+            direction[MOVE_LEFT] = std::max(direction[MOVE_LEFT], fabs(side));
+            direction[MOVE_RIGHT] = 0;
+        }
+    }
+
     mousePositionDelta.x = mousePosition.x - PreviousMousePosition.x;
     mousePositionDelta.y = mousePosition.y - PreviousMousePosition.y;
 
@@ -189,6 +225,32 @@ void FPCamera::Update()
     // Camera orientation calculation
     float turnRotation = GetSpeedForAxis(TURN_RIGHT, TurnSpeed.x) - GetSpeedForAxis(TURN_LEFT, TurnSpeed.x);
     float tiltRotation = GetSpeedForAxis(TURN_UP, TurnSpeed.y) - GetSpeedForAxis(TURN_DOWN, TurnSpeed.y);
+
+    if (UseController && IsGamepadAvailable(ControlerID))
+    {
+        float factor = GetFrameTime() * TurnSpeed.x;
+
+        float turn = GetGamepadAxisMovement(ControlerID, ControllerYawAxis) * factor;
+        if (turn > 0)
+        {
+            turnRotation = std::max(turnRotation, turn);
+        }
+        else if (turn < 0)
+        {
+            turnRotation = std::min(turnRotation, turn);
+        }
+
+        factor = GetFrameTime() * TurnSpeed.y;
+        float tilt = -GetGamepadAxisMovement(ControlerID, ControllerPitchAxis) * factor;
+        if (tilt > 0)
+        {
+            tiltRotation = std::max(turnRotation, tilt);
+        }
+        else if (tilt < 0)
+        {
+            tiltRotation = std::min(turnRotation, tilt);
+        }
+    }
 
     if (turnRotation != 0)
         Angle.x -= turnRotation * DEG2RAD;

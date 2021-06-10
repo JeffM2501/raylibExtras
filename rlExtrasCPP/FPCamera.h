@@ -102,6 +102,15 @@ public:
 
     bool UseKeyboard = true;
 
+    bool UseController = true;
+    bool ControlerID = 0;
+
+    int ControlerForwardAxis = GAMEPAD_AXIS_LEFT_Y;
+    int ControllerSideAxis = GAMEPAD_AXIS_LEFT_X;
+    int ControllerPitchAxis = GAMEPAD_AXIS_RIGHT_Y;
+    int ControllerYawAxis = GAMEPAD_AXIS_RIGHT_X;
+    int ControlerSprintButton = GAMEPAD_BUTTON_LEFT_TRIGGER_1;
+
     //clipping planes
     // note must use BeginMode3D and EndMode3D on the camera object for clipping planes to work
     double NearPlane = 0.01;
