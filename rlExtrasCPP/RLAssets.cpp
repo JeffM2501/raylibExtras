@@ -359,6 +359,10 @@ unsigned char* LoadBinFile(const char* fileName, unsigned int* bytesRead)
     if (itr == AssetMap.end())
     {
         *bytesRead = 0;
+        if (FileExists(fileName))
+        {
+            return (unsigned char*)ReadFileContents(fileName, bytesRead, true);
+        }
         return nullptr;
     }
 
@@ -379,6 +383,11 @@ char* LoadTextFile(const char* fileName)
     MetaMap::iterator itr = AssetMap.find(ToUpper(fileName));
     if (itr == AssetMap.end())
     {
+        if (FileExists(fileName))
+        {
+            unsigned int bytesRead = 0;
+            return (char*)ReadFileContents(fileName, &bytesRead, false);
+        }
         return nullptr;
     }
 

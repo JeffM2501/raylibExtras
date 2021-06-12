@@ -312,3 +312,11 @@ Vector3 FPCamera::GetCameraPosition() const
 {
     return CameraPosition;
 }
+
+void FPCamera::SetCameraPosition(const Vector3&& pos)
+{ 
+    CameraPosition = pos;
+    Vector3 forward = Vector3Subtract(ViewCamera.target, ViewCamera.position);
+    ViewCamera.position = CameraPosition;
+    ViewCamera.target = Vector3Add(CameraPosition, forward);
+}

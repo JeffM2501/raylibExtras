@@ -50,6 +50,7 @@ public:
 
     float GetFOVX() const;
     Vector3 GetCameraPosition() const;
+    void SetCameraPosition(const Vector3&& pos);
 
     inline Vector2 GetViewAngles() const { return Vector2Scale(Angle, 1.0f / DEG2RAD); }
 
