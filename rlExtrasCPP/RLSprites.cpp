@@ -30,6 +30,7 @@
 
 #include "RLSprites.h"
 #include <stdio.h>
+#include <algorithm>
 
 namespace RLSprites
 {
