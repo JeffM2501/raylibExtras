@@ -187,7 +187,7 @@ namespace RLSprites
 
     SpriteAnimation* Sprite::FindAnimation(const std::string& name)
     {
-        auto& itr = Animations.find(name);
+        std::map<std::string, SpriteAnimation>::iterator itr = Animations.find(name);
         if (itr == Animations.end())
             return nullptr;
 
