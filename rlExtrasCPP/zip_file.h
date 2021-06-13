@@ -516,7 +516,7 @@ extern "C" {
     typedef unsigned int mz_uint32;
     typedef unsigned int mz_uint;
     typedef long long mz_int64;
-    typedef unsigned long long mz_uint64;
+    typedef size_t mz_uint64;
     typedef int mz_bool;
 
 #define MZ_FALSE (0)
