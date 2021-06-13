@@ -30,6 +30,7 @@
 #include <memory>
 #include <sstream>
 #include <string>
+#include <cstring>
 #include <time.h>
 #include <vector>
 
@@ -561,8 +562,8 @@ extern "C" {
         char m_comment[MZ_ZIP_MAX_ARCHIVE_FILE_COMMENT_SIZE];
     } mz_zip_archive_file_stat;
 
-    typedef size_t(*mz_file_read_func)(void* pOpaque, mz_uint64 file_ofs, void* pBuf, size_t n);
-    typedef size_t(*mz_file_write_func)(void* pOpaque, mz_uint64 file_ofs, const void* pBuf, size_t n);
+    typedef size_t(*mz_file_read_func)(void* pOpaque, std::uint64_t file_ofs, void* pBuf, size_t n);
+    typedef size_t(*mz_file_write_func)(void* pOpaque, std::uint64_t file_ofs, const void* pBuf, size_t n);
 
     struct mz_zip_internal_state_tag;
     typedef struct mz_zip_internal_state_tag mz_zip_internal_state;
