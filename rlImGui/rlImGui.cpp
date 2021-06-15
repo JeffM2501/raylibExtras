@@ -99,7 +99,6 @@ static void rlImGuiNewFrame()
             else
             {
                 ShowCursor();
-                ImGuiIO& io = ImGui::GetIO();
 
                 if (!(io.ConfigFlags & ImGuiConfigFlags_NoMouseCursorChange))
                 {
@@ -338,8 +337,6 @@ void InitRLGLImGui()
 void FinishRLGLImguSetup()
 {
     SetupMouseCursors();
-
-    rlEnableScissorTest();
 
     ImGuiIO& io = ImGui::GetIO();
     io.BackendPlatformName = "imgui_impl_raylib";
