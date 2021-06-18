@@ -122,6 +122,14 @@ Vector3 GetFPCameraPosition(FPCamera* camera)
     return camera->CameraPosition;
 }
 
+void SetFPCameraPosition(FPCamera* camera, Vector3 pos)
+{
+    camera->CameraPosition = pos;
+    Vector3 forward = Vector3Subtract(camera->ViewCamera.target, camera->ViewCamera.position);
+    camera->ViewCamera.position = camera->CameraPosition;
+    camera->ViewCamera.target = Vector3Add(camera->CameraPosition, forward);
+}
+
 static float GetSpeedForAxis(FPCamera* camera, CameraControls axis, float speed)
 {
     if (camera == NULL)
