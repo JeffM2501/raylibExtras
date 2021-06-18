@@ -139,7 +139,7 @@ RLAPI void UseFPCameraMouse(FPCamera* camera, bool useMouse);
 RLAPI Vector3 GetFPCameraPosition(FPCamera* camera);
 
 // Set the camera's position in world (or game) space
-RLAPI void SetFPCameraPosition(FPCamera* camera, Vector3 pos)
+RLAPI void SetFPCameraPosition(FPCamera* camera, Vector3 pos);
 
 // update the camera for the current frame
 RLAPI void UpdateFPCamera(FPCamera* camera);
