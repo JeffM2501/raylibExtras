@@ -74,10 +74,10 @@ project "rlExtrasC"
 	includedirs { "raylib/src","rlExtrasC"}
 	vpaths 
 	{
-		["Header Files"] = { "rlExtrasC/**.h"},
+		["Header Files"] = { "rlExtrasC/**.h", "raylib/src/raylib.h"},
 		["Source Files"] = {"rlExtrasC/**.c"},
 	}
-	files {"rlExtrasC/**.h", "rlExtrasC/**.c"}
+	files {"rlExtrasC/**.h", "rlExtrasC/**.c", "raylib/src/raylib.h"}
 	
 project "rlExtrasCPP"
 	kind "StaticLib"
@@ -96,10 +96,10 @@ project "rlExtrasCPP"
 	includedirs { "raylib/src","rlExtrasCPP"}
 	vpaths 
 	{
-		["Header Files"] = { "rlExtrasCPP/**.h"},
+		["Header Files"] = { "rlExtrasCPP/**.h", "raylib/src/raylib.h"},
 		["Source Files"] = {"rlExtrasCPP/**.cpp"},
 	}
-	files {"rlExtrasCPP/**.h", "rlExtrasCPP/**.cpp"}
+	files {"rlExtrasCPP/**.h", "rlExtrasCPP/**.cpp", "raylib/src/raylib.h"}
 	
 project "rlImGui"
 	kind "StaticLib"
@@ -118,11 +118,11 @@ project "rlImGui"
 	includedirs { "raylib/src","rlImGui", "imGui"}
 	vpaths 
 	{
-		["Header Files"] = { "rlImGui/**.h"},
+		["Header Files"] = { "rlImGui/**.h", "raylib/src/raylib.h"},
 		["Source Files"] = {"rlImGui/**.cpp"},
 		["ImGui Files"] = { "imGui/*.h","imGui/*.cpp" },
 	}
-	files {"imGui/*.h", "imGui/*.cpp", "rlImGui/**.cpp", "rlImGui/**.h"}
+	files {"imGui/*.h", "imGui/*.cpp", "rlImGui/**.cpp", "rlImGui/**.h", "raylib/src/raylib.h"}
 
 
 group "Examples C"
@@ -134,10 +134,10 @@ project "FPCameraCSample"
 	
 	vpaths 
 	{
-		["Header Files"] = { "Examples/FPCameraCSample/**.h"},
+		["Header Files"] = { "Examples/FPCameraCSample/**.h", "raylib/src/raylib.h"},
 		["Source Files"] = {"Examples/FPCameraCSample/**.c"},
 	}
-	files {"Examples/FPCameraCSample/**.c", "Examples/FPCameraCSample/**.h"}
+	files {"Examples/FPCameraCSample/**.c", "Examples/FPCameraCSample/**.h", "raylib/src/raylib.h"}
 
 	links {"raylib","rlExtrasC", "rlImGui"}
 	
@@ -155,10 +155,10 @@ project "TPOrbitCameraCSample"
 	
 	vpaths 
 	{
-		["Header Files"] = { "Examples/TPOrbitCameraCSample/**.h"},
+		["Header Files"] = { "Examples/TPOrbitCameraCSample/**.h", "raylib/src/raylib.h"},
 		["Source Files"] = {"Examples/TPOrbitCameraCSample/**.c"},
 	}
-	files {"Examples/TPOrbitCameraCSample/**.c", "Examples/TPOrbitCameraCSample/**.h"}
+	files {"Examples/TPOrbitCameraCSample/**.c", "Examples/TPOrbitCameraCSample/**.h", "raylib/src/raylib.h"}
 
 	links {"raylib","rlExtrasC"}
 	
@@ -176,10 +176,10 @@ project "RLSpritesCSample"
 	
 	vpaths 
 	{
-		["Header Files"] = { "Examples/RLSpritesCSample/**.h"},
+		["Header Files"] = { "Examples/RLSpritesCSample/**.h", "raylib/src/raylib.h"},
 		["Source Files"] = {"Examples/RLSpritesCSample/**.c"},
 	}
-	files {"Examples/RLSpritesCSample/**.c", "Examples/RLSpritesCSample/**.h"}
+	files {"Examples/RLSpritesCSample/**.c", "Examples/RLSpritesCSample/**.h", "raylib/src/raylib.h"}
 
 	links {"raylib","rlExtrasC"}
 	
@@ -200,10 +200,10 @@ project "RLSpritesCppSample"
 	
 	vpaths 
 	{
-		["Header Files"] = { "Examples/RLSpritesCppSample/**.h"},
+		["Header Files"] = { "Examples/RLSpritesCppSample/**.h", "raylib/src/raylib.h"},
 		["Source Files"] = {"Examples/RLSpritesCppSample/**.cpp"},
 	}
-	files {"Examples/RLSpritesCppSample/**.cpp", "Examples/RLSpritesCppSample/**.h"}
+	files {"Examples/RLSpritesCppSample/**.cpp", "Examples/RLSpritesCppSample/**.h", "raylib/src/raylib.h"}
 
 	links {"raylib","rlExtrasCPP"}
 	
@@ -222,10 +222,10 @@ project "ImGuiSample"
 	
 	vpaths 
 	{
-		["Header Files"] = { "Examples/ImGuiSample/**.h"},
+		["Header Files"] = { "Examples/ImGuiSample/**.h", "raylib/src/raylib.h"},
 		["Source Files"] = {"Examples/ImGuiSample/**.cpp"},
 	}
-	files {"Examples/ImGuiSample/**.cpp", "Examples/ImGuiSample/**.h"}
+	files {"Examples/ImGuiSample/**.cpp", "Examples/ImGuiSample/**.h", "raylib/src/raylib.h"}
 
 	links {"raylib","rlImGui","rlExtrasCPP"}
 	
@@ -244,10 +244,10 @@ project "FPCameraCPPSample"
 	
 	vpaths 
 	{
-		["Header Files"] = { "Examples/FPCameraCPPSample/**.h"},
+		["Header Files"] = { "Examples/FPCameraCPPSample/**.h", "raylib/src/raylib.h"},
 		["Source Files"] = {"Examples/FPCameraCPPSample/**.cpp"},
 	}
-	files {"Examples/FPCameraCPPSample/**.cpp", "Examples/FPCameraCPPSample/**.h"}
+	files {"Examples/FPCameraCPPSample/**.cpp", "Examples/FPCameraCPPSample/**.h", "raylib/src/raylib.h"}
 
 	links {"raylib","rlExtrasCPP"}
 	
@@ -266,10 +266,10 @@ project "RLAssetsSample"
 	
 	vpaths 
 	{
-		["Header Files"] = { "Examples/RLAssetsSample/**.h"},
+		["Header Files"] = { "Examples/RLAssetsSample/**.h", "raylib/src/raylib.h"},
 		["Source Files"] = {"Examples/RLAssetsSample/**.cpp"},
 	}
-	files {"Examples/RLAssetsSample/**.cpp", "Examples/RLAssetsSample/**.h"}
+	files {"Examples/RLAssetsSample/**.cpp", "Examples/RLAssetsSample/**.h", "raylib/src/raylib.h"}
 
 	links {"raylib","rlExtrasCPP"}
 	
