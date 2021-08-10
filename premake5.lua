@@ -89,7 +89,8 @@ project "rlExtrasCPP"
 	filter{}
 	
 	location "./rlExtrasCPP/"
-	language "C"
+	language "C++"
+	cppdialect "C++17"
 	targetdir "bin/%{cfg.buildcfg}"
 	
 	includedirs { "raylib/src","rlExtrasCPP"}
@@ -111,6 +112,7 @@ project "rlImGui"
 	
 	location "./rlImGui/"
 	language "C++"
+	cppdialect "C++17"
 	targetdir "bin/%{cfg.buildcfg}"
 	
 	includedirs { "raylib/src","rlImGui", "imGui"}
@@ -145,7 +147,7 @@ project "FPCameraCSample"
 		defines{"_WINSOCK_DEPRECATED_NO_WARNINGS", "_CRT_SECURE_NO_WARNINGS", "_WIN32"}
 		links {"winmm"}
 		
-project "TOprbitCameraCSample"
+project "TPOrbitCameraCSample"
 	kind "ConsoleApp"
 	location "Examples/"
 	language "C"
@@ -160,7 +162,7 @@ project "TOprbitCameraCSample"
 
 	links {"raylib","rlExtrasC"}
 	
-	includedirs { "Examples/TOprbitCameraCSample", "raylib/src", "rlExtrasC" }
+	includedirs { "Examples/TPOrbitCameraCSample", "raylib/src", "rlExtrasC" }
 	
 	filter "action:vs*"
 		defines{"_WINSOCK_DEPRECATED_NO_WARNINGS", "_CRT_SECURE_NO_WARNINGS", "_WIN32"}
@@ -193,6 +195,7 @@ project "RLSpritesCppSample"
 	kind "ConsoleApp"
 	location "Examples/"
 	language "C++"
+	cppdialect "C++17"
 	targetdir "bin/%{cfg.buildcfg}"
 	
 	vpaths 
@@ -214,6 +217,7 @@ project "ImGuiSample"
 	kind "ConsoleApp"
 	location "Examples/"
 	language "C++"
+	cppdialect "C++17"
 	targetdir "bin/%{cfg.buildcfg}"
 	
 	vpaths 
@@ -235,6 +239,7 @@ project "FPCameraCPPSample"
 	kind "ConsoleApp"
 	location "Examples/"
 	language "C++"
+	cppdialect "C++17"
 	targetdir "bin/%{cfg.buildcfg}"
 	
 	vpaths 
@@ -256,6 +261,7 @@ project "RLAssetsSample"
 	kind "ConsoleApp"
 	location "Examples/"
 	language "C++"
+	cppdialect "C++17"
 	targetdir "bin/%{cfg.buildcfg}"
 	
 	vpaths 
