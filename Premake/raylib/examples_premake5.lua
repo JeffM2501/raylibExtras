@@ -10,14 +10,14 @@ function examples ()
 		includedirs { "src"}
 		vpaths 
 		{
-			["Header Files"] = { "examples/core/**.h"},
-			["Source Files"] = {"examples/core/**.c"},
+			["Header Files"] = { "../../raylib/examples/core/**.h"},
+			["Source Files"] = {"../../raylib/examples/core/**.c"},
 		}
-		files {"examples/core/core_basic_window.c"}
+		files {"../../raylib/examples/core/core_basic_window.c"}
 
 		links {"raylib"}
 		
-		includedirs { "src" }
+		includedirs { "../../raylib/src" }
 		
 		filter "action:vs*"
 			defines{"_WINSOCK_DEPRECATED_NO_WARNINGS", "_CRT_SECURE_NO_WARNINGS", "_WIN32"}
@@ -38,14 +38,14 @@ function examples ()
 		includedirs { "src"}
 		vpaths 
 		{
-			["Header Files"] = { "examples/core/**.h"},
-			["Source Files"] = {"examples/core/**.c"},
+			["Header Files"] = { "../../raylib/examples/core/**.h"},
+			["Source Files"] = {"../../raylib/examples/core/**.c"},
 		}
-		files {"examples/core/core_basic_window.cpp"}
+		files {"../../raylib/examples/core/core_basic_window.cpp"}
 
 		links {"raylib"}
 		
-		includedirs { "src" }
+		includedirs { "../../raylib/src" }
 		
 		filter "action:vs*"
 			defines{"_WINSOCK_DEPRECATED_NO_WARNINGS", "_CRT_SECURE_NO_WARNINGS", "_WIN32"}

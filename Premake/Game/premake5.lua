@@ -47,13 +47,13 @@ project "raylib"
 		targetdir "bin/%{cfg.buildcfg}"
 		cppdialect "C++17"
 		
-		includedirs { "raylib/src", "raylib/src/external/glfw/include"}
+		includedirs { "../../raylib/src", "../../raylib/src/external/glfw/include"}
 		vpaths 
 		{
-			["Header Files"] = { "raylib/src/**.h"},
-			["Source Files/*"] = {"raylib/src/**.c"},
+			["Header Files"] = { "../../raylib/src/**.h"},
+			["Source Files/*"] = {"../../raylib/src/**.c"},
 		}
-		files {"raylib/src/*.h", "raylib/src/*.c"}
+		files {"../../raylib/src/*.h", "../../raylib/src/*.c"}
 		
 project "YourGame"
 	kind "ConsoleApp"
@@ -62,17 +62,17 @@ project "YourGame"
 	targetdir "bin/%{cfg.buildcfg}"
 	cppdialect "C++17"
 	
-	includedirs {"src"}
+	includedirs {"../../raylib/src"}
 	vpaths 
 	{
-		["Header Files"] = { "**.h"},
+		["Header Files"] = { "**.h", "../../raylib/src/raylib.h"},
 		["Source Files"] = {"**.c", "**.cpp"},
 	}
-	files {"%{wks.name}/**.c", "%{wks.name}/**.cpp", "%{wks.name}/**.h"}
+	files {"**.c", "**.cpp", "**.h", "../../raylib/src/raylib.h"}
 
 	links {"raylib"}
 	
-	includedirs { "%{wks.name}", "raylib/src" }
+	includedirs { "%{wks.name}", "../../raylib/src" }
 	defines{"PLATFORM_DESKTOP", "GRAPHICS_API_OPENGL_33"}
 	
 	filter "action:vs*"

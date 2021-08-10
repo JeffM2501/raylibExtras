@@ -22,13 +22,13 @@ function raylib ()
 		targetdir "bin/%{cfg.buildcfg}"
 		cppdialect "C++17"
 		
-		includedirs { "src", "src/external/glfw/include"}
+		includedirs { "../../raylib/src", "../../raylib/src/external/glfw/include"}
 		vpaths 
 		{
-			["Header Files"] = { "src/**.h"},
-			["Source Files/*"] = {"src/**.c"},
+			["Header Files"] = { "../../raylib/src/**.h"},
+			["Source Files/*"] = {"../../raylib/src/**.c"},
 		}
-		files {"src/*.h", "src/*.c"}
+		files {"../../raylib/src/*.h", "../../raylib/src/*.c"}
 		
 		defines{"PLATFORM_DESKTOP", "GRAPHICS_API_OPENGL_33"}
 end
