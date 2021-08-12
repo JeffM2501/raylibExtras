@@ -145,7 +145,7 @@ project "FPCameraCSample"
 		defines{"_WINSOCK_DEPRECATED_NO_WARNINGS", "_CRT_SECURE_NO_WARNINGS", "_WIN32"}
 		links {"winmm"}
 		
-project "TOprbitCameraCSample"
+project "TPOrbitCameraCSample"
 	kind "ConsoleApp"
 	location "Examples/"
 	language "C"
@@ -161,6 +161,27 @@ project "TOprbitCameraCSample"
 	links {"raylib","rlExtrasC"}
 	
 	includedirs { "Examples/TOprbitCameraCSample", "raylib/src", "rlExtrasC" }
+	
+	filter "action:vs*"
+		defines{"_WINSOCK_DEPRECATED_NO_WARNINGS", "_CRT_SECURE_NO_WARNINGS", "_WIN32"}
+		links {"winmm"}
+		
+project "FreeCameraCSample"
+	kind "ConsoleApp"
+	location "Examples/"
+	language "C"
+	targetdir "bin/%{cfg.buildcfg}"
+	
+	vpaths 
+	{
+		["Header Files"] = { "Examples/FreeCameraCSample/**.h"},
+		["Source Files"] = {"Examples/FreeCameraCSample/**.c"},
+	}
+	files {"Examples/FreeCameraCSample/**.c", "Examples/FreeCameraCSample/**.h"}
+
+	links {"raylib","rlExtrasC", "rlImGui"}
+	
+	includedirs { "Examples/FreeCameraCSample", "raylib/src", "rlExtrasC", "rlImGui", "imGui" }
 	
 	filter "action:vs*"
 		defines{"_WINSOCK_DEPRECATED_NO_WARNINGS", "_CRT_SECURE_NO_WARNINGS", "_WIN32"}

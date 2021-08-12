@@ -2,7 +2,7 @@
 *
 *   raylibExtras * Utilities and Shared Components for Raylib
 *
-*   RLAssets * Simple Asset Managment System for Raylib
+*   FPCamera * First person camera (C version)
 *
 *   LICENSE: MIT
 *
