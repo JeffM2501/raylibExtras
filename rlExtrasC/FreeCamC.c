@@ -29,7 +29,7 @@
 **********************************************************************************************/
 
 
-#include "FreecamC.h"
+#include "FreeCamC.h"
 #include <stdlib.h>
 #include <math.h>
 

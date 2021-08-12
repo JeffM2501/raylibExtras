@@ -26,6 +26,9 @@ BeginModeFP3DTexture has been removed, BeginModeFP3D now works for both the scre
 #### TPOrbitCamera 
 A third person view camera system that orbits a target point based on mouse input
 
+#### FreeCam 
+A free flight camera that does not have gimbal lock problems.
+
 #### Frustum
 Frustum extraction with functions for testing point, sphere, and Axis Alligned Bounding Box against it.
 Useful for view culling.

@@ -67,4 +67,4 @@ RLAPI void FreeCam_RotateRoll(FreeCamera* camera, float angle);
 // called to rotate the camera around a world axis (Y or Z)
 RLAPI void FreeCam_RotateHeading(FreeCamera* camera, float angle, bool useY);
 
-#endif //FP_CAMERA_H
+#endif //FREE_CAMERA_C_H
