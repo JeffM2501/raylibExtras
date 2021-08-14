@@ -56,8 +56,6 @@ void FreeCam_ToCamera(FreeCamera* camera, Camera3D* raylibCamera)
 // called to set the target the camera should look at
 void FreeCam_LookAt(FreeCamera* camera, Vector3 target, Vector3 up)
 {
-    Matrix matrix = MatrixLookAt(camera->Position, target, up);
-
     camera->Forward = Vector3Normalize(Vector3Subtract(target, camera->Position));
     camera->Up = Vector3Normalize(up);
 }

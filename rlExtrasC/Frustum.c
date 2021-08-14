@@ -146,31 +146,31 @@ bool SphereInFrustumV(Frustum* frustum, Vector3 position, float radius)
 
     return true;
 }
-bool AABBoxInFrustum(Frustum* frustum, BoundingBox* box)
+bool AABBoxInFrustum(Frustum* frustum, Vector3 min, Vector3 max)
 {
     // if any point is in and we are good
-    if (PointInFrustum(frustum, box->min.x, box->min.y, box->min.z))
+    if (PointInFrustum(frustum, min.x, min.y, min.z))
         return true;
 
-    if (PointInFrustum(frustum, box->min.x, box->max.y, box->min.z))
+    if (PointInFrustum(frustum, min.x, max.y, min.z))
         return true;
 
-    if (PointInFrustum(frustum, box->max.x, box->max.y, box->min.z))
+    if (PointInFrustum(frustum, max.x, max.y, min.z))
         return true;
 
-    if (PointInFrustum(frustum, box->max.x, box->min.y, box->min.z))
+    if (PointInFrustum(frustum, max.x, min.y, min.z))
         return true;
 
-    if (PointInFrustum(frustum, box->min.x, box->min.y, box->max.z))
+    if (PointInFrustum(frustum, min.x, min.y, max.z))
         return true;
 
-    if (PointInFrustum(frustum, box->min.x, box->max.y, box->max.z))
+    if (PointInFrustum(frustum, min.x, max.y, max.z))
         return true;
 
-    if (PointInFrustum(frustum, box->max.x, box->max.y, box->max.z))
+    if (PointInFrustum(frustum, max.x, max.y, max.z))
         return true;
 
-    if (PointInFrustum(frustum, box->max.x, box->min.y, box->max.z))
+    if (PointInFrustum(frustum, max.x, min.y, max.z))
         return true;
 
     // check to see if all points are outside of any one plane, if so the entire box is outside
@@ -178,28 +178,28 @@ bool AABBoxInFrustum(Frustum* frustum, BoundingBox* box)
     {
         bool oneInside = false;
 
-        if (DistanceToPlane(&frustum->Planes[i], box->min.x, box->min.y, box->min.z) >= 0)
+        if (DistanceToPlane(&frustum->Planes[i], min.x, min.y, min.z) >= 0)
             oneInside = true;
 
-        if (DistanceToPlane(&frustum->Planes[i], box->max.x, box->min.y, box->min.z) >= 0)
+        if (DistanceToPlane(&frustum->Planes[i], max.x, min.y, min.z) >= 0)
             oneInside = true;
 
-        if (DistanceToPlane(&frustum->Planes[i], box->max.x, box->max.y, box->min.z) >= 0)
+        if (DistanceToPlane(&frustum->Planes[i], max.x, max.y, min.z) >= 0)
             oneInside = true;
 
-        if (DistanceToPlane(&frustum->Planes[i], box->min.x, box->max.y, box->min.z) >= 0)
+        if (DistanceToPlane(&frustum->Planes[i], min.x, max.y, min.z) >= 0)
             oneInside = true;
 
-        if (DistanceToPlane(&frustum->Planes[i], box->min.x, box->min.y, box->max.z) >= 0)
+        if (DistanceToPlane(&frustum->Planes[i], min.x, min.y, max.z) >= 0)
             oneInside = true;
 
-        if (DistanceToPlane(&frustum->Planes[i], box->max.x, box->min.y, box->max.z) >= 0)
+        if (DistanceToPlane(&frustum->Planes[i], max.x, min.y, max.z) >= 0)
             oneInside = true;
 
-        if (DistanceToPlane(&frustum->Planes[i], box->max.x, box->max.y, box->max.z) >= 0)
+        if (DistanceToPlane(&frustum->Planes[i], max.x, max.y, max.z) >= 0)
             oneInside = true;
 
-        if (DistanceToPlane(&frustum->Planes[i], box->min.x, box->max.y, box->max.z) >= 0)
+        if (DistanceToPlane(&frustum->Planes[i], min.x, max.y, max.z) >= 0)
             oneInside = true;
 
         if (!oneInside)
