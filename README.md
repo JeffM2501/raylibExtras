@@ -1,4 +1,4 @@
-# Raylib Extras 3.5
+# Raylib Extras 3.7
 Utilities and shared components for use with raylib (https://www.raylib.com/)
 
 This branch is for compatability with raylib git head (~3.7)
