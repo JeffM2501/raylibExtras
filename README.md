@@ -84,5 +84,8 @@ All compoents are licensed under the MIT license.
 Many thanks to those that have submited fixes and updates to Raylib Extras.
 
  - [**Julianiolo**](https://github.com/Julianiolo)
+ - [**NotManyIdeasDev**](https://github.com/NotManyIdeasDev)
+ - [**MarcoGMaia**](https://github.com/marcogmaia)
+ - [**OkiStuff**](https://github.com/OkiStuff)
 
 Do you want to contribute to **raylibExtras**? Check out [**CONTRIBUTING**](https://github.com/JeffM2501/raylibExtras/blob/index/CONTRIBUTING)
