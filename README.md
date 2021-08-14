@@ -1,7 +1,10 @@
-# Raylib Extras 3.7
+# Raylib Extras HEAD
 Utilities and shared components for use with raylib (https://www.raylib.com/)
 
-This branch is for compatability with raylib git head (~3.7)
+This branch is for compatability with raylib git head (~3.8/4.0)
+
+For compatability with raylib 3.7 please see
+https://github.com/JeffM2501/raylibExtras/tree/Raylib_3.7
 
 For compatability with raylib 3.5 please see
 https://github.com/JeffM2501/raylibExtras/tree/Raylib_3.5

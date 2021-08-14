@@ -29,6 +29,7 @@
 **********************************************************************************************/
 
 #include "RLGeoTools.h"
+#include "raymath.h"
 #include "utils.h"
 #include "rlgl.h"
 
