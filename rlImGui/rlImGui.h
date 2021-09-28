@@ -59,4 +59,4 @@ void RLImGuiImageSize(const Texture *image, int width, int height);
 void RLImGuiImageRect(const Texture* image, int destWidth, int destHeight, Rectangle sourceRect);
 
 // Icon Fonts
-void AddRLImGuiIconFonts();
+void AddRLImGuiIconFonts(float size = 12.0f);

@@ -44,7 +44,7 @@ static Texture2D FontTexture;
 static ImGuiMouseCursor CurrentMouseCursor = ImGuiMouseCursor_COUNT;
 static std::map<ImGuiMouseCursor, MouseCursor> MouseCursorMap;
 
-void AddRLImGuiIconFonts()
+void AddRLImGuiIconFonts(float size)
 {
     ImGuiIO& io = ImGui::GetIO();
     io.Fonts->AddFontDefault();
@@ -54,7 +54,7 @@ void AddRLImGuiIconFonts()
     ImFontConfig icons_config;
     icons_config.MergeMode = true;
     icons_config.PixelSnapH = true;
-    io.Fonts->AddFontFromMemoryTTF(forkawesome_webfont_ttf, forkawesome_webfont_ttf_len, 16, &icons_config, icons_ranges);
+    io.Fonts->AddFontFromMemoryTTF(forkawesome_webfont_ttf, forkawesome_webfont_ttf_len, size, &icons_config, icons_ranges);
 }
 
 static const char* rlImGuiGetClipText(void*)
