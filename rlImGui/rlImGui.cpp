@@ -28,6 +28,7 @@
 *
 **********************************************************************************************/
 #include "rlImGui.h"
+#include "ForkAwesomeFontData.h"
 
 #include "imgui.h"
 #include "raylib.h"
@@ -42,6 +43,19 @@ static Texture2D FontTexture;
 
 static ImGuiMouseCursor CurrentMouseCursor = ImGuiMouseCursor_COUNT;
 static std::map<ImGuiMouseCursor, MouseCursor> MouseCursorMap;
+
+void AddRLImGuiIconFonts()
+{
+    ImGuiIO& io = ImGui::GetIO();
+    io.Fonts->AddFontDefault();
+
+    // merge in icons from Font Awesome
+    static const ImWchar icons_ranges[] = { ICON_MIN_FK, ICON_MAX_FK, 0 };
+    ImFontConfig icons_config;
+    icons_config.MergeMode = true;
+    icons_config.PixelSnapH = true;
+    io.Fonts->AddFontFromMemoryTTF(forkawesome_webfont_ttf, forkawesome_webfont_ttf_len, 16, &icons_config, icons_ranges);
+}
 
 static const char* rlImGuiGetClipText(void*)
 {

@@ -16,7 +16,7 @@ This project is under the [**ZLib/libpng License**](https://github.com/JeffM2501
 Raylib Extras is made up of two main libraries, 
 
 ### rlImGui
-Simple ImGui bindings for raylib with image support.
+Simple ImGui bindings for raylib with image and icon support provided by Fork Awesome https://forkaweso.me/Fork-Awesome/.
 
 ### rlExtrasC
 This is a pure C library that can be build static or dynamic (DLL). It contains the following components.
