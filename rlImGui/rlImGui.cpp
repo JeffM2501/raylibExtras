@@ -29,6 +29,8 @@
 **********************************************************************************************/
 #include "rlImGui.h"
 #include "ForkAwesomeFontData.h"
+#include "FA5FreeRegularFontData.h"
+#include "FA5FreeSolidFontData.h"
 
 #include "imgui.h"
 #include "raylib.h"
@@ -44,17 +46,29 @@ static Texture2D FontTexture;
 static ImGuiMouseCursor CurrentMouseCursor = ImGuiMouseCursor_COUNT;
 static std::map<ImGuiMouseCursor, MouseCursor> MouseCursorMap;
 
-void AddRLImGuiIconFonts(float size)
+void AddRLImGuiIconFonts(float size, bool awesome)
 {
     ImGuiIO& io = ImGui::GetIO();
     io.Fonts->AddFontDefault();
 
-    // merge in icons from Font Awesome
-    static const ImWchar icons_ranges[] = { ICON_MIN_FK, ICON_MAX_FK, 0 };
-    ImFontConfig icons_config;
-    icons_config.MergeMode = true;
-    icons_config.PixelSnapH = true;
-    io.Fonts->AddFontFromMemoryTTF(forkawesome_webfont_ttf, forkawesome_webfont_ttf_len, size, &icons_config, icons_ranges);
+    // merge in icons from Fontk Awesome
+    if (awesome)
+    { 
+        static const ImWchar icons_ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
+        ImFontConfig icons_config;
+        icons_config.MergeMode = true;
+        icons_config.PixelSnapH = true;
+        io.Fonts->AddFontFromMemoryTTF(FA5Free_Solid_900_otf, FA5Free_Solid_900_otf_len, size, &icons_config, icons_ranges);
+    }
+    else
+    {
+        // merge in icons from Fork Awesome
+        static const ImWchar icons_ranges[] = { ICON_MIN_FK, ICON_MAX_FK, 0 };
+        ImFontConfig icons_config;
+        icons_config.MergeMode = true;
+        icons_config.PixelSnapH = true;
+        io.Fonts->AddFontFromMemoryTTF(forkawesome_webfont_ttf, forkawesome_webfont_ttf_len, size, &icons_config, icons_ranges);
+    }
 }
 
 static const char* rlImGuiGetClipText(void*)

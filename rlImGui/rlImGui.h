@@ -33,6 +33,7 @@
 #include "raylib.h"
 #include "imgui.h"
 #include "IconsForkAwesome.h"
+#include "IconsFontAwesome5.h"
 
 namespace ImGuiColors
 {
@@ -59,4 +60,4 @@ void RLImGuiImageSize(const Texture *image, int width, int height);
 void RLImGuiImageRect(const Texture* image, int destWidth, int destHeight, Rectangle sourceRect);
 
 // Icon Fonts
-void AddRLImGuiIconFonts(float size = 12.0f);
+void AddRLImGuiIconFonts(float size = 12.0f, bool awesome = false);
