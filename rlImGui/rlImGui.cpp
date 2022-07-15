@@ -263,7 +263,7 @@ static void rlImGuiEvents()
         io.AddInputCharacter(pressed);
 }
 
-static void rlImGuiTriangleVert(ImDrawVert& idx_vert)
+static void rlImGuiTriangleVert(const ImDrawVert& idx_vert)
 {
     Color* c;
     c = (Color*)&idx_vert.col;
@@ -293,9 +293,9 @@ static void rlImGuiRenderTriangles(unsigned int count, int indexStart, const ImV
         ImDrawIdx indexB = indexBuffer[indexStart + i + 1];
         ImDrawIdx indexC = indexBuffer[indexStart + i + 2];
 
-        ImDrawVert vertexA = vertBuffer[indexA];
-        ImDrawVert vertexB = vertBuffer[indexB];
-        ImDrawVert vertexC = vertBuffer[indexC];
+        const ImDrawVert& vertexA = vertBuffer[indexA];
+        const ImDrawVert& vertexB = vertBuffer[indexB];
+        const ImDrawVert& vertexC = vertBuffer[indexC];
 
         rlImGuiTriangleVert(vertexA);
         rlImGuiTriangleVert(vertexB);
