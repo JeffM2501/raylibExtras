@@ -68,6 +68,7 @@ void AddRLImGuiIconFonts(float size, bool awesome)
         ImFontConfig icons_config;
         icons_config.MergeMode = true;
         icons_config.PixelSnapH = true;
+        icons_config.FontDataOwnedByAtlas = false;
         io.Fonts->AddFontFromMemoryTTF(forkawesome_webfont_ttf, forkawesome_webfont_ttf_len, size, &icons_config, icons_ranges);
     }
 }
