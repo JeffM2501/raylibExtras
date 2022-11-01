@@ -58,6 +58,7 @@ void AddRLImGuiIconFonts(float size, bool awesome)
         ImFontConfig icons_config;
         icons_config.MergeMode = true;
         icons_config.PixelSnapH = true;
+        icons_config.FontDataOwnedByAtlas = false;
         io.Fonts->AddFontFromMemoryTTF(FA5Free_Solid_900_otf, FA5Free_Solid_900_otf_len, size, &icons_config, icons_ranges);
     }
     else
@@ -459,6 +460,8 @@ void ShutdownRLImGui()
 
     UnloadTexture(FontTexture);
     LoadedTextures.clear();
+
+    ImGui::DestroyContext();
 }
 
 void RLImGuiImage(const Texture *image)
