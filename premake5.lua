@@ -99,29 +99,6 @@ project "rlExtrasCPP"
 		["Source Files"] = {"rlExtrasCPP/**.cpp"},
 	}
 	files {"rlExtrasCPP/**.h", "rlExtrasCPP/**.cpp"}
-	
-project "rlImGui"
-	kind "StaticLib"
-		
-	filter "action:vs*"
-		defines{"_WINSOCK_DEPRECATED_NO_WARNINGS", "_CRT_SECURE_NO_WARNINGS", "_WIN32"}
-		links {"winmm"}
-				
-	filter{}
-	
-	location "./rlImGui/"
-	language "C++"
-	targetdir "bin/%{cfg.buildcfg}"
-	
-	includedirs { "raylib/src","rlImGui", "imGui"}
-	vpaths 
-	{
-		["Header Files"] = { "rlImGui/**.h"},
-		["Source Files"] = {"rlImGui/**.cpp"},
-		["ImGui Files"] = { "imGui/*.h","imGui/*.cpp" },
-	}
-	files {"imGui/*.h", "imGui/*.cpp", "rlImGui/**.cpp", "rlImGui/**.h"}
-
 
 group "Examples C"
 project "FPCameraCSample"
@@ -137,9 +114,9 @@ project "FPCameraCSample"
 	}
 	files {"Examples/FPCameraCSample/**.c", "Examples/FPCameraCSample/**.h"}
 
-	links {"raylib","rlExtrasC", "rlImGui"}
+	links {"raylib","rlExtrasC"}
 	
-	includedirs { "Examples/FPCameraCSample", "raylib/src", "rlExtrasC", "rlImGui", "imGui" }
+	includedirs { "Examples/FPCameraCSample", "raylib/src", "rlExtrasC" }
 	
 	filter "action:vs*"
 		defines{"_WINSOCK_DEPRECATED_NO_WARNINGS", "_CRT_SECURE_NO_WARNINGS", "_WIN32"}
@@ -179,9 +156,9 @@ project "FreeCameraCSample"
 	}
 	files {"Examples/FreeCameraCSample/**.c", "Examples/FreeCameraCSample/**.h"}
 
-	links {"raylib","rlExtrasC", "rlImGui"}
+	links {"raylib","rlExtrasC"}
 	
-	includedirs { "Examples/FreeCameraCSample", "raylib/src", "rlExtrasC", "rlImGui", "imGui" }
+	includedirs { "Examples/FreeCameraCSample", "raylib/src", "rlExtrasC"}
 	
 	filter "action:vs*"
 		defines{"_WINSOCK_DEPRECATED_NO_WARNINGS", "_CRT_SECURE_NO_WARNINGS", "_WIN32"}
@@ -226,27 +203,6 @@ project "RLSpritesCppSample"
 	links {"raylib","rlExtrasCPP"}
 	
 	includedirs { "Examples/RLSpritesCppSample", "raylib/src", "rlExtrasCPP" }
-	
-	filter "action:vs*"
-		defines{"_WINSOCK_DEPRECATED_NO_WARNINGS", "_CRT_SECURE_NO_WARNINGS", "_WIN32"}
-		links {"winmm"}
-		
-project "ImGuiSample"
-	kind "ConsoleApp"
-	location "Examples/"
-	language "C++"
-	targetdir "bin/%{cfg.buildcfg}"
-	
-	vpaths 
-	{
-		["Header Files"] = { "Examples/ImGuiSample/**.h"},
-		["Source Files"] = {"Examples/ImGuiSample/**.cpp"},
-	}
-	files {"Examples/ImGuiSample/**.cpp", "Examples/ImGuiSample/**.h"}
-
-	links {"raylib","rlImGui","rlExtrasCPP"}
-	
-	includedirs { "Examples/ImGuiSample", "raylib/src", "rlImGui", "imGui", "rlExtrasCPP" }
 	
 	filter "action:vs*"
 		defines{"_WINSOCK_DEPRECATED_NO_WARNINGS", "_CRT_SECURE_NO_WARNINGS", "_WIN32"}
