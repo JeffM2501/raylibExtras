@@ -83,7 +83,7 @@ typedef struct
     float ViewBobbleFreq;
 
     // how high up/down will the bobble be
-    float ViewBobbleMagnatude;
+    float ViewBobbleMagnitude;
 
     // how far left and right should the view bobble
     float ViewBobbleWaverMagnitude;
