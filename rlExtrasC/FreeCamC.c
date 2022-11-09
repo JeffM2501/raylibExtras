@@ -63,7 +63,7 @@ void FreeCam_LookAt(FreeCamera* camera, Vector3 target, Vector3 up)
 // called to set where the camera is
 void FreeCam_SetPosition(FreeCamera* camera, Vector3 position)
 {
-    camera->Position = camera->Position;
+    camera->Position = position;
 }
 
 // Called to move the camera relative to it's current orientation
