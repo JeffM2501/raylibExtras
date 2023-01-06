@@ -101,48 +101,6 @@ project "rlExtrasCPP"
 	files {"rlExtrasCPP/**.h", "rlExtrasCPP/**.cpp"}
 
 group "Examples C"
-project "FPCameraCSample"
-	kind "ConsoleApp"
-	location "Examples/"
-	language "C"
-	targetdir "bin/%{cfg.buildcfg}"
-	
-	vpaths 
-	{
-		["Header Files"] = { "Examples/FPCameraCSample/**.h"},
-		["Source Files"] = {"Examples/FPCameraCSample/**.c"},
-	}
-	files {"Examples/FPCameraCSample/**.c", "Examples/FPCameraCSample/**.h"}
-
-	links {"raylib","rlExtrasC"}
-	
-	includedirs { "Examples/FPCameraCSample", "raylib/src", "rlExtrasC" }
-	
-	filter "action:vs*"
-		defines{"_WINSOCK_DEPRECATED_NO_WARNINGS", "_CRT_SECURE_NO_WARNINGS", "_WIN32"}
-		links {"winmm"}
-		
-project "TPOrbitCameraCSample"
-	kind "ConsoleApp"
-	location "Examples/"
-	language "C"
-	targetdir "bin/%{cfg.buildcfg}"
-	
-	vpaths 
-	{
-		["Header Files"] = { "Examples/TPOrbitCameraCSample/**.h"},
-		["Source Files"] = {"Examples/TPOrbitCameraCSample/**.c"},
-	}
-	files {"Examples/TPOrbitCameraCSample/**.c", "Examples/TPOrbitCameraCSample/**.h"}
-
-	links {"raylib","rlExtrasC"}
-	
-	includedirs { "Examples/TOprbitCameraCSample", "raylib/src", "rlExtrasC" }
-	
-	filter "action:vs*"
-		defines{"_WINSOCK_DEPRECATED_NO_WARNINGS", "_CRT_SECURE_NO_WARNINGS", "_WIN32"}
-		links {"winmm"}
-		
 project "FreeCameraCSample"
 	kind "ConsoleApp"
 	location "Examples/"
@@ -203,27 +161,6 @@ project "RLSpritesCppSample"
 	links {"raylib","rlExtrasCPP"}
 	
 	includedirs { "Examples/RLSpritesCppSample", "raylib/src", "rlExtrasCPP" }
-	
-	filter "action:vs*"
-		defines{"_WINSOCK_DEPRECATED_NO_WARNINGS", "_CRT_SECURE_NO_WARNINGS", "_WIN32"}
-		links {"winmm"}
-		
-project "FPCameraCPPSample"
-	kind "ConsoleApp"
-	location "Examples/"
-	language "C++"
-	targetdir "bin/%{cfg.buildcfg}"
-	
-	vpaths 
-	{
-		["Header Files"] = { "Examples/FPCameraCPPSample/**.h"},
-		["Source Files"] = {"Examples/FPCameraCPPSample/**.cpp"},
-	}
-	files {"Examples/FPCameraCPPSample/**.cpp", "Examples/FPCameraCPPSample/**.h"}
-
-	links {"raylib","rlExtrasCPP"}
-	
-	includedirs { "Examples/FPCameraCPPSample", "raylib/src", "rlExtrasCPP" }
 	
 	filter "action:vs*"
 		defines{"_WINSOCK_DEPRECATED_NO_WARNINGS", "_CRT_SECURE_NO_WARNINGS", "_WIN32"}
