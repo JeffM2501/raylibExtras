@@ -1,3 +1,9 @@
+# DEPRECATED CODE
+The raylib extras untitiles have been moved to a seperate orginaization
+https://github.com/raylib-extras
+
+This code is old and unmaintained.
+
 # Raylib Extras HEAD
 Utilities and shared components for use with raylib (https://www.raylib.com/)
 
